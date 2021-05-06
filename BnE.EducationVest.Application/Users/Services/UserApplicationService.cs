@@ -38,6 +38,18 @@ namespace BnE.EducationVest.Application.Users.Services
             //Atualizar propriedade active no banco e dados
         }
 
+        public async Task<Either<ErrorResponseModel, object>> ConfirmPasswordRecover(string username, string code, string newPassword)
+        {
+            await _userAuthService.ConfirmPasswordRecover(username, code, newPassword);
+            return null;
+        }
+
+        public async Task<Either<ErrorResponseModel, object>> InitiateRecoverPassword(string username)
+        {
+            await _userAuthService.SendForgotPasswordCodeAsync(username);
+            return null;
+        }
+
         public async Task<Either<ErrorResponseModel, object>> LoginAsync(LoginRequestModel loginRequestModel)
         {
             return await _userAuthService.LoginAsync(loginRequestModel.Username, loginRequestModel.Password);

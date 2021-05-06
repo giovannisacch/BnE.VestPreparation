@@ -59,5 +59,27 @@ namespace BnE.EducationVest.API.Controllers
                 ? response.SuccessResponseModel 
                 : response.ErrorResponseModel);
         }
+        [HttpPost("recoverPassword")]
+        public async Task<IActionResult> RecoverPassword(string username)
+        {
+
+            var response = await _userApplicationService.InitiateRecoverPassword(username);
+
+            return StatusCode((int)response.StatusCode,
+                response.IsSuccess
+                ? response.SuccessResponseModel
+                : response.ErrorResponseModel);
+        }
+        [HttpPost("recoverPasswordCode")]
+        public async Task<IActionResult> ConfirmPasswordRecover(string username, string code, string newPassword)
+        {
+
+            var response = await _userApplicationService.ConfirmPasswordRecover(username, code, newPassword);
+
+            return StatusCode((int)response.StatusCode,
+                response.IsSuccess
+                ? response.SuccessResponseModel
+                : response.ErrorResponseModel);
+        }
     }
 }

@@ -3,8 +3,12 @@ using Amazon.CognitoIdentityProvider;
 using Amazon.Extensions.CognitoAuthentication;
 using BnE.EducationVest.Application.Users.Interface;
 using BnE.EducationVest.Application.Users.Services;
+using BnE.EducationVest.Domain.Common;
+using BnE.EducationVest.Domain.Common.SettingsModels;
 using BnE.EducationVest.Domain.Users.Interfaces.InfraService;
+using BnE.EducationVest.Infra.Service.Common;
 using BnE.EducationVest.Infra.Service.User.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -22,13 +26,23 @@ namespace BnE.EducationVest.DI
             services.AddScoped<IUserApplicationService, UserApplicationService>();
         }
 
-        public static void InjectInfraServiceDependencies(this IServiceCollection services)
+        public static void InjectInfraServiceDependencies(this IServiceCollection services, IConfiguration configuration)
         {
-            var aa = new AmazonCognitoIdentityProviderClient("AKIAWOALMJU6CKZG6LU3", "N0YPZzRATQ3TS5xSDTkc2dBOwoJ858kp5xtjU9Od", RegionEndpoint.SAEast1);
-            var cognitoUserPool = new CognitoUserPool("sa-east-1_DFZtMc2ZI", "14cju6jccv85qh47oh5ta2629i", aa);
-            services.AddSingleton<IAmazonCognitoIdentityProvider>(aa);
+            services.Configure<AwsAuthSettings>(configuration.GetSection("AwsAuth"));
+            var awsCognitoSection = configuration.GetSection("AwsAuth");
+            var cognitoIdentityProvider = new AmazonCognitoIdentityProviderClient(awsCognitoSection["AcessKey"], awsCognitoSection["SecretKey"], RegionEndpoint.SAEast1);
+            var cognitoUserPool = new CognitoUserPool(awsCognitoSection["UserPoolId"], awsCognitoSection["UserPoolClientId"], cognitoIdentityProvider);
+            services.AddSingleton<IAmazonCognitoIdentityProvider>(cognitoIdentityProvider);
             services.AddSingleton(cognitoUserPool);
             services.AddScoped<IUserAuthService, UserAuthService>();
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = configuration.GetSection("RedisSettings")["ConnectionString"];
+                options.InstanceName = "EducationVest-Cache";
+            });
+
+            services.AddScoped<IMailSenderService, MailSenderService>();
         }
     }
 }
