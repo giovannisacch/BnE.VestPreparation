@@ -14,17 +14,15 @@ RUN (test $DEBUG -eq 1 && dotnet publish -c Debug -o /app) || (test $DEBUG -eq 0
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
 ARG deploy_env='Development'
 ARG port='80'
-ARG porthttps='443'
 ARG debug='1'
 ENV DEBUG ${debug}
 
 ENV ASPNETCORE_ENVIRONMENT ${deploy_env}
-ENV ASPNETCORE_URLS http://0.0.0.0:${port};https://0.0.0.0:${porthttps}
+ENV ASPNETCORE_URLS http://0.0.0.0:${port}
 ENV TZ=America/Sao_Paulo
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata
 RUN dpkg-reconfigure --frontend noninteractive tzdata
-RUN dotnet dev-certs https
 
 WORKDIR /app
 COPY --from=0 /app .
