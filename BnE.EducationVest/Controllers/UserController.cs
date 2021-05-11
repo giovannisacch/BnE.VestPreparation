@@ -66,9 +66,9 @@ namespace BnE.EducationVest.API.Controllers
             var response = await _userApplicationService.InitiateRecoverPassword(username);
 
             return StatusCode((int)response.StatusCode,
-                response.IsSuccess
-                ? response.SuccessResponseModel
-                : response.ErrorResponseModel);
+             response.IsSuccess
+             ? response.SuccessResponseModel
+             : response.ErrorResponseModel);
         }
         [HttpPost("recoverPasswordCode")]
         public async Task<IActionResult> ConfirmPasswordRecover(string username, string code, string newPassword)

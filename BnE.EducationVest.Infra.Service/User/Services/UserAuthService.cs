@@ -7,6 +7,7 @@ using BnE.EducationVest.Domain.Users.Interfaces.InfraService;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,28 +28,35 @@ namespace BnE.EducationVest.Infra.Service.User.Services
             _cache = cache;
             _mailSender = mailSenderService;
         }
-        public async Task ConfirmPasswordRecover(string username, string code, string newPassword)
+        public async Task<Either<ErrorResponseModel, object>> ConfirmPasswordRecover(string username, string code, string newPassword)
         {
             var user = await _cognitoUserPool.FindByIdAsync(username);
+            if(user == null)
+                return new Either<ErrorResponseModel, object>(new ErrorResponseModel(ErrorConstants.USER_NOT_FOUND),
+                                                               HttpStatusCode.BadRequest);
             //Verificcar se usuario existe
             var tokenInCache = await _cache.GetStringAsync($"user:recoverCode:{user.UserID}");
             if (string.IsNullOrEmpty(tokenInCache))
-                return; //Adicionar erro de token epirado
+                return new Either<ErrorResponseModel, object>(new ErrorResponseModel(ErrorConstants.TOKEN_EXPIRED),
+                                                              HttpStatusCode.BadRequest); //Adicionar erro de token epirado
             if (tokenInCache.Equals(code))
-                await SetNewPasswordAsAdminAsync(username, newPassword);
+                return new Either<ErrorResponseModel, object>(await SetNewPasswordAsAdminAsync(username, newPassword), HttpStatusCode.OK);
             else
-                return; //Adicionar retorno de erro
+                return new Either<ErrorResponseModel, object>(null, HttpStatusCode.BadRequest); //Adicionar retorno de erro
         }
-        public async Task SendForgotPasswordCodeAsync(string username)
+        public async Task<Either<ErrorResponseModel, object>> SendForgotPasswordCodeAsync(string username)
         {
             var user = await _cognitoUserPool.FindByIdAsync(username);
+            if(user == null)
+                return new Either<ErrorResponseModel, object>(new ErrorResponseModel(ErrorConstants.USER_NOT_FOUND),
+                                                               System.Net.HttpStatusCode.BadRequest);
             //Verificcar se usuario existe
             var recoverCode = GenerateRandomAlphanumeric(5);
             await SaveUserRecoverTokenOnCache(user.UserID, recoverCode);
             await _mailSender.SendEmailAsync(username, "Recuperar senha", "TESTE: SEU CODIGO DE RECUPERACAO É"+ recoverCode);
             //Enviar email
 
-            return;
+            return new Either<ErrorResponseModel, object>(null,System.Net.HttpStatusCode.OK);
         }
         private async Task SaveUserRecoverTokenOnCache(string userId, string code)
         {

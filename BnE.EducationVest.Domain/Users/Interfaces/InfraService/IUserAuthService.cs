@@ -12,7 +12,7 @@ namespace BnE.EducationVest.Domain.Users.Interfaces.InfraService
         Task CreateUserAsync(Entities.User user);
         Task<Either<ErrorResponseModel, object>> AdminUpdateUserPasswordAsync(string username, string password, string oldPassword);
         Task<Either<ErrorResponseModel, object>> LoginAsync(string username, string password);
-        Task SendForgotPasswordCodeAsync(string username);
-        Task ConfirmPasswordRecover(string username, string code, string newPassword);
+        Task<Either<ErrorResponseModel, object>> SendForgotPasswordCodeAsync(string username);
+        Task<Either<ErrorResponseModel, object>> ConfirmPasswordRecover(string username, string code, string newPassword);
     }
 }

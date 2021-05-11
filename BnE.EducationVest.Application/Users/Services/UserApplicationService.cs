@@ -40,14 +40,13 @@ namespace BnE.EducationVest.Application.Users.Services
 
         public async Task<Either<ErrorResponseModel, object>> ConfirmPasswordRecover(string username, string code, string newPassword)
         {
-            await _userAuthService.ConfirmPasswordRecover(username, code, newPassword);
-            return null;
+            
+            return await _userAuthService.ConfirmPasswordRecover(username, code, newPassword);
         }
 
         public async Task<Either<ErrorResponseModel, object>> InitiateRecoverPassword(string username)
         {
-            await _userAuthService.SendForgotPasswordCodeAsync(username);
-            return null;
+            return await _userAuthService.SendForgotPasswordCodeAsync(username);
         }
 
         public async Task<Either<ErrorResponseModel, object>> LoginAsync(LoginRequestModel loginRequestModel)
