@@ -26,7 +26,7 @@ namespace BnE.EducationVest
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
             services.InjectApplicationServiceDependencies();
             services.InjectInfraServiceDependencies(Configuration);
-
+            services.AddCors(x => { x.AddDefaultPolicy(x => x.AllowAnyOrigin()); });
             services.AddAuthentication("Bearer")
                 .AddJwtBearer(options =>
                 {
@@ -75,7 +75,7 @@ namespace BnE.EducationVest
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseCors(opt => { opt.AllowAnyOrigin(); });
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BnE.EducationVest v1"));
 
