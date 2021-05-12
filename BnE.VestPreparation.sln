@@ -7,16 +7,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BnE.EducationVest.API", "Bn
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BnE.EducationVest.Application", "BnE.EducationVest.Application\BnE.EducationVest.Application.csproj", "{1AD1CAB6-49A3-4F7D-9795-481226E26B2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BnE.EducationVest.Domain", "BnE.EducationVest.Domain\BnE.EducationVest.Domain.csproj", "{0139BCD4-25EF-4D66-B692-CFB83EF64D59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BnE.EducationVest.Domain", "BnE.EducationVest.Domain\BnE.EducationVest.Domain.csproj", "{0139BCD4-25EF-4D66-B692-CFB83EF64D59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BnE.EducationVest.Infra.Service", "BnE.EducationVest.Infra.Service\BnE.EducationVest.Infra.Service.csproj", "{2D1CBFA4-877D-457D-ACD9-C9A425B17B45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BnE.EducationVest.Infra.Service", "BnE.EducationVest.Infra.Service\BnE.EducationVest.Infra.Service.csproj", "{2D1CBFA4-877D-457D-ACD9-C9A425B17B45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BnE.EducationVest.DI", "BnE.EducationVest.DI\BnE.EducationVest.DI.csproj", "{AE7A4749-2C03-4E77-B4DC-CFFC5206E141}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BnE.EducationVest.DI", "BnE.EducationVest.DI\BnE.EducationVest.DI.csproj", "{AE7A4749-2C03-4E77-B4DC-CFFC5206E141}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BnE.EducationVest.Infra.Data", "BnE.EducationVest.Infra.Data\BnE.EducationVest.Infra.Data.csproj", "{1A7C2BC2-9F77-4203-9E2A-80C4651D7B36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BnE.EducationVest.Infra.Data", "BnE.EducationVest.Infra.Data\BnE.EducationVest.Infra.Data.csproj", "{1A7C2BC2-9F77-4203-9E2A-80C4651D7B36}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0139BCD4-25EF-4D66-B692-CFB83EF64D59} = {0139BCD4-25EF-4D66-B692-CFB83EF64D59}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BnE.EducationVest.Test", "BnE.EducationVest.Test\BnE.EducationVest.Test.csproj", "{C7CAF836-A3BE-4C2A-B696-5563E266D143}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +50,10 @@ Global
 		{1A7C2BC2-9F77-4203-9E2A-80C4651D7B36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A7C2BC2-9F77-4203-9E2A-80C4651D7B36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A7C2BC2-9F77-4203-9E2A-80C4651D7B36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7CAF836-A3BE-4C2A-B696-5563E266D143}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7CAF836-A3BE-4C2A-B696-5563E266D143}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7CAF836-A3BE-4C2A-B696-5563E266D143}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7CAF836-A3BE-4C2A-B696-5563E266D143}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

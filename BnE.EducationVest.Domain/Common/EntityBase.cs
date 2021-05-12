@@ -15,6 +15,8 @@ namespace BnE.EducationVest.Domain.Common
         public EntityBase()
         {
             Id = Guid.NewGuid();
+            CreatedDate = DateTime.Now;
+            UpdatedDate = DateTime.Now;
         }
         public override bool Equals(object obj)
         {
