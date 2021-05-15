@@ -1,26 +1,27 @@
 ﻿using BnE.EducationVest.Domain.Exam.ValueObjects;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BnE.EducationVest.Domain.Exam.Entities
 {
     public class Alternative 
     {
         //FK
-        public Guid ExamId { get; private set; }
-        public CompleteTextVO TextContent { get; private set; }
+        public Guid QuestionId { get; private set; }
+        public Guid TextContentId { get; set; }
+        public IncrementedTextVO TextContent { get; private set; }
+        public int Index { get; set; }
         public bool IsCorrect { get; private set; }
 
-        public Exam Exam{ get; private set; }
-
-        public Alternative(Guid examId, CompleteTextVO textContent, bool isCorrect)
+        public Question Question{ get; private set; }
+        internal Alternative()
         {
-            ExamId = examId;
+
+        }
+        public Alternative(IncrementedTextVO textContent, bool isCorrect, int index)
+        {
             TextContent = textContent;
             IsCorrect = isCorrect;
+            Index = index;
         }
     }
 }

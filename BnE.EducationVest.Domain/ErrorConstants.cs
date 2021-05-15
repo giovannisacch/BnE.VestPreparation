@@ -14,5 +14,7 @@ namespace BnE.EducationVest.Domain
         public const string USER_NOT_FOUND = "USER_NOT_FOUND";
         public const string TOKEN_EXPIRED = "TOKEN_EXPIRED";
         public const string WRONG_TOKEN = "WRONG_TOKEN";
+        public const string EMPTY_EXAM_PERIODS = "EMPTY_EXAM_PERIODS";
+        public const string ALTERNATIVE_COUNT_SHOULD_BE_FIVE = "ALTERNATIVE_COUNT_SHOULD_BE_FIVE";
     }
 }

@@ -11,17 +11,26 @@ namespace BnE.EducationVest.Domain.Exam.Entities
     public class Question : EntityBase
     {
         public Guid ExamId { get; private set; }
+        //FK
+        public Guid EnunciatedId { get; set; }
         public int Index { get; private set; }
-        public CompleteTextVO Enunciated { get; private set; }
+        public IncrementedTextVO Enunciated { get; private set; }
         public List<Alternative> Alternatives { get; private set; }
-
         public Exam Exam { get; private set; }
-
-        public Question(Guid examId, int index, CompleteTextVO enunciated, List<Alternative> alternatives)
+        internal Question()
         {
-            ExamId = examId;
+
+        }
+        public Question(int index, IncrementedTextVO enunciated, List<Alternative> alternatives)
+        {
             Index = index;
             Enunciated = enunciated;
+            SetAlternatives(alternatives);
+        }
+        public void SetAlternatives(List<Alternative> alternatives)
+        {
+            if (alternatives.Count != 5)
+                throw new DomainErrorException(ErrorConstants.ALTERNATIVE_COUNT_SHOULD_BE_FIVE);
             Alternatives = alternatives;
         }
     }

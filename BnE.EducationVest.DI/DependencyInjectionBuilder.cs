@@ -1,6 +1,8 @@
 ﻿using Amazon;
 using Amazon.CognitoIdentityProvider;
 using Amazon.Extensions.CognitoAuthentication;
+using BnE.EducationVest.Application.Exams.Interfaces;
+using BnE.EducationVest.Application.Exams.Services;
 using BnE.EducationVest.Application.Users.Interface;
 using BnE.EducationVest.Application.Users.Services;
 using BnE.EducationVest.Domain.Common;
@@ -10,11 +12,8 @@ using BnE.EducationVest.Infra.Service.Common;
 using BnE.EducationVest.Infra.Service.User.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BnE.EducationVest.Infra.Data.Common;
+using Microsoft.EntityFrameworkCore;
 
 namespace BnE.EducationVest.DI
 {
@@ -24,6 +23,7 @@ namespace BnE.EducationVest.DI
         public static void InjectApplicationServiceDependencies(this IServiceCollection services) 
         {
             services.AddScoped<IUserApplicationService, UserApplicationService>();
+            services.AddScoped<IExamApplicationService, ExamApplicationService>(); 
         }
 
         public static void InjectInfraServiceDependencies(this IServiceCollection services, IConfiguration configuration)
@@ -43,6 +43,13 @@ namespace BnE.EducationVest.DI
             });
 
             services.AddScoped<IMailSenderService, MailSenderService>();
+        }
+
+        public static void InjectInfraDataDependencies(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDbContext<EducationVestContext>(options =>
+                options.UseNpgsql()
+               );
         }
     }
 }

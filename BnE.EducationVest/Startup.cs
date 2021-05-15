@@ -35,6 +35,7 @@ namespace BnE.EducationVest
                     options.RequireHttpsMetadata = false;
                 });
             services.AddControllers();
+ 
             #region SWAGGER GEN
             services.AddSwaggerGen(c =>
             {

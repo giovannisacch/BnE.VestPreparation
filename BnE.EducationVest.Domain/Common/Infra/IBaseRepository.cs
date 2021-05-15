@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace BnE.EducationVest.Domain.Common.Infra
 {
-    public interface IBaseRepository
+    public interface IBaseRepository<T> where T : EntityBase
     {
+        IUnitOfWork UnitOfWork { get; }
+
     }
 }
