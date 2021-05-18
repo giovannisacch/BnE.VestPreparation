@@ -47,9 +47,12 @@ namespace BnE.EducationVest.DI
 
         public static void InjectInfraDataDependencies(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<EducationVestContext>(options =>
-                options.UseNpgsql()
-               );
+            services.AddDbContext<EducationVestContext>(options => {
+                options.EnableSensitiveDataLogging();
+                options.UseNpgsql(
+                    configuration.GetConnectionString("DefaultConnection"),
+                     x => x.MigrationsAssembly("BnE.EducationVest.API"));
+               });
         }
     }
 }

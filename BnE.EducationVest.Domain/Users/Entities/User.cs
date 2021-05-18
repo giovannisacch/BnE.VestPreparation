@@ -16,7 +16,7 @@ namespace BnE.EducationVest.Domain.Users.Entities
         public AddressVO Address { get; private set; }
         public string CognitoUserId { get; set; }
         public bool IsTeacher { get; set; }
-
+        internal User() { }
         public User(string name, string cpf, string phoneNumber, string gender, string email, 
             DateTime birthDate, AddressVO address, bool isTeacher)
         {

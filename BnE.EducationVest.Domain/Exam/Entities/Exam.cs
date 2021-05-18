@@ -13,8 +13,8 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         public List<ExamPeriodVO> Periods { get; private set; }
         public List<Question> Questions { get; private set; }
 
-        public Exam(int examNumber, EExamType examType, 
-                    List<ExamPeriodVO> periods, List<Question> questions)
+        internal Exam() { }
+        public Exam(int examNumber, EExamType examType, List<ExamPeriodVO> periods, List<Question> questions)
         {
             ExamNumber = examNumber;
             ExamType = examType;

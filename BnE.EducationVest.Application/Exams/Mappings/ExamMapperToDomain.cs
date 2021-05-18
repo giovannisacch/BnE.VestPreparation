@@ -14,23 +14,24 @@ namespace BnE.EducationVest.Application.Exams.Mappings
     {
         public static Exam MapToDomain(this ExamViewModel examViewModel)
         {
-            return new Exam(examViewModel.ExamNumber, examViewModel.ExamType,
-                            examViewModel.Periods.Select(x => x.MapToVO()).ToList(), 
+            var exam = new Exam(examViewModel.ExamNumber, examViewModel.ExamType,
+                             examViewModel.Periods.Select(x => x.MapToVO()).ToList(),
                              examViewModel.QuestionList.Select(x => x.MapToDomain()).ToList()
                              );
+            return exam;
         }
 
         public static ExamPeriodVO MapToVO(this ExamPeriodViewModel examPeriodViewModel)
         {
-            return new ExamPeriodVO(examPeriodViewModel.OpenDate, examPeriodViewModel.CloseDate);
+            return new ExamPeriodVO(examPeriodViewModel.OpenDate, examPeriodViewModel.CloseDate );
         }
 
         public static Question MapToDomain(this QuestionExamViewModel questionViewModel)
         {
             return new Question(questionViewModel.Index, 
                                 questionViewModel.Enunciated.MapToVO(), 
-                                questionViewModel.Alternatives.Select(x => x.MapToDomain()).ToList()
-                                );
+                                questionViewModel.Alternatives.Select(x => x.MapToDomain()).ToList(),
+                                questionViewModel.SubjectId);
         }
         
         public static Alternative MapToDomain(this QuestionAlternativeViewModel questionAlternativeViewModel)

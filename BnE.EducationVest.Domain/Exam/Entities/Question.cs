@@ -2,30 +2,30 @@
 using BnE.EducationVest.Domain.Exam.ValueObjects;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BnE.EducationVest.Domain.Exam.Entities
 {
     public class Question : EntityBase
     {
-        public Guid ExamId { get; private set; }
         //FK
+        public Guid ExamId { get; set; }
         public Guid EnunciatedId { get; set; }
+        public Guid SubjectId { get; set; }
         public int Index { get; private set; }
         public IncrementedTextVO Enunciated { get; private set; }
         public List<Alternative> Alternatives { get; private set; }
         public Exam Exam { get; private set; }
+        public Subject Subject{ get; set; }
         internal Question()
         {
 
         }
-        public Question(int index, IncrementedTextVO enunciated, List<Alternative> alternatives)
+        public Question(int index, IncrementedTextVO enunciated, List<Alternative> alternatives, Guid subjectId)
         {
             Index = index;
             Enunciated = enunciated;
             SetAlternatives(alternatives);
+            SubjectId = subjectId;
         }
         public void SetAlternatives(List<Alternative> alternatives)
         {

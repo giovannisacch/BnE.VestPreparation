@@ -6,7 +6,7 @@ namespace BnE.EducationVest.Domain.Exam.Entities
     public class Alternative 
     {
         //FK
-        public Guid QuestionId { get; private set; }
+        public Guid QuestionId { get;  set; }
         public Guid TextContentId { get; set; }
         public IncrementedTextVO TextContent { get; private set; }
         public int Index { get; set; }

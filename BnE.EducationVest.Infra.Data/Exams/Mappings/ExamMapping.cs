@@ -1,7 +1,9 @@
 ﻿using BnE.EducationVest.Domain.Exam.Entities;
 using BnE.EducationVest.Domain.Exam.Enums;
+using BnE.EducationVest.Domain.Exam.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +33,6 @@ namespace BnE.EducationVest.Infra.Data.Exams.Mappings
                 .HasConversion(toDB => (int)toDB,
                                 fromDB => (EExamType)fromDB)
                 .IsRequired();
-
             builder
                 .HasMany(x => x.Periods)
                 .WithOne(x => x.Exam)

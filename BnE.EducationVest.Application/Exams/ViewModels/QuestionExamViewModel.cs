@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BnE.EducationVest.Application.Exams.ViewModels
 {
@@ -11,5 +8,6 @@ namespace BnE.EducationVest.Application.Exams.ViewModels
         public QuestionTextViewModel Enunciated { get; set; }
         public int Index { get; set; }
         public List<QuestionAlternativeViewModel> Alternatives { get; set; }
+        public Guid SubjectId { get; set; }
     }
 }

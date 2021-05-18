@@ -2,6 +2,7 @@
 using BnE.EducationVest.Domain.Exam.Entities;
 using BnE.EducationVest.Domain.Exam.ValueObjects;
 using BnE.EducationVest.Domain.Users.Entities;
+using BnE.EducationVest.Infra.Data.Exams;
 using BnE.EducationVest.Infra.Data.Exams.Mappings;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,12 +15,13 @@ namespace BnE.EducationVest.Infra.Data.Common
 {
     public class EducationVestContext : DbContext, IUnitOfWork
     {
-        DbSet<User> Users { get; set; }
-        DbSet<Exam> Exams { get; set; }
-        DbSet<Question> Questions { get; set; }
-        DbSet<Alternative> Alternatives { get; set; }
-        DbSet<IncrementedTextVO> IncrementedTexts { get; set; }
-        DbSet<ExamPeriodVO> ExamPeriods { get; set; }
+        //public DbSet<User> Users { get; set; }
+        public DbSet<Exam> Exams { get; set; }
+        public DbSet<Question> Questions { get; set; }
+        public DbSet<Alternative> Alternatives { get; set; }
+        public DbSet<IncrementedTextVO> IncrementedTexts { get; set; }
+        public DbSet<ExamPeriodVO> ExamPeriods { get; set; }
+        public DbSet<Subject> Subjects { get; set; }
 
         public EducationVestContext(DbContextOptions<EducationVestContext> options) :
             base(options)
@@ -34,6 +36,8 @@ namespace BnE.EducationVest.Infra.Data.Common
             modelBuilder.ApplyConfiguration(new AlternativeMapping());
             modelBuilder.ApplyConfiguration(new IncrementedTextVOMapping());
             modelBuilder.ApplyConfiguration(new ExamPeriodVOMapping());
+            modelBuilder.ApplyConfiguration(new SubjectMapping());
+            modelBuilder.Seed();
         }
 
         public async Task<bool> Commit()

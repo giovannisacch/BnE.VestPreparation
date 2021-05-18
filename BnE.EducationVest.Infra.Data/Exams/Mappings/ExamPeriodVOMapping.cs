@@ -29,6 +29,7 @@ namespace BnE.EducationVest.Infra.Data.Exams.Mappings
                 .HasOne(x => x.Exam)
                 .WithMany(x => x.Periods)
                 .HasForeignKey(x => x.ExamId)
+                .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

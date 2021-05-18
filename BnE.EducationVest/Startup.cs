@@ -26,6 +26,7 @@ namespace BnE.EducationVest
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
             services.InjectApplicationServiceDependencies();
             services.InjectInfraServiceDependencies(Configuration);
+            services.InjectInfraDataDependencies(Configuration);
             services.AddCors(x => { x.AddDefaultPolicy(x => x.AllowAnyOrigin()); });
             services.AddAuthentication("Bearer")
                 .AddJwtBearer(options =>
