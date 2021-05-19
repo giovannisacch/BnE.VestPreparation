@@ -14,7 +14,7 @@ namespace BnE.EducationVest.Infra.Data.Exams.Mappings
         public void Configure(EntityTypeBuilder<ExamPeriodVO> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.ToTable("ExamPeriod");
+            builder.ToTable("exam_period");
 
 
             builder

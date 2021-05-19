@@ -14,7 +14,7 @@ namespace BnE.EducationVest.Infra.Data.Exams.Mappings
         public void Configure(EntityTypeBuilder<Subject> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.ToTable("Subject");
+            builder.ToTable("subject");
             builder
                 .Property(x => x.Name)
                 .HasColumnType("varchar(250)");

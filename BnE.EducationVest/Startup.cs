@@ -35,7 +35,8 @@ namespace BnE.EducationVest
                     options.Authority = "https://cognito-idp.sa-east-1.amazonaws.com/sa-east-1_DFZtMc2ZI";
                     options.RequireHttpsMetadata = false;
                 });
-            services.AddControllers();
+            services.AddControllers()
+                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
  
             #region SWAGGER GEN
             services.AddSwaggerGen(c =>

@@ -12,16 +12,16 @@ namespace BnE.EducationVest.Infra.Data.Exams.Mappings
         public void Configure(EntityTypeBuilder<IncrementedTextVO> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.ToTable("IncrementedText");
+            builder.ToTable("incremented_text");
 
             builder
                 .Property(x => x.Content)
-                .HasColumnType("varchar(MAX)")
+                .HasColumnType("text")
                 .IsRequired();
 
             builder
                 .Property(x => x.Increments)
-                .HasColumnType("jdoc")
+                .HasColumnType("json")
                 .HasConversion
                 (
                     v => JsonConvert.SerializeObject(v, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }),

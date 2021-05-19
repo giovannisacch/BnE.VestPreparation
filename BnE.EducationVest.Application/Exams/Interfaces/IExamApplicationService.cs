@@ -10,5 +10,9 @@ namespace BnE.EducationVest.Application.Exams.Interfaces
     public interface IExamApplicationService
     {
         Task<Guid> CreateExam(ExamViewModel examViewModel);
+        Task<AvailableExamsViewModel> GetAvailableExamsByUser();
+        Task<ExamViewModel> GetExam(Guid examId);
+        Task<IEnumerable<ExamViewModel>> GetAllExams();
+        Task AddExamPeriods(Guid examId, List<ExamPeriodViewModel> periods);
     }
 }

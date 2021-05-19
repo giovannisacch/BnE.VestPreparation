@@ -14,6 +14,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using BnE.EducationVest.Infra.Data.Common;
 using Microsoft.EntityFrameworkCore;
+using BnE.EducationVest.Domain.Exam.Interfaces.Infra;
+using BnE.EducationVest.Infra.Data.Exams.Repositories;
 
 namespace BnE.EducationVest.DI
 {
@@ -47,12 +49,16 @@ namespace BnE.EducationVest.DI
 
         public static void InjectInfraDataDependencies(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<EducationVestContext>(options => {
+            services.AddDbContext<EducationVestContext>(options =>
+            {
                 options.EnableSensitiveDataLogging();
                 options.UseNpgsql(
                     configuration.GetConnectionString("DefaultConnection"),
                      x => x.MigrationsAssembly("BnE.EducationVest.API"));
-               });
+                options.UseSnakeCaseNamingConvention();
+            });
+
+            services.AddScoped<IExamRepository, ExamRepository>();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace BnE.EducationVest.Infra.Data.Exams.Mappings
         public void Configure(EntityTypeBuilder<Question> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.ToTable("Question");
+            builder.ToTable("question");
 
 
             builder

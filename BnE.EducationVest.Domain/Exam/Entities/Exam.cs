@@ -3,6 +3,7 @@ using BnE.EducationVest.Domain.Exam.Enums;
 using BnE.EducationVest.Domain.Exam.ValueObjects;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BnE.EducationVest.Domain.Exam.Entities
 {
@@ -22,6 +23,15 @@ namespace BnE.EducationVest.Domain.Exam.Entities
             SetQuestionsList(questions);
         }
 
+        public ExamPeriodVO GetActualAvailablePeriod()
+        {
+            return Periods
+                .FirstOrDefault(x => x.OpenDate <= DateTime.Now && x.CloseDate > DateTime.Now.AddMinutes(10));
+        }
+        public bool IsAvailable()
+        {
+            return GetActualAvailablePeriod() != null;
+        }
         public void SetQuestionsList(List<Question> questions)
         {
             //TODO: Externalizar para "Factory" por tipo de prova - quantidad e msg de erro

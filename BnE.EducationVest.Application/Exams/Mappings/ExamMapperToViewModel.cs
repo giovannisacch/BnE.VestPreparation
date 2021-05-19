@@ -1,0 +1,67 @@
+﻿using BnE.EducationVest.Application.Exams.ViewModels;
+using BnE.EducationVest.Domain.Exam.Entities;
+using BnE.EducationVest.Domain.Exam.ValueObjects;
+using System.Linq;
+
+namespace BnE.EducationVest.Application.Exams.Mappings
+{
+    public static class ExamMapperToViewModel
+    {
+        public static ExamViewModel MapToViewModel(this Exam exam) 
+        {
+            return new ExamViewModel()
+            {
+                Id = exam.Id,
+                ExamNumber = exam.ExamNumber,
+                ExamType = exam.ExamType,
+                QuestionList = exam.Questions?.Select(x => x.MapToViewModel()).ToList(),
+                Periods = exam.Periods?.Select(x => x.MapToViewModel()).ToList()
+            };
+        }
+        public static ExamPeriodViewModel MapToViewModel(this ExamPeriodVO examPeriod)
+        {
+            return new ExamPeriodViewModel()
+            {
+                OpenDate = examPeriod.OpenDate,
+                CloseDate = examPeriod.CloseDate
+            };
+        }
+        public static QuestionExamViewModel MapToViewModel(this Question question)
+        {
+            return new QuestionExamViewModel()
+            {
+                QuestionId = question.Id,
+                Enunciated = question.Enunciated.MapToViewModel() ,
+                Index = question.Index,
+                Alternatives = question.Alternatives.Select(x => x.MapToViewModel()).ToList()
+            };
+        }
+        public static QuestionAlternativeViewModel MapToViewModel(this Alternative alternative)
+        {
+            return new QuestionAlternativeViewModel()
+            {
+                Text = alternative.TextContent.MapToViewModel(),
+                IsCorrect = false,
+                Index = alternative.Index
+            };
+        }
+        public static QuestionTextViewModel MapToViewModel(this IncrementedTextVO incrementedText)
+        {
+            return new QuestionTextViewModel()
+            {
+                Content = incrementedText.Content,
+                Increments = incrementedText.Increments?.Select(x => x.MapToViewModel()).ToList()
+            };
+        }
+
+        public static IncrementViewModel MapToViewModel(this CompleteTextIncrementVO completeTextIncrementVO)
+        {
+            return new IncrementViewModel()
+            {
+                Index = completeTextIncrementVO.Index,
+                Type = completeTextIncrementVO.Type,
+                Value = completeTextIncrementVO.Value as string
+            };
+        }
+    }
+}
