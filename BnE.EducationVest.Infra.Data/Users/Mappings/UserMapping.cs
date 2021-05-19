@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BnE.EducationVest.Infra.Data.Mappings
+namespace BnE.EducationVest.Infra.Data.Users.Mappings
 {
     public class UserMapping : IEntityTypeConfiguration<User>
     {
@@ -18,25 +18,42 @@ namespace BnE.EducationVest.Infra.Data.Mappings
             builder.OwnsOne(owns => owns.Address, address =>
             {
                 address.Property(x => x.CEP)
-                        .HasColumnName("Address.CEP")
+                        .HasColumnName("address.cep")
                         .HasColumnType("char(9)");
 
                 address.Property(x => x.Street)
-                       .HasColumnName("Address.Street")
+                       .HasColumnName("address.street")
                        .HasColumnType("varchar(150)");
 
                 address.Property(x => x.Neighborhood)
-                       .HasColumnName("Address.Neighborhood")
+                       .HasColumnName("address.neighborhood")
                        .HasColumnType("varchar(50)");
                  
                 address.Property(x => x.City)
-                       .HasColumnName("Adress.City")
+                       .HasColumnName("adress.city")
                        .HasColumnType("char(50)");
 
                 address.Property(x => x.State)
-                     .HasColumnName("Adress.State")
+                     .HasColumnName("adress.state")
                      .HasColumnType("char(2)");
             });
+
+            builder
+                .Property(x => x.Email)
+                .HasColumnType("varchar(320)");
+
+            builder
+            .Property(x => x.Gender)
+            .HasColumnType("varchar(10)");
+
+            builder
+            .Property(x => x.PhoneNumber)
+            .HasColumnType("varchar(20)");
+
+            builder
+                .HasMany(x => x.QuestionAnswers)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId);
 
             builder.Ignore(x => x.CPF);
         }

@@ -14,6 +14,7 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         public int Index { get; private set; }
         public IncrementedTextVO Enunciated { get; private set; }
         public List<Alternative> Alternatives { get; private set; }
+        public List<QuestionAnswer> QuestionAnswers { get; private set; }
         public Exam Exam { get; private set; }
         public Subject Subject{ get; set; }
         internal Question()

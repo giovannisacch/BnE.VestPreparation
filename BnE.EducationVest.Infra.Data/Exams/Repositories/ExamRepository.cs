@@ -37,5 +37,17 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
                 .AsNoTracking()
                 .FirstAsync(x => x.Id == id);
         }
+
+        public async Task AddExamPeriodsAsync(Exam exam)
+        {
+            _context.Entry(exam).State = EntityState.Modified;
+            foreach (var period in exam.Periods)
+            {
+                var teste = _context.Entry(period).State;
+                if(teste == EntityState.Modified)
+                    _context.Entry(period).State = EntityState.Added;
+            }
+            await _context.Commit();
+        }
     }
 }

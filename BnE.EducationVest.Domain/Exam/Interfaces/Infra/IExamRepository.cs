@@ -9,5 +9,6 @@ namespace BnE.EducationVest.Domain.Exam.Interfaces.Infra
     {
         Task<List<Entities.Exam>> GetAvailableExams();
         Task<Entities.Exam> GetByIdWithAllIncludes(Guid id);
+        Task AddExamPeriodsAsync(Entities.Exam exam);
     }
 }

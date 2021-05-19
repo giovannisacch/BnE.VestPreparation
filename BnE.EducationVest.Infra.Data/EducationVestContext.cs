@@ -4,6 +4,7 @@ using BnE.EducationVest.Domain.Exam.ValueObjects;
 using BnE.EducationVest.Domain.Users.Entities;
 using BnE.EducationVest.Infra.Data.Exams;
 using BnE.EducationVest.Infra.Data.Exams.Mappings;
+using BnE.EducationVest.Infra.Data.Users.Mappings;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -37,6 +38,8 @@ namespace BnE.EducationVest.Infra.Data.Common
             modelBuilder.ApplyConfiguration(new IncrementedTextVOMapping());
             modelBuilder.ApplyConfiguration(new ExamPeriodVOMapping());
             modelBuilder.ApplyConfiguration(new SubjectMapping());
+            modelBuilder.ApplyConfiguration(new QuestionAnswerMapping());
+            modelBuilder.ApplyConfiguration(new UserMapping());
             modelBuilder.Seed();
         }
 
@@ -57,7 +60,7 @@ namespace BnE.EducationVest.Infra.Data.Common
                 }
             }
 
-            return await base.SaveChangesAsync() > 0;
+                return await base.SaveChangesAsync() > 0;
         }
     }
 }

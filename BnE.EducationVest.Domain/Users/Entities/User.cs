@@ -1,6 +1,8 @@
 ﻿using BnE.EducationVest.Domain.Common;
+using BnE.EducationVest.Domain.Exam.Entities;
 using BnE.EducationVest.Domain.Users.ValueObjects;
 using System;
+using System.Collections.Generic;
 
 namespace BnE.EducationVest.Domain.Users.Entities
 {
@@ -14,7 +16,8 @@ namespace BnE.EducationVest.Domain.Users.Entities
         public string Email { get; private set; }
         public DateTime BirthDate { get; private set; }
         public AddressVO Address { get; private set; }
-        public string CognitoUserId { get; set; }
+        public List<QuestionAnswer> QuestionAnswers { get; private set; }
+        public string CognitoUserId { get; private set; }
         public bool IsTeacher { get; set; }
         internal User() { }
         public User(string name, string cpf, string phoneNumber, string gender, string email, 
@@ -29,7 +32,11 @@ namespace BnE.EducationVest.Domain.Users.Entities
             Address = address;
             IsTeacher = isTeacher;
         }
-
+        
+        public void SetCognitoUserId(string cognitoUserId)
+        {
+            CognitoUserId = cognitoUserId;
+        }
         //TODO: ADICIONAR VALIDACOES
     }
 }

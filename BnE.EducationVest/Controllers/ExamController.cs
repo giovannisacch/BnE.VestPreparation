@@ -35,26 +35,41 @@ namespace BnE.EducationVest.API.Controllers
         [HttpGet("availables")]
         public async Task<IActionResult> GetAvailableExams()
         {
-            return Ok(await _examApplicationService.GetAvailableExamsByUser());
+            var response = await _examApplicationService.GetAvailableExamsByUser();
+            return StatusCode((int)response.StatusCode,
+               response.IsSuccess
+               ? response.SuccessResponseModel
+               : response.ErrorResponseModel);
         }
 
         [HttpGet()]
         public async Task<IActionResult> GetAllExams()
         {
-            return Ok(await _examApplicationService.GetAllExams());
+            var response = await _examApplicationService.GetAllExams();
+            return StatusCode((int)response.StatusCode,
+               response.IsSuccess
+               ? response.SuccessResponseModel
+               : response.ErrorResponseModel);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAvailableExams(Guid id)
         {
-            return Ok(await _examApplicationService.GetExam(id));
+            var response = await _examApplicationService.GetExam(id);
+            return StatusCode((int)response.StatusCode,
+              response.IsSuccess
+              ? response.SuccessResponseModel
+              : response.ErrorResponseModel);
         }
 
         [HttpPut("period")]
         public async Task<IActionResult> AddExamPeriod(Guid examId, List<ExamPeriodViewModel> periodViewModel)
         {
-            await _examApplicationService.AddExamPeriods(examId, periodViewModel);
-            return Ok();
+            var response = await _examApplicationService.AddExamPeriods(examId, periodViewModel);
+            return StatusCode((int)response.StatusCode,
+              response.IsSuccess
+              ? response.SuccessResponseModel
+              : response.ErrorResponseModel);
         }
     }
 }

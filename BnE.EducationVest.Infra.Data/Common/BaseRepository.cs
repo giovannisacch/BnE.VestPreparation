@@ -11,7 +11,7 @@ namespace BnE.EducationVest.Infra.Data.Common
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : EntityBase
     {
-        private readonly EducationVestContext _context;
+        internal readonly EducationVestContext _context;
         internal readonly DbSet<T> _db;
         public BaseRepository(EducationVestContext context)
         {

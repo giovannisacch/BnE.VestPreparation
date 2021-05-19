@@ -1,5 +1,6 @@
 ﻿using BnE.EducationVest.Domain.Exam.ValueObjects;
 using System;
+using System.Collections.Generic;
 
 namespace BnE.EducationVest.Domain.Exam.Entities
 {
@@ -13,6 +14,8 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         public bool IsCorrect { get; private set; }
 
         public Question Question{ get; private set; }
+        public List<QuestionAnswer> QuestionAnswers { get; private set; }
+
         internal Alternative()
         {
 

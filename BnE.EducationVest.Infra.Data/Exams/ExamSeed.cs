@@ -1,6 +1,8 @@
 ﻿using BnE.EducationVest.Domain.Exam.Entities;
 using BnE.EducationVest.Domain.Exam.Enums;
 using BnE.EducationVest.Domain.Exam.ValueObjects;
+using BnE.EducationVest.Domain.Users.Entities;
+using BnE.EducationVest.Domain.Users.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -372,6 +374,10 @@ namespace BnE.EducationVest.Infra.Data.Exams
 
             };
             #endregion
+
+            var user = new User("Giovanni Sacchitiello", "41758132841", "11991392711", "Masculino", "sacchitiellogiovanni@gmail.com", 
+                                DateTime.Parse("2000/05/05"), new AddressVO("03320020", "Rua antonio ciucio", "Carrão", "São Paulo", "SP", "148"), false);
+
             var examQuizPeriods = new List<ExamPeriodVO>()
             {
                 new ExamPeriodVO(firstPeriod, firstPeriod.AddHours(2)),
@@ -413,6 +419,9 @@ namespace BnE.EducationVest.Infra.Data.Exams
             var alternatives = examList.SelectMany(exam => exam.Questions.SelectMany(question => question.Alternatives.Select(alt => alt.MapToAnonnymousObject(question.Id))));
             modelBuilder.Entity<Alternative>().HasData(alternatives);
 
+
+            modelBuilder.Entity<User>().HasData(user);
+
             modelBuilder.Entity<IncrementedTextVO>(x =>
             {
                 //Enunciado das questões
@@ -442,6 +451,9 @@ namespace BnE.EducationVest.Infra.Data.Exams
                                 .Select(period => period.MapToAnonnymousObject(exam.Id))
                                 )
                         );
+
+
+
         }
 
         private static object MapToAnonnymousObject(this ExamPeriodVO examPeriod, Guid examId)
