@@ -16,6 +16,8 @@ using BnE.EducationVest.Infra.Data.Common;
 using Microsoft.EntityFrameworkCore;
 using BnE.EducationVest.Domain.Exam.Interfaces.Infra;
 using BnE.EducationVest.Infra.Data.Exams.Repositories;
+using BnE.EducationVest.Domain.Users.Interfaces.InfraData;
+using BnE.EducationVest.Infra.Data.Users.Repositories;
 
 namespace BnE.EducationVest.DI
 {
@@ -24,6 +26,7 @@ namespace BnE.EducationVest.DI
 
         public static void InjectApplicationServiceDependencies(this IServiceCollection services) 
         {
+            services.AddHttpContextAccessor();
             services.AddScoped<IUserApplicationService, UserApplicationService>();
             services.AddScoped<IExamApplicationService, ExamApplicationService>(); 
         }
@@ -59,6 +62,7 @@ namespace BnE.EducationVest.DI
             });
 
             services.AddScoped<IExamRepository, ExamRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
         }
     }
 }

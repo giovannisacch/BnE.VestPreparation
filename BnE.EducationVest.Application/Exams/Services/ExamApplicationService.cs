@@ -1,10 +1,12 @@
-﻿using BnE.EducationVest.Application.Exams.Interfaces;
+﻿using BnE.EducationVest.Application.Common.Extensions;
+using BnE.EducationVest.Application.Exams.Interfaces;
 using BnE.EducationVest.Application.Exams.Mappings;
 using BnE.EducationVest.Application.Exams.ViewModels;
 using BnE.EducationVest.Domain;
 using BnE.EducationVest.Domain.Common;
 using BnE.EducationVest.Domain.Exam.Enums;
 using BnE.EducationVest.Domain.Exam.Interfaces.Infra;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +18,11 @@ namespace BnE.EducationVest.Application.Exams.Services
     public class ExamApplicationService : IExamApplicationService
     {
         private readonly IExamRepository _examRepository;
-        public ExamApplicationService(IExamRepository examRepository)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public ExamApplicationService(IExamRepository examRepository, IHttpContextAccessor httpContextAccessor)
         {
             _examRepository = examRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<Either<ErrorResponseModel, object>> AddExamPeriods(Guid examId, List<ExamPeriodViewModel> periods)
         {
@@ -46,7 +50,7 @@ namespace BnE.EducationVest.Application.Exams.Services
 
         public async Task<Either<ErrorResponseModel, AvailableExamsViewModel>> GetAvailableExamsByUser()
         {
-            //TODO: VERIFICAR SE USUARIO JA SUBMETEU OU COMEÇOU O SIMULADO
+            var token =_httpContextAccessor.GetTokenData();
             var availableExams = await _examRepository.GetAvailableExams();
             var response = new AvailableExamsViewModel();
             response.AvailableExams = availableExams.Select(x => new AvailableExamViewModel()

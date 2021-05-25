@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BnE.EducationVest.Domain.Users.ValueObjects
+﻿namespace BnE.EducationVest.Domain.Users.ValueObjects
 {
     public class AddressVO
     {
@@ -15,6 +9,7 @@ namespace BnE.EducationVest.Domain.Users.ValueObjects
         public string State { get; private set; }
         public string Number { get; private set; }
 
+        internal AddressVO() { }
         public AddressVO(string cep, string street, string neighborhood, string city, 
                          string state, string number)
         {

@@ -8,7 +8,7 @@ namespace BnE.EducationVest.Infra.Data.Exams.Mappings
     {
         public void Configure(EntityTypeBuilder<Alternative> builder)
         {
-            builder.HasKey(x => new { x.QuestionId, x.Index });
+            builder.HasKey(x => x.Id);
             builder.ToTable("alternative");
 
             builder

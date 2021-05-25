@@ -377,6 +377,7 @@ namespace BnE.EducationVest.Infra.Data.Exams
 
             var user = new User("Giovanni Sacchitiello", "41758132841", "11991392711", "Masculino", "sacchitiellogiovanni@gmail.com", 
                                 DateTime.Parse("2000/05/05"), new AddressVO("03320020", "Rua antonio ciucio", "Carrão", "São Paulo", "SP", "148"), false);
+            user.SetCognitoUserId("6e32ca6c-2a66-4ea6-a0c4-cf655dab5191");
 
             var examQuizPeriods = new List<ExamPeriodVO>()
             {
@@ -420,7 +421,11 @@ namespace BnE.EducationVest.Infra.Data.Exams
             modelBuilder.Entity<Alternative>().HasData(alternatives);
 
 
-            modelBuilder.Entity<User>().HasData(user);
+            modelBuilder.Entity<User>(usr => {
+                usr.HasData(user.MapToAnonnymousObject());
+                usr.OwnsOne(x => x.Address)
+                    .HasData(user.Address.MapToAnonnymousObject(user.Id));
+            });
 
             modelBuilder.Entity<IncrementedTextVO>(x =>
             {
@@ -453,9 +458,43 @@ namespace BnE.EducationVest.Infra.Data.Exams
                         );
 
 
+            var questionAnswers = examFGV.Questions.Select(question => 
+                                    new QuestionAnswer(question.Id, user.Id, question.Alternatives.First(x => x.IsCorrect).Id));
+
+            modelBuilder.Entity<QuestionAnswer>()
+                            .HasData(questionAnswers);
 
         }
+        private static object MapToAnonnymousObject(this AddressVO address, Guid userId)
+        {
+            return new
+            {
+                UserId = userId,
+                address.CEP,
+                address.Street,
+                address.Neighborhood,
+                address.City,
+                address.State,
+                address.Number
+            };
+        }
 
+        private static object MapToAnonnymousObject(this User user)
+        {
+            return new
+            {
+                user.Id,
+                user.CreatedDate,
+                user.UpdatedDate,
+                user.Name,
+                user.PhoneNumber,
+                user.Gender,
+                user.Email,
+                user.BirthDate,
+                user.CognitoUserId,
+                user.IsTeacher,
+            };
+        }
         private static object MapToAnonnymousObject(this ExamPeriodVO examPeriod, Guid examId)
         {
             return new
@@ -503,6 +542,7 @@ namespace BnE.EducationVest.Infra.Data.Exams
         {
             return new
             {
+                Id = alternative.Id,
                 QuestionId = questionId,
                 TextContentId = alternative.TextContent.Id,
                 alternative.Index,

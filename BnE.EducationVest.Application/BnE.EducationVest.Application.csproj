@@ -8,4 +8,9 @@
     <ProjectReference Include="..\BnE.EducationVest.Domain\BnE.EducationVest.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.11.1" />
+  </ItemGroup>
+
 </Project>

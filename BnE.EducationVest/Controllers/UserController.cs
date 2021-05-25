@@ -3,6 +3,7 @@ using Amazon.CognitoIdentityProvider.Model;
 using Amazon.Extensions.CognitoAuthentication;
 using BnE.EducationVest.Application.Users.Interface;
 using BnE.EducationVest.Application.Users.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -75,6 +76,18 @@ namespace BnE.EducationVest.API.Controllers
         {
 
             var response = await _userApplicationService.ConfirmPasswordRecover(username, code, newPassword);
+
+            return StatusCode((int)response.StatusCode,
+                response.IsSuccess
+                ? response.SuccessResponseModel
+                : response.ErrorResponseModel);
+        }
+        [Authorize]
+        [HttpGet("menus")]
+        public async Task<IActionResult> GetUserMenuList()
+        {
+
+            var response = await _userApplicationService.GetUserMenu();
 
             return StatusCode((int)response.StatusCode,
                 response.IsSuccess

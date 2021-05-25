@@ -1,4 +1,5 @@
 ﻿using BnE.EducationVest.Domain.Common.Infra;
+using BnE.EducationVest.Domain.Users.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

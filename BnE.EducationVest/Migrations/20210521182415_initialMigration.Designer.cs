@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BnE.EducationVest.API.Migrations
 {
     [DbContext(typeof(EducationVestContext))]
-    [Migration("20210519005419_initialMigration")]
+    [Migration("20210521182415_initialMigration")]
     partial class initialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,9 +23,10 @@ namespace BnE.EducationVest.API.Migrations
 
             modelBuilder.Entity("BnE.EducationVest.Domain.Exam.Entities.Alternative", b =>
                 {
-                    b.Property<Guid>("QuestionId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("question_id");
+                        .HasColumnName("id");
 
                     b.Property<int>("Index")
                         .HasColumnType("integer")
@@ -35,12 +36,19 @@ namespace BnE.EducationVest.API.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_correct");
 
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("question_id");
+
                     b.Property<Guid>("TextContentId")
                         .HasColumnType("uuid")
                         .HasColumnName("text_content_id");
 
-                    b.HasKey("QuestionId", "Index")
+                    b.HasKey("Id")
                         .HasName("pk_alternative");
+
+                    b.HasIndex("QuestionId")
+                        .HasDatabaseName("ix_alternative_question_id");
 
                     b.HasIndex("TextContentId")
                         .IsUnique()
@@ -51,423 +59,483 @@ namespace BnE.EducationVest.API.Migrations
                     b.HasData(
                         new
                         {
-                            QuestionId = new Guid("450e09dd-55b4-41d6-b6a9-680b8d973fe2"),
+                            Id = new Guid("150e4bde-03f6-41a2-a701-96f9e41be167"),
                             Index = 0,
                             IsCorrect = true,
-                            TextContentId = new Guid("576519aa-93bc-472c-971e-a49a576bed78")
+                            QuestionId = new Guid("bb2aefce-f382-4a61-a1fa-083520bcb101"),
+                            TextContentId = new Guid("e40be5ba-4f26-4c8c-bef7-24cfdedfb4f0")
                         },
                         new
                         {
-                            QuestionId = new Guid("450e09dd-55b4-41d6-b6a9-680b8d973fe2"),
+                            Id = new Guid("59fa614a-525b-4da4-be38-755000d151f2"),
                             Index = 1,
                             IsCorrect = false,
-                            TextContentId = new Guid("bbcf3790-cef7-45cf-b31b-d96d7c01428a")
+                            QuestionId = new Guid("bb2aefce-f382-4a61-a1fa-083520bcb101"),
+                            TextContentId = new Guid("579136da-f046-4af1-a80d-a7542e9fc3d2")
                         },
                         new
                         {
-                            QuestionId = new Guid("450e09dd-55b4-41d6-b6a9-680b8d973fe2"),
+                            Id = new Guid("a7d9f891-d1b2-42f5-bf5c-a3dfb3237758"),
                             Index = 2,
                             IsCorrect = false,
-                            TextContentId = new Guid("5599fcac-fedf-45ce-ba6e-a4c2d638f51a")
+                            QuestionId = new Guid("bb2aefce-f382-4a61-a1fa-083520bcb101"),
+                            TextContentId = new Guid("4a43647e-c993-47f6-b2f8-155f26c95839")
                         },
                         new
                         {
-                            QuestionId = new Guid("450e09dd-55b4-41d6-b6a9-680b8d973fe2"),
+                            Id = new Guid("ab6e012d-0228-4d58-a939-b40a37866ebf"),
                             Index = 3,
                             IsCorrect = false,
-                            TextContentId = new Guid("9adf8b4c-5d49-4015-a977-2735ec51c4fd")
+                            QuestionId = new Guid("bb2aefce-f382-4a61-a1fa-083520bcb101"),
+                            TextContentId = new Guid("076380e8-0379-42b3-934d-766b5e7d7707")
                         },
                         new
                         {
-                            QuestionId = new Guid("450e09dd-55b4-41d6-b6a9-680b8d973fe2"),
+                            Id = new Guid("439145e7-5f30-457f-a03b-e7b22f25684a"),
                             Index = 4,
                             IsCorrect = false,
-                            TextContentId = new Guid("fd22dd33-0a96-4632-b2e4-15f064e0e549")
+                            QuestionId = new Guid("bb2aefce-f382-4a61-a1fa-083520bcb101"),
+                            TextContentId = new Guid("a33fa429-ead0-4b61-b3e7-153a355f392d")
                         },
                         new
                         {
-                            QuestionId = new Guid("5e455d9f-a60a-47e8-b71f-852469e0d2e9"),
+                            Id = new Guid("7ce40664-5e3b-4634-ba16-9b00cb839e82"),
                             Index = 0,
                             IsCorrect = true,
-                            TextContentId = new Guid("8858dd68-1fe5-4881-9aeb-da469d1bf7c1")
+                            QuestionId = new Guid("f7b6c90e-4aff-4d58-8965-7f57c43b985a"),
+                            TextContentId = new Guid("c3516ebc-0c19-4862-8f8a-81e12d5680d5")
                         },
                         new
                         {
-                            QuestionId = new Guid("5e455d9f-a60a-47e8-b71f-852469e0d2e9"),
+                            Id = new Guid("2e68e9c5-5eb4-49ee-8016-4eaa1d3ae0dd"),
                             Index = 1,
                             IsCorrect = false,
-                            TextContentId = new Guid("37adf8dc-d283-4e14-bf06-f066b685f92c")
+                            QuestionId = new Guid("f7b6c90e-4aff-4d58-8965-7f57c43b985a"),
+                            TextContentId = new Guid("96bef00d-efb0-4531-a8d1-fb04e34a6b45")
                         },
                         new
                         {
-                            QuestionId = new Guid("5e455d9f-a60a-47e8-b71f-852469e0d2e9"),
+                            Id = new Guid("153961b6-e433-4980-8a95-70d3d4f7114d"),
                             Index = 2,
                             IsCorrect = false,
-                            TextContentId = new Guid("f267d363-7880-43ec-a3a2-0f2691f0f6d9")
+                            QuestionId = new Guid("f7b6c90e-4aff-4d58-8965-7f57c43b985a"),
+                            TextContentId = new Guid("a77855c9-01b7-4f5a-a93e-f0fe677c258f")
                         },
                         new
                         {
-                            QuestionId = new Guid("5e455d9f-a60a-47e8-b71f-852469e0d2e9"),
+                            Id = new Guid("6108c18f-ce63-415b-b72d-f2802219d601"),
                             Index = 3,
                             IsCorrect = false,
-                            TextContentId = new Guid("fddfe007-140e-433c-919b-a88f13beee83")
+                            QuestionId = new Guid("f7b6c90e-4aff-4d58-8965-7f57c43b985a"),
+                            TextContentId = new Guid("aba3c46d-6a71-4dfe-a967-e09b7612cc31")
                         },
                         new
                         {
-                            QuestionId = new Guid("5e455d9f-a60a-47e8-b71f-852469e0d2e9"),
+                            Id = new Guid("cb41610e-e2ba-494c-a9df-086850809205"),
                             Index = 4,
                             IsCorrect = false,
-                            TextContentId = new Guid("9f43d6eb-df52-4d1e-9298-40cff13fd1c6")
+                            QuestionId = new Guid("f7b6c90e-4aff-4d58-8965-7f57c43b985a"),
+                            TextContentId = new Guid("e117147d-7ff8-4bf3-8534-db1819fecec9")
                         },
                         new
                         {
-                            QuestionId = new Guid("f506be00-b7f1-4ec2-9a79-5edb17f11631"),
+                            Id = new Guid("94013c1f-6038-47d5-93a0-7323a7c7cf5a"),
                             Index = 0,
                             IsCorrect = true,
-                            TextContentId = new Guid("b0ebd166-90de-4171-8e33-d9377b92cff1")
+                            QuestionId = new Guid("2c5cb800-9d91-448d-85c8-dbcdaa5ed4b6"),
+                            TextContentId = new Guid("3ba280f0-1929-4a52-abed-aab0dd020205")
                         },
                         new
                         {
-                            QuestionId = new Guid("f506be00-b7f1-4ec2-9a79-5edb17f11631"),
+                            Id = new Guid("2e56c44f-b1cd-44e4-a4d3-d6d9cdfafb3f"),
                             Index = 1,
                             IsCorrect = false,
-                            TextContentId = new Guid("54dcd02d-9189-466e-acd3-481b1e5bd319")
+                            QuestionId = new Guid("2c5cb800-9d91-448d-85c8-dbcdaa5ed4b6"),
+                            TextContentId = new Guid("b05ecef6-95b2-4fac-8e63-c7ed0b7edf73")
                         },
                         new
                         {
-                            QuestionId = new Guid("f506be00-b7f1-4ec2-9a79-5edb17f11631"),
+                            Id = new Guid("2eb0b21c-76c0-462e-b208-a087a91226f3"),
                             Index = 2,
                             IsCorrect = false,
-                            TextContentId = new Guid("56d1e34d-4581-40bc-848a-285f00669670")
+                            QuestionId = new Guid("2c5cb800-9d91-448d-85c8-dbcdaa5ed4b6"),
+                            TextContentId = new Guid("8ace563b-1e49-4810-9dc5-e2a1bf92c62c")
                         },
                         new
                         {
-                            QuestionId = new Guid("f506be00-b7f1-4ec2-9a79-5edb17f11631"),
+                            Id = new Guid("10f1c539-3c5f-486a-b228-606a0e136b83"),
                             Index = 3,
                             IsCorrect = false,
-                            TextContentId = new Guid("a6472904-935a-4aef-aa24-bd284837a359")
+                            QuestionId = new Guid("2c5cb800-9d91-448d-85c8-dbcdaa5ed4b6"),
+                            TextContentId = new Guid("6d491ecb-9333-4031-b89e-733d3e7b4cd3")
                         },
                         new
                         {
-                            QuestionId = new Guid("f506be00-b7f1-4ec2-9a79-5edb17f11631"),
+                            Id = new Guid("56ec243d-b842-40fe-88e8-ef1dead7416d"),
                             Index = 4,
                             IsCorrect = false,
-                            TextContentId = new Guid("30d3064e-2c57-4780-af68-be25310e0e26")
+                            QuestionId = new Guid("2c5cb800-9d91-448d-85c8-dbcdaa5ed4b6"),
+                            TextContentId = new Guid("f8979a3b-2962-41a2-bb2c-b1fd5dc4c2bd")
                         },
                         new
                         {
-                            QuestionId = new Guid("da26c9ed-1425-48a3-9bfe-7675ae3243e7"),
+                            Id = new Guid("f03f9b1d-28fe-4702-bca1-fea936f67b37"),
                             Index = 0,
                             IsCorrect = true,
-                            TextContentId = new Guid("738b87eb-472c-4d80-88b1-6c1975bd435c")
+                            QuestionId = new Guid("92d1724b-23f8-4fb0-9af2-ee846719f133"),
+                            TextContentId = new Guid("ffd0bff3-40e4-443f-a625-9cb329fd5b40")
                         },
                         new
                         {
-                            QuestionId = new Guid("da26c9ed-1425-48a3-9bfe-7675ae3243e7"),
+                            Id = new Guid("9dc887f8-574c-4d2b-85f4-78a7a0b6fd02"),
                             Index = 1,
                             IsCorrect = false,
-                            TextContentId = new Guid("70d23acf-90b0-49cb-8a1b-fc362481fb58")
+                            QuestionId = new Guid("92d1724b-23f8-4fb0-9af2-ee846719f133"),
+                            TextContentId = new Guid("b5ee87ea-6f83-448c-a7dc-6720a01060a2")
                         },
                         new
                         {
-                            QuestionId = new Guid("da26c9ed-1425-48a3-9bfe-7675ae3243e7"),
+                            Id = new Guid("615ae0f1-7ead-4e2b-a406-693373148588"),
                             Index = 2,
                             IsCorrect = false,
-                            TextContentId = new Guid("649b1cda-57b2-48ac-8972-34055927b95e")
+                            QuestionId = new Guid("92d1724b-23f8-4fb0-9af2-ee846719f133"),
+                            TextContentId = new Guid("2650d896-bcf6-4608-89bd-18c8c43f9ac9")
                         },
                         new
                         {
-                            QuestionId = new Guid("da26c9ed-1425-48a3-9bfe-7675ae3243e7"),
+                            Id = new Guid("184d07b7-2112-4633-a01e-457907eaabe2"),
                             Index = 3,
                             IsCorrect = false,
-                            TextContentId = new Guid("348a45e4-9c52-4cf3-b605-2daa8f261762")
+                            QuestionId = new Guid("92d1724b-23f8-4fb0-9af2-ee846719f133"),
+                            TextContentId = new Guid("704664e2-12b4-42c8-9c4e-82ec7eac0449")
                         },
                         new
                         {
-                            QuestionId = new Guid("da26c9ed-1425-48a3-9bfe-7675ae3243e7"),
+                            Id = new Guid("9770e6cf-20d9-4055-835a-b62fc78f9e6f"),
                             Index = 4,
                             IsCorrect = false,
-                            TextContentId = new Guid("35932305-358a-481d-8bfd-7caac98bfad7")
+                            QuestionId = new Guid("92d1724b-23f8-4fb0-9af2-ee846719f133"),
+                            TextContentId = new Guid("2ccc210b-a607-45f2-96d9-b60ec1929fe6")
                         },
                         new
                         {
-                            QuestionId = new Guid("9a36cba4-96fe-4316-9f85-762a8c775eed"),
+                            Id = new Guid("fbe21970-74a3-4495-8198-beb904fa1b5e"),
                             Index = 0,
                             IsCorrect = true,
-                            TextContentId = new Guid("5743897c-ac4e-4d83-81a7-a83e63b7a65a")
+                            QuestionId = new Guid("234ec727-daf0-4d6e-afe9-09052d5eb10f"),
+                            TextContentId = new Guid("c4aeff11-fe3d-4bcc-b590-aa80a1996b4e")
                         },
                         new
                         {
-                            QuestionId = new Guid("9a36cba4-96fe-4316-9f85-762a8c775eed"),
+                            Id = new Guid("9bd8b7c8-79ea-498b-a5d3-d4f306cfbe4d"),
                             Index = 1,
                             IsCorrect = false,
-                            TextContentId = new Guid("b053f9de-aa36-4f51-aa22-1fcbdaa0d47d")
+                            QuestionId = new Guid("234ec727-daf0-4d6e-afe9-09052d5eb10f"),
+                            TextContentId = new Guid("1a0b07b7-b789-45be-a7cd-2581848cdd69")
                         },
                         new
                         {
-                            QuestionId = new Guid("9a36cba4-96fe-4316-9f85-762a8c775eed"),
+                            Id = new Guid("bdf45a20-4daa-4427-9b10-8940cdc3cf71"),
                             Index = 2,
                             IsCorrect = false,
-                            TextContentId = new Guid("4a5a630e-e086-4047-8c9d-f0b7fa84af81")
+                            QuestionId = new Guid("234ec727-daf0-4d6e-afe9-09052d5eb10f"),
+                            TextContentId = new Guid("d08512a2-d3de-4108-9bad-4277df054b37")
                         },
                         new
                         {
-                            QuestionId = new Guid("9a36cba4-96fe-4316-9f85-762a8c775eed"),
+                            Id = new Guid("7cae2a91-1519-43fe-8ddd-4470472a4813"),
                             Index = 3,
                             IsCorrect = false,
-                            TextContentId = new Guid("4fc415f7-e6f8-4b0c-95f6-d0ed34d8a3e8")
+                            QuestionId = new Guid("234ec727-daf0-4d6e-afe9-09052d5eb10f"),
+                            TextContentId = new Guid("bcb3e2df-0c79-4a3b-933c-1a18098d0d6d")
                         },
                         new
                         {
-                            QuestionId = new Guid("9a36cba4-96fe-4316-9f85-762a8c775eed"),
+                            Id = new Guid("8c288fdb-e0d7-40f6-beb3-5981c6eb3738"),
                             Index = 4,
                             IsCorrect = false,
-                            TextContentId = new Guid("e6990ea6-23e1-4bac-bbf6-a1651ae2cde9")
+                            QuestionId = new Guid("234ec727-daf0-4d6e-afe9-09052d5eb10f"),
+                            TextContentId = new Guid("c5153cc4-f304-480c-b0f8-acd8752daeef")
                         },
                         new
                         {
-                            QuestionId = new Guid("31e7a721-34b7-45ae-8eeb-b879582ec8e4"),
+                            Id = new Guid("cdd1d6af-dc27-4388-ac28-ac4e901d1e91"),
                             Index = 0,
                             IsCorrect = true,
-                            TextContentId = new Guid("d40bbbaf-db09-426f-b45e-02c449ab856f")
+                            QuestionId = new Guid("cd4dcb4d-4d96-41dc-a78f-64ae4ad1222f"),
+                            TextContentId = new Guid("97639e4b-7a86-453b-9e92-5c318ec1d2c7")
                         },
                         new
                         {
-                            QuestionId = new Guid("31e7a721-34b7-45ae-8eeb-b879582ec8e4"),
+                            Id = new Guid("462a1d36-18d2-42ab-b688-0b564f512b96"),
                             Index = 1,
                             IsCorrect = false,
-                            TextContentId = new Guid("d65d3a17-17cc-406e-ba33-4b5cdb37e993")
+                            QuestionId = new Guid("cd4dcb4d-4d96-41dc-a78f-64ae4ad1222f"),
+                            TextContentId = new Guid("f0496687-42aa-42a1-ac7e-a6c76ee44426")
                         },
                         new
                         {
-                            QuestionId = new Guid("31e7a721-34b7-45ae-8eeb-b879582ec8e4"),
+                            Id = new Guid("b6a74c72-a429-4171-b63a-db9b363fd254"),
                             Index = 2,
                             IsCorrect = false,
-                            TextContentId = new Guid("0c6a95fd-ddf4-407c-a31c-75f0baeaecdb")
+                            QuestionId = new Guid("cd4dcb4d-4d96-41dc-a78f-64ae4ad1222f"),
+                            TextContentId = new Guid("1f453586-7302-4b67-8cc8-062324114408")
                         },
                         new
                         {
-                            QuestionId = new Guid("31e7a721-34b7-45ae-8eeb-b879582ec8e4"),
+                            Id = new Guid("20ea13fa-c2f7-4ec4-aa72-03a12a22b7e6"),
                             Index = 3,
                             IsCorrect = false,
-                            TextContentId = new Guid("b7dcd9e8-7fc5-4b6b-a5b2-b9dedd1a2f58")
+                            QuestionId = new Guid("cd4dcb4d-4d96-41dc-a78f-64ae4ad1222f"),
+                            TextContentId = new Guid("b1d4f086-1231-4eae-9280-82505e245256")
                         },
                         new
                         {
-                            QuestionId = new Guid("31e7a721-34b7-45ae-8eeb-b879582ec8e4"),
+                            Id = new Guid("319acbe9-6d4e-44a6-b5d3-074a8ac3c9fc"),
                             Index = 4,
                             IsCorrect = false,
-                            TextContentId = new Guid("bd8803ba-ba25-495c-8c04-3783ff31b233")
+                            QuestionId = new Guid("cd4dcb4d-4d96-41dc-a78f-64ae4ad1222f"),
+                            TextContentId = new Guid("8aee8ea8-70bd-4424-bdef-9f306af121f9")
                         },
                         new
                         {
-                            QuestionId = new Guid("94f24c40-6aa0-4a88-9eec-d80e276878be"),
+                            Id = new Guid("86a98de2-681e-4ee3-9187-d7fb4fa0cd79"),
                             Index = 0,
                             IsCorrect = true,
-                            TextContentId = new Guid("6c08cb1b-6533-4cbe-9465-d0161e54e91b")
+                            QuestionId = new Guid("7e3dbc1e-07b2-4ec9-ab9e-392a352ae06c"),
+                            TextContentId = new Guid("98b62ddb-11fc-486b-916c-8da5834c6c1c")
                         },
                         new
                         {
-                            QuestionId = new Guid("94f24c40-6aa0-4a88-9eec-d80e276878be"),
+                            Id = new Guid("d01c91e7-217e-42e8-ba6b-c7a7b38b3fa3"),
                             Index = 1,
                             IsCorrect = false,
-                            TextContentId = new Guid("c8f4cd07-1bea-4fd3-84cb-cfa17c50c7b9")
+                            QuestionId = new Guid("7e3dbc1e-07b2-4ec9-ab9e-392a352ae06c"),
+                            TextContentId = new Guid("d67e12ab-94f7-46b6-abc6-ea887dcafa4e")
                         },
                         new
                         {
-                            QuestionId = new Guid("94f24c40-6aa0-4a88-9eec-d80e276878be"),
+                            Id = new Guid("6ed6a032-09f5-478b-8137-499371251401"),
                             Index = 2,
                             IsCorrect = false,
-                            TextContentId = new Guid("0315c0ab-3120-453a-9ab4-ffcbc29f90c1")
+                            QuestionId = new Guid("7e3dbc1e-07b2-4ec9-ab9e-392a352ae06c"),
+                            TextContentId = new Guid("6e595aca-d6fa-45aa-954b-a2b9ab6b7c24")
                         },
                         new
                         {
-                            QuestionId = new Guid("94f24c40-6aa0-4a88-9eec-d80e276878be"),
+                            Id = new Guid("57ebf51c-a29b-4512-9a32-bfc893727f65"),
                             Index = 3,
                             IsCorrect = false,
-                            TextContentId = new Guid("41eec0ba-5fab-4620-8f83-c6aec58a686f")
+                            QuestionId = new Guid("7e3dbc1e-07b2-4ec9-ab9e-392a352ae06c"),
+                            TextContentId = new Guid("6a36a531-6ac3-433a-b368-49f97d5e8179")
                         },
                         new
                         {
-                            QuestionId = new Guid("94f24c40-6aa0-4a88-9eec-d80e276878be"),
+                            Id = new Guid("9c3ea0e5-d8a0-46cb-bf93-2af43655f8ce"),
                             Index = 4,
                             IsCorrect = false,
-                            TextContentId = new Guid("71dd8b0e-9232-4bd3-bae9-251ca26d523e")
+                            QuestionId = new Guid("7e3dbc1e-07b2-4ec9-ab9e-392a352ae06c"),
+                            TextContentId = new Guid("0a49b696-f5ae-44b2-b8ce-30a81d381e3c")
                         },
                         new
                         {
-                            QuestionId = new Guid("0d00941e-9cfe-4e46-9132-72a6af7b6639"),
+                            Id = new Guid("b8d2d72a-cc79-4711-b802-e24444229035"),
                             Index = 0,
                             IsCorrect = true,
-                            TextContentId = new Guid("c3e30d0e-dbb5-4b31-88b6-1816465c0e94")
+                            QuestionId = new Guid("c6605fc6-2459-4235-950a-8f14a58cb39a"),
+                            TextContentId = new Guid("863e9fba-4869-4855-835b-90cd254b7f7c")
                         },
                         new
                         {
-                            QuestionId = new Guid("0d00941e-9cfe-4e46-9132-72a6af7b6639"),
+                            Id = new Guid("a2ef69bb-a09b-47ad-b315-2a60ca84b6a8"),
                             Index = 1,
                             IsCorrect = false,
-                            TextContentId = new Guid("6d15c8d2-5c3b-4180-a8e5-599b9a085ff3")
+                            QuestionId = new Guid("c6605fc6-2459-4235-950a-8f14a58cb39a"),
+                            TextContentId = new Guid("ca77f135-5a90-4793-81aa-6e17fbb4e8c3")
                         },
                         new
                         {
-                            QuestionId = new Guid("0d00941e-9cfe-4e46-9132-72a6af7b6639"),
+                            Id = new Guid("013ba1f5-0cde-4701-9320-b1c3821dca58"),
                             Index = 2,
                             IsCorrect = false,
-                            TextContentId = new Guid("86cacd23-80e7-4e6d-9169-7a38e4758a79")
+                            QuestionId = new Guid("c6605fc6-2459-4235-950a-8f14a58cb39a"),
+                            TextContentId = new Guid("2578e1c4-adbc-48c4-a349-e0c626bf9d36")
                         },
                         new
                         {
-                            QuestionId = new Guid("0d00941e-9cfe-4e46-9132-72a6af7b6639"),
+                            Id = new Guid("bd491925-9146-4270-b81a-8311154cbada"),
                             Index = 3,
                             IsCorrect = false,
-                            TextContentId = new Guid("9f0ae8d9-39ce-42d1-a58c-28a04684e6e7")
+                            QuestionId = new Guid("c6605fc6-2459-4235-950a-8f14a58cb39a"),
+                            TextContentId = new Guid("dc8c32e3-1174-495a-b9fa-5ee4959adbce")
                         },
                         new
                         {
-                            QuestionId = new Guid("0d00941e-9cfe-4e46-9132-72a6af7b6639"),
+                            Id = new Guid("d1ac1336-9e47-4014-b734-41ce94c4dbef"),
                             Index = 4,
                             IsCorrect = false,
-                            TextContentId = new Guid("7edd21f5-629f-4f5d-b574-fb21db6c17d3")
+                            QuestionId = new Guid("c6605fc6-2459-4235-950a-8f14a58cb39a"),
+                            TextContentId = new Guid("e44b1f61-90eb-44ad-b6ff-84dc2d1eca0c")
                         },
                         new
                         {
-                            QuestionId = new Guid("dbd860c9-520f-4ed9-ab4f-88248e8691fe"),
+                            Id = new Guid("41038f5d-fa16-46dc-88fd-acc6aa3a5f5c"),
                             Index = 0,
                             IsCorrect = true,
-                            TextContentId = new Guid("7c98f79e-023b-4a43-a7ea-86c6f9574784")
+                            QuestionId = new Guid("80f72574-d373-43f9-896f-0db71b80cccd"),
+                            TextContentId = new Guid("387b1481-c070-44b5-80ef-dafabffd66ac")
                         },
                         new
                         {
-                            QuestionId = new Guid("dbd860c9-520f-4ed9-ab4f-88248e8691fe"),
+                            Id = new Guid("fa5bc323-211c-4d2b-b990-7da0ffc300f4"),
                             Index = 1,
                             IsCorrect = false,
-                            TextContentId = new Guid("00e6d697-0dc5-421f-bf95-22af74b4a747")
+                            QuestionId = new Guid("80f72574-d373-43f9-896f-0db71b80cccd"),
+                            TextContentId = new Guid("ea08de75-de76-43a5-a900-26fa7bdb3a8b")
                         },
                         new
                         {
-                            QuestionId = new Guid("dbd860c9-520f-4ed9-ab4f-88248e8691fe"),
+                            Id = new Guid("0712fea4-33db-429a-bd53-74f0e99b3a3a"),
                             Index = 2,
                             IsCorrect = false,
-                            TextContentId = new Guid("eec15771-bef4-4fb2-8038-04199c9a2a12")
+                            QuestionId = new Guid("80f72574-d373-43f9-896f-0db71b80cccd"),
+                            TextContentId = new Guid("0228672e-978f-42b3-b298-fba5e67f2c2f")
                         },
                         new
                         {
-                            QuestionId = new Guid("dbd860c9-520f-4ed9-ab4f-88248e8691fe"),
+                            Id = new Guid("1b133997-da41-4022-848a-a312324b19cf"),
                             Index = 3,
                             IsCorrect = false,
-                            TextContentId = new Guid("c1b4c4c0-f95a-4682-b0c8-b2a62cd89342")
+                            QuestionId = new Guid("80f72574-d373-43f9-896f-0db71b80cccd"),
+                            TextContentId = new Guid("ee26a392-bf2b-4869-8e33-9e3b5748cb99")
                         },
                         new
                         {
-                            QuestionId = new Guid("dbd860c9-520f-4ed9-ab4f-88248e8691fe"),
+                            Id = new Guid("aefc9487-bb30-4e00-a90f-72e302b20c04"),
                             Index = 4,
                             IsCorrect = false,
-                            TextContentId = new Guid("ba6b5d4c-45fb-4bb2-a42d-a88663d82406")
+                            QuestionId = new Guid("80f72574-d373-43f9-896f-0db71b80cccd"),
+                            TextContentId = new Guid("a22a7551-a513-4039-b5dc-9dbe179c7e61")
                         },
                         new
                         {
-                            QuestionId = new Guid("48586167-2415-41da-8974-f19b66691b16"),
+                            Id = new Guid("c953a5bf-a57c-493e-b539-a4e0e2979fb0"),
                             Index = 0,
                             IsCorrect = true,
-                            TextContentId = new Guid("34b29994-1994-45bb-82b0-f6245c364c53")
+                            QuestionId = new Guid("1cc05206-b35d-46be-9009-4290d2a25270"),
+                            TextContentId = new Guid("d3bb5e76-ee66-4714-ae84-47b2f1d95f71")
                         },
                         new
                         {
-                            QuestionId = new Guid("48586167-2415-41da-8974-f19b66691b16"),
+                            Id = new Guid("64a19d9c-a92e-4109-9f9f-ad126e192446"),
                             Index = 1,
                             IsCorrect = false,
-                            TextContentId = new Guid("9461b339-d713-4369-b920-388a6c05235c")
+                            QuestionId = new Guid("1cc05206-b35d-46be-9009-4290d2a25270"),
+                            TextContentId = new Guid("c2b02592-56a4-4bdc-8a1d-d61c4040b245")
                         },
                         new
                         {
-                            QuestionId = new Guid("48586167-2415-41da-8974-f19b66691b16"),
+                            Id = new Guid("912daff4-5ecc-4e14-934d-fcfd7aa1c158"),
                             Index = 2,
                             IsCorrect = false,
-                            TextContentId = new Guid("d924dae7-8b8c-4f95-8a81-ccfb659a9e55")
+                            QuestionId = new Guid("1cc05206-b35d-46be-9009-4290d2a25270"),
+                            TextContentId = new Guid("37785e1d-fcb0-4113-bdac-99ef7b56f90c")
                         },
                         new
                         {
-                            QuestionId = new Guid("48586167-2415-41da-8974-f19b66691b16"),
+                            Id = new Guid("c3bdb356-6a93-4765-afe1-6e110659edb3"),
                             Index = 3,
                             IsCorrect = false,
-                            TextContentId = new Guid("2b3ba25b-60ff-49f1-a45a-d894f05db2a4")
+                            QuestionId = new Guid("1cc05206-b35d-46be-9009-4290d2a25270"),
+                            TextContentId = new Guid("c3333419-3209-4d26-9101-812807039a42")
                         },
                         new
                         {
-                            QuestionId = new Guid("48586167-2415-41da-8974-f19b66691b16"),
+                            Id = new Guid("f5b57441-43e6-4cc0-b58a-937d829f4be9"),
                             Index = 4,
                             IsCorrect = false,
-                            TextContentId = new Guid("22091b88-0463-4a72-80b9-b04f29f652a9")
+                            QuestionId = new Guid("1cc05206-b35d-46be-9009-4290d2a25270"),
+                            TextContentId = new Guid("bb09dde0-da40-400b-a8b8-5f61c74fdc2b")
                         },
                         new
                         {
-                            QuestionId = new Guid("fa11525e-9295-40d3-928e-fba943ada12b"),
+                            Id = new Guid("692498d6-1c5a-4946-9d97-cafd82e4074b"),
                             Index = 0,
                             IsCorrect = true,
-                            TextContentId = new Guid("9939396d-78c5-4bdc-a6a2-82d85a69aa65")
+                            QuestionId = new Guid("4e52de80-11bc-4ce3-9eba-59102dbb6e06"),
+                            TextContentId = new Guid("bb17d6cb-5d13-4c6f-b441-3ca6e2e3bc71")
                         },
                         new
                         {
-                            QuestionId = new Guid("fa11525e-9295-40d3-928e-fba943ada12b"),
+                            Id = new Guid("8da08a89-463e-420f-a2f2-0c58717f1ddd"),
                             Index = 1,
                             IsCorrect = false,
-                            TextContentId = new Guid("25bc2496-fbb2-4c12-8e7f-9cfdbdeed26c")
+                            QuestionId = new Guid("4e52de80-11bc-4ce3-9eba-59102dbb6e06"),
+                            TextContentId = new Guid("945ac710-77fd-49e8-b80f-13261e33c115")
                         },
                         new
                         {
-                            QuestionId = new Guid("fa11525e-9295-40d3-928e-fba943ada12b"),
+                            Id = new Guid("e0b25b91-9f6e-40e5-9231-66f533bd5694"),
                             Index = 2,
                             IsCorrect = false,
-                            TextContentId = new Guid("5af1a9f5-be79-4703-a300-959fa1506299")
+                            QuestionId = new Guid("4e52de80-11bc-4ce3-9eba-59102dbb6e06"),
+                            TextContentId = new Guid("08678161-87ad-4ae7-9cd8-21edec558246")
                         },
                         new
                         {
-                            QuestionId = new Guid("fa11525e-9295-40d3-928e-fba943ada12b"),
+                            Id = new Guid("c4476e3b-0734-4b15-9d29-e7f377bbf75f"),
                             Index = 3,
                             IsCorrect = false,
-                            TextContentId = new Guid("bcc0791c-0f7c-4457-a338-3bba01fb0eb6")
+                            QuestionId = new Guid("4e52de80-11bc-4ce3-9eba-59102dbb6e06"),
+                            TextContentId = new Guid("01e86d51-bb0d-458d-8a8b-0add58b661ac")
                         },
                         new
                         {
-                            QuestionId = new Guid("fa11525e-9295-40d3-928e-fba943ada12b"),
+                            Id = new Guid("2de25189-06e4-4b3a-bb86-2f2b1d8cd78f"),
                             Index = 4,
                             IsCorrect = false,
-                            TextContentId = new Guid("63126275-8d0f-491f-9433-2bd6063bb7f1")
+                            QuestionId = new Guid("4e52de80-11bc-4ce3-9eba-59102dbb6e06"),
+                            TextContentId = new Guid("31791314-91b2-4394-ab92-6be438829445")
                         },
                         new
                         {
-                            QuestionId = new Guid("8634eacc-be4a-4b33-a1cc-e846853b6388"),
+                            Id = new Guid("5347ab0f-8e0f-47a8-9fe4-724904ef82fb"),
                             Index = 0,
                             IsCorrect = true,
-                            TextContentId = new Guid("9a62e495-d936-47be-9776-11bbd565619a")
+                            QuestionId = new Guid("37c96910-a4f7-4299-9880-d7d39e1a1060"),
+                            TextContentId = new Guid("469e5ed2-2e70-4790-83ad-9af4ef75790f")
                         },
                         new
                         {
-                            QuestionId = new Guid("8634eacc-be4a-4b33-a1cc-e846853b6388"),
+                            Id = new Guid("a5085624-34b6-420f-90c2-e9862f12f316"),
                             Index = 1,
                             IsCorrect = false,
-                            TextContentId = new Guid("2c4ed05b-9ba2-4ca5-89a9-1a6059c7a704")
+                            QuestionId = new Guid("37c96910-a4f7-4299-9880-d7d39e1a1060"),
+                            TextContentId = new Guid("736b4453-6b1e-4c5a-a455-5c88e47ae5aa")
                         },
                         new
                         {
-                            QuestionId = new Guid("8634eacc-be4a-4b33-a1cc-e846853b6388"),
+                            Id = new Guid("d63b7006-c6c5-4555-aa86-d5e8e673295f"),
                             Index = 2,
                             IsCorrect = false,
-                            TextContentId = new Guid("42fa4dc6-5564-409d-9b98-3a8480510452")
+                            QuestionId = new Guid("37c96910-a4f7-4299-9880-d7d39e1a1060"),
+                            TextContentId = new Guid("1d80f186-7d01-4dfe-b91e-087b537e6d39")
                         },
                         new
                         {
-                            QuestionId = new Guid("8634eacc-be4a-4b33-a1cc-e846853b6388"),
+                            Id = new Guid("ce9fa285-fcc6-486e-990c-d1d8183c1988"),
                             Index = 3,
                             IsCorrect = false,
-                            TextContentId = new Guid("15872782-c08b-4b02-939b-f31afd011f4d")
+                            QuestionId = new Guid("37c96910-a4f7-4299-9880-d7d39e1a1060"),
+                            TextContentId = new Guid("ebbe4589-c510-4438-ad21-97bf684908b6")
                         },
                         new
                         {
-                            QuestionId = new Guid("8634eacc-be4a-4b33-a1cc-e846853b6388"),
+                            Id = new Guid("c0f01165-2efe-4f8c-a4ab-2d8a5c86e1ea"),
                             Index = 4,
                             IsCorrect = false,
-                            TextContentId = new Guid("19dfe1fe-a719-48f8-bc4b-4282e1f73a2f")
+                            QuestionId = new Guid("37c96910-a4f7-4299-9880-d7d39e1a1060"),
+                            TextContentId = new Guid("f778b369-dfd4-49fb-a0af-ef18fac23de1")
                         });
                 });
 
@@ -506,27 +574,27 @@ namespace BnE.EducationVest.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d07485f8-ef2f-4178-85e8-cbe088b0e28d"),
-                            CreatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 476, DateTimeKind.Local).AddTicks(2534),
+                            Id = new Guid("ba96b5ff-2e7f-4cfd-af1b-02a2acb6a9d4"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 275, DateTimeKind.Local).AddTicks(4397),
                             ExamNumber = 1,
                             ExamType = 2,
-                            UpdatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 476, DateTimeKind.Local).AddTicks(2539)
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 275, DateTimeKind.Local).AddTicks(4403)
                         },
                         new
                         {
-                            Id = new Guid("df2a0ef3-f26c-4442-acb6-a7a4e2e58f9c"),
-                            CreatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 476, DateTimeKind.Local).AddTicks(6299),
+                            Id = new Guid("c10e97cc-550c-46b6-b5a5-c7f0063b67e5"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 275, DateTimeKind.Local).AddTicks(8181),
                             ExamNumber = 1,
                             ExamType = 1,
-                            UpdatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 476, DateTimeKind.Local).AddTicks(6300)
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 275, DateTimeKind.Local).AddTicks(8183)
                         },
                         new
                         {
-                            Id = new Guid("8be840e3-be84-44c1-a614-abf9e4d86bf8"),
-                            CreatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 476, DateTimeKind.Local).AddTicks(6308),
+                            Id = new Guid("3cc64121-cd15-4a44-864a-9dddf34dd129"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 275, DateTimeKind.Local).AddTicks(8190),
                             ExamNumber = 2,
                             ExamType = 1,
-                            UpdatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 476, DateTimeKind.Local).AddTicks(6309)
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 275, DateTimeKind.Local).AddTicks(8191)
                         });
                 });
 
@@ -583,123 +651,207 @@ namespace BnE.EducationVest.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("450e09dd-55b4-41d6-b6a9-680b8d973fe2"),
-                            CreatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(6916),
-                            EnunciatedId = new Guid("d19beaf4-7317-48da-af1c-374d354bfde4"),
-                            ExamId = new Guid("d07485f8-ef2f-4178-85e8-cbe088b0e28d"),
+                            Id = new Guid("bb2aefce-f382-4a61-a1fa-083520bcb101"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(3554),
+                            EnunciatedId = new Guid("b933168e-415f-401f-b894-7e3ef6e7db85"),
+                            ExamId = new Guid("ba96b5ff-2e7f-4cfd-af1b-02a2acb6a9d4"),
                             Index = 0,
-                            SubjectId = new Guid("2f07b7bd-2519-4a08-a712-de656d82842e"),
-                            UpdatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(6921)
+                            SubjectId = new Guid("13784a54-2b68-4143-870f-d0003bf6f6c3"),
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(3559)
                         },
                         new
                         {
-                            Id = new Guid("5e455d9f-a60a-47e8-b71f-852469e0d2e9"),
-                            CreatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9496),
-                            EnunciatedId = new Guid("0a400db7-f045-4350-9c03-7b276450d1f8"),
-                            ExamId = new Guid("d07485f8-ef2f-4178-85e8-cbe088b0e28d"),
+                            Id = new Guid("f7b6c90e-4aff-4d58-8965-7f57c43b985a"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6004),
+                            EnunciatedId = new Guid("7de5adda-d4ef-46da-840b-01dbed82b7a0"),
+                            ExamId = new Guid("ba96b5ff-2e7f-4cfd-af1b-02a2acb6a9d4"),
                             Index = 1,
-                            SubjectId = new Guid("1a8d417d-8de5-496f-aa14-169f85509131"),
-                            UpdatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9502)
+                            SubjectId = new Guid("42f2161c-d9a5-4612-91c0-c33406f9c5d1"),
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6009)
                         },
                         new
                         {
-                            Id = new Guid("f506be00-b7f1-4ec2-9a79-5edb17f11631"),
-                            CreatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9517),
-                            EnunciatedId = new Guid("c945c63c-bdc8-4e68-9d58-6665ef818f11"),
-                            ExamId = new Guid("d07485f8-ef2f-4178-85e8-cbe088b0e28d"),
+                            Id = new Guid("2c5cb800-9d91-448d-85c8-dbcdaa5ed4b6"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6026),
+                            EnunciatedId = new Guid("2f62a39c-f197-468a-9760-42901fbb85d8"),
+                            ExamId = new Guid("ba96b5ff-2e7f-4cfd-af1b-02a2acb6a9d4"),
                             Index = 2,
-                            SubjectId = new Guid("20e7aac6-8a85-4a6f-8e77-b15ff6a47d81"),
-                            UpdatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9518)
+                            SubjectId = new Guid("c9e43c59-b2ca-4102-89d6-d703e016706b"),
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6027)
                         },
                         new
                         {
-                            Id = new Guid("da26c9ed-1425-48a3-9bfe-7675ae3243e7"),
-                            CreatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9528),
-                            EnunciatedId = new Guid("db70a537-3831-41ae-ae44-e50e65ffbe0c"),
-                            ExamId = new Guid("d07485f8-ef2f-4178-85e8-cbe088b0e28d"),
+                            Id = new Guid("92d1724b-23f8-4fb0-9af2-ee846719f133"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6038),
+                            EnunciatedId = new Guid("4bd84d0f-99bd-4897-b607-d789da24955e"),
+                            ExamId = new Guid("ba96b5ff-2e7f-4cfd-af1b-02a2acb6a9d4"),
                             Index = 3,
-                            SubjectId = new Guid("1a8d417d-8de5-496f-aa14-169f85509131"),
-                            UpdatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9529)
+                            SubjectId = new Guid("42f2161c-d9a5-4612-91c0-c33406f9c5d1"),
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6039)
                         },
                         new
                         {
-                            Id = new Guid("9a36cba4-96fe-4316-9f85-762a8c775eed"),
-                            CreatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9539),
-                            EnunciatedId = new Guid("3232eeba-9830-4204-bc99-c6b19f672b66"),
-                            ExamId = new Guid("df2a0ef3-f26c-4442-acb6-a7a4e2e58f9c"),
+                            Id = new Guid("234ec727-daf0-4d6e-afe9-09052d5eb10f"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6052),
+                            EnunciatedId = new Guid("b7e4daa1-412c-44fb-b74b-ec65c715be03"),
+                            ExamId = new Guid("c10e97cc-550c-46b6-b5a5-c7f0063b67e5"),
                             Index = 0,
-                            SubjectId = new Guid("2f07b7bd-2519-4a08-a712-de656d82842e"),
-                            UpdatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9539)
+                            SubjectId = new Guid("13784a54-2b68-4143-870f-d0003bf6f6c3"),
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6053)
                         },
                         new
                         {
-                            Id = new Guid("31e7a721-34b7-45ae-8eeb-b879582ec8e4"),
-                            CreatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9547),
-                            EnunciatedId = new Guid("69e31e80-8b51-439d-a226-15f590ccc0cb"),
-                            ExamId = new Guid("df2a0ef3-f26c-4442-acb6-a7a4e2e58f9c"),
+                            Id = new Guid("cd4dcb4d-4d96-41dc-a78f-64ae4ad1222f"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6069),
+                            EnunciatedId = new Guid("c6594c46-d221-4b52-97c7-6fac7528e471"),
+                            ExamId = new Guid("c10e97cc-550c-46b6-b5a5-c7f0063b67e5"),
                             Index = 1,
-                            SubjectId = new Guid("1a8d417d-8de5-496f-aa14-169f85509131"),
-                            UpdatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9548)
+                            SubjectId = new Guid("42f2161c-d9a5-4612-91c0-c33406f9c5d1"),
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6070)
                         },
                         new
                         {
-                            Id = new Guid("94f24c40-6aa0-4a88-9eec-d80e276878be"),
-                            CreatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9557),
-                            EnunciatedId = new Guid("815fc0f6-3d51-4e46-b01d-11b9bc24c9fd"),
-                            ExamId = new Guid("df2a0ef3-f26c-4442-acb6-a7a4e2e58f9c"),
+                            Id = new Guid("7e3dbc1e-07b2-4ec9-ab9e-392a352ae06c"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6122),
+                            EnunciatedId = new Guid("bd59de4f-689a-4e28-9c40-e06ad836c188"),
+                            ExamId = new Guid("c10e97cc-550c-46b6-b5a5-c7f0063b67e5"),
                             Index = 2,
-                            SubjectId = new Guid("20e7aac6-8a85-4a6f-8e77-b15ff6a47d81"),
-                            UpdatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9558)
+                            SubjectId = new Guid("c9e43c59-b2ca-4102-89d6-d703e016706b"),
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6123)
                         },
                         new
                         {
-                            Id = new Guid("0d00941e-9cfe-4e46-9132-72a6af7b6639"),
-                            CreatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9568),
-                            EnunciatedId = new Guid("86fc0059-1fd1-4bf3-9807-5f13c64805b1"),
-                            ExamId = new Guid("df2a0ef3-f26c-4442-acb6-a7a4e2e58f9c"),
+                            Id = new Guid("c6605fc6-2459-4235-950a-8f14a58cb39a"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6134),
+                            EnunciatedId = new Guid("63b05fea-2e37-4ed1-aa24-b1427f25d7f6"),
+                            ExamId = new Guid("c10e97cc-550c-46b6-b5a5-c7f0063b67e5"),
                             Index = 3,
-                            SubjectId = new Guid("1a8d417d-8de5-496f-aa14-169f85509131"),
-                            UpdatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9569)
+                            SubjectId = new Guid("42f2161c-d9a5-4612-91c0-c33406f9c5d1"),
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6135)
                         },
                         new
                         {
-                            Id = new Guid("dbd860c9-520f-4ed9-ab4f-88248e8691fe"),
-                            CreatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9578),
-                            EnunciatedId = new Guid("1585e0ea-b4b7-4064-9d14-36e4117160ee"),
-                            ExamId = new Guid("8be840e3-be84-44c1-a614-abf9e4d86bf8"),
+                            Id = new Guid("80f72574-d373-43f9-896f-0db71b80cccd"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6148),
+                            EnunciatedId = new Guid("1d1bdad8-8938-4404-acf7-f080c93d5595"),
+                            ExamId = new Guid("3cc64121-cd15-4a44-864a-9dddf34dd129"),
                             Index = 0,
-                            SubjectId = new Guid("2f07b7bd-2519-4a08-a712-de656d82842e"),
-                            UpdatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9579)
+                            SubjectId = new Guid("13784a54-2b68-4143-870f-d0003bf6f6c3"),
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6149)
                         },
                         new
                         {
-                            Id = new Guid("48586167-2415-41da-8974-f19b66691b16"),
-                            CreatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9620),
-                            EnunciatedId = new Guid("a945303d-83b7-432e-bd97-a5e358df463a"),
-                            ExamId = new Guid("8be840e3-be84-44c1-a614-abf9e4d86bf8"),
+                            Id = new Guid("1cc05206-b35d-46be-9009-4290d2a25270"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6161),
+                            EnunciatedId = new Guid("f41835f2-27fa-4b8c-940b-d057d3dace31"),
+                            ExamId = new Guid("3cc64121-cd15-4a44-864a-9dddf34dd129"),
                             Index = 1,
-                            SubjectId = new Guid("1a8d417d-8de5-496f-aa14-169f85509131"),
-                            UpdatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9621)
+                            SubjectId = new Guid("42f2161c-d9a5-4612-91c0-c33406f9c5d1"),
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6162)
                         },
                         new
                         {
-                            Id = new Guid("fa11525e-9295-40d3-928e-fba943ada12b"),
-                            CreatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9630),
-                            EnunciatedId = new Guid("3b1b42f9-dd09-4956-b913-043ca727b8c6"),
-                            ExamId = new Guid("8be840e3-be84-44c1-a614-abf9e4d86bf8"),
+                            Id = new Guid("4e52de80-11bc-4ce3-9eba-59102dbb6e06"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6176),
+                            EnunciatedId = new Guid("d50bc897-cc29-4623-9c06-b700f967d51b"),
+                            ExamId = new Guid("3cc64121-cd15-4a44-864a-9dddf34dd129"),
                             Index = 2,
-                            SubjectId = new Guid("20e7aac6-8a85-4a6f-8e77-b15ff6a47d81"),
-                            UpdatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9631)
+                            SubjectId = new Guid("c9e43c59-b2ca-4102-89d6-d703e016706b"),
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6177)
                         },
                         new
                         {
-                            Id = new Guid("8634eacc-be4a-4b33-a1cc-e846853b6388"),
-                            CreatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9640),
-                            EnunciatedId = new Guid("f0ffd4b9-7697-4b6d-b310-3ae696dc67b1"),
-                            ExamId = new Guid("8be840e3-be84-44c1-a614-abf9e4d86bf8"),
+                            Id = new Guid("37c96910-a4f7-4299-9880-d7d39e1a1060"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6188),
+                            EnunciatedId = new Guid("6f855e6c-8e7d-4e35-a7df-9dcf8e1905a4"),
+                            ExamId = new Guid("3cc64121-cd15-4a44-864a-9dddf34dd129"),
                             Index = 3,
-                            SubjectId = new Guid("1a8d417d-8de5-496f-aa14-169f85509131"),
-                            UpdatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 475, DateTimeKind.Local).AddTicks(9641)
+                            SubjectId = new Guid("42f2161c-d9a5-4612-91c0-c33406f9c5d1"),
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 268, DateTimeKind.Local).AddTicks(6189)
+                        });
+                });
+
+            modelBuilder.Entity("BnE.EducationVest.Domain.Exam.Entities.QuestionAnswer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("ChosenAlternativeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("chosen_alternative_id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_date");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("question_id");
+
+                    b.Property<DateTime?>("RemovedDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("removed_date");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_date");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_question_answers");
+
+                    b.HasIndex("ChosenAlternativeId")
+                        .HasDatabaseName("ix_question_answers_chosen_alternative_id");
+
+                    b.HasIndex("QuestionId")
+                        .HasDatabaseName("ix_question_answers_question_id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_question_answers_user_id");
+
+                    b.ToTable("question_answers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("b53af185-47d3-433b-96e4-e770b78e1564"),
+                            ChosenAlternativeId = new Guid("fbe21970-74a3-4495-8198-beb904fa1b5e"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 282, DateTimeKind.Local).AddTicks(7510),
+                            QuestionId = new Guid("234ec727-daf0-4d6e-afe9-09052d5eb10f"),
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 282, DateTimeKind.Local).AddTicks(7519),
+                            UserId = new Guid("d574be54-0eab-448d-8169-7da2367e7ffb")
+                        },
+                        new
+                        {
+                            Id = new Guid("994858cc-d060-46b1-b1b6-1afcd036fca0"),
+                            ChosenAlternativeId = new Guid("cdd1d6af-dc27-4388-ac28-ac4e901d1e91"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 282, DateTimeKind.Local).AddTicks(8848),
+                            QuestionId = new Guid("cd4dcb4d-4d96-41dc-a78f-64ae4ad1222f"),
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 282, DateTimeKind.Local).AddTicks(8852),
+                            UserId = new Guid("d574be54-0eab-448d-8169-7da2367e7ffb")
+                        },
+                        new
+                        {
+                            Id = new Guid("fb603a97-3574-4932-8b15-ff6aabec8254"),
+                            ChosenAlternativeId = new Guid("86a98de2-681e-4ee3-9187-d7fb4fa0cd79"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 282, DateTimeKind.Local).AddTicks(8864),
+                            QuestionId = new Guid("7e3dbc1e-07b2-4ec9-ab9e-392a352ae06c"),
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 282, DateTimeKind.Local).AddTicks(8865),
+                            UserId = new Guid("d574be54-0eab-448d-8169-7da2367e7ffb")
+                        },
+                        new
+                        {
+                            Id = new Guid("226545ee-73ef-4cb5-b515-7536018376ce"),
+                            ChosenAlternativeId = new Guid("b8d2d72a-cc79-4711-b802-e24444229035"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 282, DateTimeKind.Local).AddTicks(8868),
+                            QuestionId = new Guid("c6605fc6-2459-4235-950a-8f14a58cb39a"),
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 282, DateTimeKind.Local).AddTicks(8869),
+                            UserId = new Guid("d574be54-0eab-448d-8169-7da2367e7ffb")
                         });
                 });
 
@@ -741,25 +893,25 @@ namespace BnE.EducationVest.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("2f07b7bd-2519-4a08-a712-de656d82842e"),
-                            CreatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 474, DateTimeKind.Local).AddTicks(7665),
+                            Id = new Guid("13784a54-2b68-4143-870f-d0003bf6f6c3"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 267, DateTimeKind.Local).AddTicks(3639),
                             Name = "Matemática",
-                            UpdatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 474, DateTimeKind.Local).AddTicks(8127)
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 267, DateTimeKind.Local).AddTicks(4077)
                         },
                         new
                         {
-                            Id = new Guid("20e7aac6-8a85-4a6f-8e77-b15ff6a47d81"),
-                            CreatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 474, DateTimeKind.Local).AddTicks(8889),
+                            Id = new Guid("c9e43c59-b2ca-4102-89d6-d703e016706b"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 267, DateTimeKind.Local).AddTicks(4892),
                             Name = "Português",
-                            UpdatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 474, DateTimeKind.Local).AddTicks(8893)
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 267, DateTimeKind.Local).AddTicks(4896)
                         },
                         new
                         {
-                            Id = new Guid("1a8d417d-8de5-496f-aa14-169f85509131"),
-                            CreatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 474, DateTimeKind.Local).AddTicks(8895),
+                            Id = new Guid("42f2161c-d9a5-4612-91c0-c33406f9c5d1"),
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 267, DateTimeKind.Local).AddTicks(4898),
                             Name = "Porcentagem",
-                            SubjectFatherId = new Guid("2f07b7bd-2519-4a08-a712-de656d82842e"),
-                            UpdatedDate = new DateTime(2021, 5, 18, 21, 54, 18, 474, DateTimeKind.Local).AddTicks(8896)
+                            SubjectFatherId = new Guid("13784a54-2b68-4143-870f-d0003bf6f6c3"),
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 267, DateTimeKind.Local).AddTicks(4899)
                         });
                 });
 
@@ -793,45 +945,45 @@ namespace BnE.EducationVest.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b799e2e8-6087-460d-ae8c-032e0d56694f"),
-                            CloseDate = new DateTime(2021, 5, 22, 12, 0, 0, 0, DateTimeKind.Local),
-                            ExamId = new Guid("d07485f8-ef2f-4178-85e8-cbe088b0e28d"),
-                            OpenDate = new DateTime(2021, 5, 22, 10, 0, 0, 0, DateTimeKind.Local)
+                            Id = new Guid("379ed9d1-e01b-4a65-a82f-9f883d64ec45"),
+                            CloseDate = new DateTime(2021, 5, 25, 12, 0, 0, 0, DateTimeKind.Local),
+                            ExamId = new Guid("ba96b5ff-2e7f-4cfd-af1b-02a2acb6a9d4"),
+                            OpenDate = new DateTime(2021, 5, 25, 10, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
-                            Id = new Guid("c30ed310-82f8-468f-9621-7714299c5485"),
-                            CloseDate = new DateTime(2021, 5, 23, 12, 0, 0, 0, DateTimeKind.Local),
-                            ExamId = new Guid("d07485f8-ef2f-4178-85e8-cbe088b0e28d"),
-                            OpenDate = new DateTime(2021, 5, 23, 10, 0, 0, 0, DateTimeKind.Local)
+                            Id = new Guid("4338699b-b33f-4cf5-9881-7fbb90ea349a"),
+                            CloseDate = new DateTime(2021, 5, 26, 12, 0, 0, 0, DateTimeKind.Local),
+                            ExamId = new Guid("ba96b5ff-2e7f-4cfd-af1b-02a2acb6a9d4"),
+                            OpenDate = new DateTime(2021, 5, 26, 10, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
-                            Id = new Guid("6dc524e3-3872-4b23-8ad8-49d6589e60eb"),
-                            CloseDate = new DateTime(2021, 5, 19, 1, 54, 18, 476, DateTimeKind.Local).AddTicks(6274),
-                            ExamId = new Guid("df2a0ef3-f26c-4442-acb6-a7a4e2e58f9c"),
-                            OpenDate = new DateTime(2021, 5, 18, 21, 54, 18, 476, DateTimeKind.Local).AddTicks(6274)
+                            Id = new Guid("72e119c6-667d-4750-93ff-b821e5edca0a"),
+                            CloseDate = new DateTime(2021, 5, 21, 19, 24, 14, 275, DateTimeKind.Local).AddTicks(8155),
+                            ExamId = new Guid("c10e97cc-550c-46b6-b5a5-c7f0063b67e5"),
+                            OpenDate = new DateTime(2021, 5, 21, 15, 24, 14, 275, DateTimeKind.Local).AddTicks(8155)
                         },
                         new
                         {
-                            Id = new Guid("74fab709-886d-4077-b55c-3d7e1788d339"),
-                            CloseDate = new DateTime(2021, 5, 19, 23, 54, 18, 476, DateTimeKind.Local).AddTicks(6274),
-                            ExamId = new Guid("df2a0ef3-f26c-4442-acb6-a7a4e2e58f9c"),
-                            OpenDate = new DateTime(2021, 5, 19, 21, 54, 18, 476, DateTimeKind.Local).AddTicks(6274)
+                            Id = new Guid("c0946bca-f4be-40d9-acff-9868165479bc"),
+                            CloseDate = new DateTime(2021, 5, 22, 17, 24, 14, 275, DateTimeKind.Local).AddTicks(8155),
+                            ExamId = new Guid("c10e97cc-550c-46b6-b5a5-c7f0063b67e5"),
+                            OpenDate = new DateTime(2021, 5, 22, 15, 24, 14, 275, DateTimeKind.Local).AddTicks(8155)
                         },
                         new
                         {
-                            Id = new Guid("c2e0578d-5ca8-414f-b662-d84c9481ee05"),
-                            CloseDate = new DateTime(2021, 5, 16, 23, 54, 18, 476, DateTimeKind.Local).AddTicks(6303),
-                            ExamId = new Guid("8be840e3-be84-44c1-a614-abf9e4d86bf8"),
-                            OpenDate = new DateTime(2021, 5, 16, 21, 54, 18, 476, DateTimeKind.Local).AddTicks(6303)
+                            Id = new Guid("864e9d66-d257-4a05-90d6-2e3688977362"),
+                            CloseDate = new DateTime(2021, 5, 19, 17, 24, 14, 275, DateTimeKind.Local).AddTicks(8186),
+                            ExamId = new Guid("3cc64121-cd15-4a44-864a-9dddf34dd129"),
+                            OpenDate = new DateTime(2021, 5, 19, 15, 24, 14, 275, DateTimeKind.Local).AddTicks(8186)
                         },
                         new
                         {
-                            Id = new Guid("0dd50eb9-472f-4a1f-9e3c-62432ca9cfcb"),
-                            CloseDate = new DateTime(2021, 5, 17, 23, 54, 18, 476, DateTimeKind.Local).AddTicks(6303),
-                            ExamId = new Guid("8be840e3-be84-44c1-a614-abf9e4d86bf8"),
-                            OpenDate = new DateTime(2021, 5, 17, 21, 54, 18, 476, DateTimeKind.Local).AddTicks(6303)
+                            Id = new Guid("5d7ec88e-30bb-4427-9791-4d9f4d4ea868"),
+                            CloseDate = new DateTime(2021, 5, 20, 17, 24, 14, 275, DateTimeKind.Local).AddTicks(8186),
+                            ExamId = new Guid("3cc64121-cd15-4a44-864a-9dddf34dd129"),
+                            OpenDate = new DateTime(2021, 5, 20, 15, 24, 14, 275, DateTimeKind.Local).AddTicks(8186)
                         });
                 });
 
@@ -859,372 +1011,440 @@ namespace BnE.EducationVest.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d19beaf4-7317-48da-af1c-374d354bfde4"),
+                            Id = new Guid("b933168e-415f-401f-b894-7e3ef6e7db85"),
                             Content = "No país das comunicações, cuja população é x (em milhões de habitantes), uma notícia de interesse nacional foi divulgada e, t horas após a divulgação, o número de pessoas que tomaram conhecimento da notícia é dado por  f(t) = {0}Considere: {1}5{2}2,32 Sabendo que, uma hora pós a divulgação, a metade da população já tinha conhecimento da notícia, é correto afirmar que a população desse país, em milhões de habitantes, é, aproximadamente",
                             Increments = "[{\"Index\":0,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:mfrac><mml:mrow><mml:mi>x</mml:mi></mml:mrow><mml:mrow><mml:mn>1</mml:mn><mml:mo>+</mml:mo><mml:msup><mml:mrow><mml:mn>5</mml:mn><mml:mi> </mml:mi><mml:mo>∙</mml:mo><mml:mi> </mml:mi><mml:mn>2</mml:mn><mml:mi> </mml:mi></mml:mrow><mml:mrow><mml:mfrac><mml:mrow><mml:mo>-</mml:mo><mml:mi> </mml:mi><mml:mi>x</mml:mi><mml:mi> </mml:mi><mml:mo>.</mml:mo><mml:mi> </mml:mi><mml:mi>t</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:mfrac></mml:mrow></mml:msup><mml:mi> </mml:mi></mml:mrow></mml:mfrac></mml:math>\",\"Type\":0},{\"Index\":1,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:msub><mml:mrow><mml:mi>L</mml:mi><mml:mi>o</mml:mi><mml:mi>g</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:msub></mml:math>\",\"Type\":0},{\"Index\":2,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:mi> </mml:mi><mml:mo>≅</mml:mo><mml:mi> </mml:mi></mml:math>\",\"Type\":0}]"
                         },
                         new
                         {
-                            Id = new Guid("0a400db7-f045-4350-9c03-7b276450d1f8"),
+                            Id = new Guid("7de5adda-d4ef-46da-840b-01dbed82b7a0"),
                             Content = "Se {0}, {1}, {2}, ... , {3} são os ângulos internos de um heptágono convexo e se as medidas destes ângulos formam, nesta ordem, uma progressão aritmética, então, a medida, em graus, do ângulo {4}é um número",
                             Increments = "[{\"Index\":0,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:msub><mml:mrow><mml:mi>a</mml:mi></mml:mrow><mml:mrow><mml:mn>1</mml:mn></mml:mrow></mml:msub></mml:math>\",\"Type\":0},{\"Index\":1,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:msub><mml:mrow><mml:mi>a</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:msub></mml:math>\",\"Type\":0},{\"Index\":2,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:msub><mml:mrow><mml:mi>a</mml:mi></mml:mrow><mml:mrow><mml:mn>3</mml:mn></mml:mrow></mml:msub></mml:math>\",\"Type\":0},{\"Index\":3,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:msub><mml:mrow><mml:mi>a</mml:mi></mml:mrow><mml:mrow><mml:mn>7</mml:mn></mml:mrow></mml:msub></mml:math>\",\"Type\":0},{\"Index\":4,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:msub><mml:mrow><mml:mi>a</mml:mi></mml:mrow><mml:mrow><mml:mn>4</mml:mn></mml:mrow></mml:msub><mml:mi> </mml:mi></mml:math>\",\"Type\":0}]"
                         },
                         new
                         {
-                            Id = new Guid("c945c63c-bdc8-4e68-9d58-6665ef818f11"),
+                            Id = new Guid("2f62a39c-f197-468a-9760-42901fbb85d8"),
                             Content = "Das expressões latinas abaixo, todas de largo uso na linguagem culta, a única que contribui para exprimir corretamente uma afirmação presente no texto ocorre na frase:  "
                         },
                         new
                         {
-                            Id = new Guid("db70a537-3831-41ae-ae44-e50e65ffbe0c"),
+                            Id = new Guid("4bd84d0f-99bd-4897-b607-d789da24955e"),
                             Content = "Um objeto é formado por 4 hastes rígidas conectadas em seus extremos por articulações, cujos centros são os vértices de um paralelogramo. As hastes movimentam‐se de tal forma que o paralelogramo permanece sempre no mesmo plano. A cada configuração desse objeto, associa‐se {0}, a medida do menor  ângulo interno do paralelogramo. A área da região delimitada pelo paralelogramo quando {1}90° é A\r\n{2}\r\nPara que a área da região delimitada pelo paralelogramo seja {3} , o valor de {4}necessariamente, igual a",
                             Increments = "[{\"Index\":0,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:mi>θ</mml:mi></mml:math>\",\"Type\":0},{\"Index\":1,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:mi>θ</mml:mi><mml:mo>=</mml:mo><mml:mi> </mml:mi></mml:math>\",\"Type\":0},{\"Index\":2,\"Value\":\"https://dev-reports-images.s3-sa-east-1.amazonaws.com/teste/Simulado01-Insper-2.png\",\"Type\":1},{\"Index\":3,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:mfrac><mml:mrow><mml:mi>A</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:mfrac></mml:math>\",\"Type\":0},{\"Index\":4,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:mi>θ</mml:mi><mml:mi> </mml:mi><mml:mi>é</mml:mi><mml:mo>,</mml:mo><mml:mi> </mml:mi></mml:math>\",\"Type\":0}]"
                         },
                         new
                         {
-                            Id = new Guid("3232eeba-9830-4204-bc99-c6b19f672b66"),
+                            Id = new Guid("b7e4daa1-412c-44fb-b74b-ec65c715be03"),
                             Content = "No país das comunicações, cuja população é x (em milhões de habitantes), uma notícia de interesse nacional foi divulgada e, t horas após a divulgação, o número de pessoas que tomaram conhecimento da notícia é dado por  f(t) = {0}Considere: {1}5{2}2,32 Sabendo que, uma hora pós a divulgação, a metade da população já tinha conhecimento da notícia, é correto afirmar que a população desse país, em milhões de habitantes, é, aproximadamente",
                             Increments = "[{\"Index\":0,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:mfrac><mml:mrow><mml:mi>x</mml:mi></mml:mrow><mml:mrow><mml:mn>1</mml:mn><mml:mo>+</mml:mo><mml:msup><mml:mrow><mml:mn>5</mml:mn><mml:mi> </mml:mi><mml:mo>∙</mml:mo><mml:mi> </mml:mi><mml:mn>2</mml:mn><mml:mi> </mml:mi></mml:mrow><mml:mrow><mml:mfrac><mml:mrow><mml:mo>-</mml:mo><mml:mi> </mml:mi><mml:mi>x</mml:mi><mml:mi> </mml:mi><mml:mo>.</mml:mo><mml:mi> </mml:mi><mml:mi>t</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:mfrac></mml:mrow></mml:msup><mml:mi> </mml:mi></mml:mrow></mml:mfrac></mml:math>\",\"Type\":0},{\"Index\":1,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:msub><mml:mrow><mml:mi>L</mml:mi><mml:mi>o</mml:mi><mml:mi>g</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:msub></mml:math>\",\"Type\":0},{\"Index\":2,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:mi> </mml:mi><mml:mo>≅</mml:mo><mml:mi> </mml:mi></mml:math>\",\"Type\":0}]"
                         },
                         new
                         {
-                            Id = new Guid("69e31e80-8b51-439d-a226-15f590ccc0cb"),
+                            Id = new Guid("c6594c46-d221-4b52-97c7-6fac7528e471"),
                             Content = "Se {0}, {1}, {2}, ... , {3} são os ângulos internos de um heptágono convexo e se as medidas destes ângulos formam, nesta ordem, uma progressão aritmética, então, a medida, em graus, do ângulo {4}é um número",
                             Increments = "[{\"Index\":0,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:msub><mml:mrow><mml:mi>a</mml:mi></mml:mrow><mml:mrow><mml:mn>1</mml:mn></mml:mrow></mml:msub></mml:math>\",\"Type\":0},{\"Index\":1,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:msub><mml:mrow><mml:mi>a</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:msub></mml:math>\",\"Type\":0},{\"Index\":2,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:msub><mml:mrow><mml:mi>a</mml:mi></mml:mrow><mml:mrow><mml:mn>3</mml:mn></mml:mrow></mml:msub></mml:math>\",\"Type\":0},{\"Index\":3,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:msub><mml:mrow><mml:mi>a</mml:mi></mml:mrow><mml:mrow><mml:mn>7</mml:mn></mml:mrow></mml:msub></mml:math>\",\"Type\":0},{\"Index\":4,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:msub><mml:mrow><mml:mi>a</mml:mi></mml:mrow><mml:mrow><mml:mn>4</mml:mn></mml:mrow></mml:msub><mml:mi> </mml:mi></mml:math>\",\"Type\":0}]"
                         },
                         new
                         {
-                            Id = new Guid("815fc0f6-3d51-4e46-b01d-11b9bc24c9fd"),
+                            Id = new Guid("bd59de4f-689a-4e28-9c40-e06ad836c188"),
                             Content = "Das expressões latinas abaixo, todas de largo uso na linguagem culta, a única que contribui para exprimir corretamente uma afirmação presente no texto ocorre na frase:  "
                         },
                         new
                         {
-                            Id = new Guid("86fc0059-1fd1-4bf3-9807-5f13c64805b1"),
+                            Id = new Guid("63b05fea-2e37-4ed1-aa24-b1427f25d7f6"),
                             Content = "Um objeto é formado por 4 hastes rígidas conectadas em seus extremos por articulações, cujos centros são os vértices de um paralelogramo. As hastes movimentam‐se de tal forma que o paralelogramo permanece sempre no mesmo plano. A cada configuração desse objeto, associa‐se {0}, a medida do menor  ângulo interno do paralelogramo. A área da região delimitada pelo paralelogramo quando {1}90° é A\r\n{2}\r\nPara que a área da região delimitada pelo paralelogramo seja {3} , o valor de {4}necessariamente, igual a",
                             Increments = "[{\"Index\":0,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:mi>θ</mml:mi></mml:math>\",\"Type\":0},{\"Index\":1,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:mi>θ</mml:mi><mml:mo>=</mml:mo><mml:mi> </mml:mi></mml:math>\",\"Type\":0},{\"Index\":2,\"Value\":\"https://dev-reports-images.s3-sa-east-1.amazonaws.com/teste/Simulado01-Insper-2.png\",\"Type\":1},{\"Index\":3,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:mfrac><mml:mrow><mml:mi>A</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:mfrac></mml:math>\",\"Type\":0},{\"Index\":4,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:mi>θ</mml:mi><mml:mi> </mml:mi><mml:mi>é</mml:mi><mml:mo>,</mml:mo><mml:mi> </mml:mi></mml:math>\",\"Type\":0}]"
                         },
                         new
                         {
-                            Id = new Guid("1585e0ea-b4b7-4064-9d14-36e4117160ee"),
+                            Id = new Guid("1d1bdad8-8938-4404-acf7-f080c93d5595"),
                             Content = "No país das comunicações, cuja população é x (em milhões de habitantes), uma notícia de interesse nacional foi divulgada e, t horas após a divulgação, o número de pessoas que tomaram conhecimento da notícia é dado por  f(t) = {0}Considere: {1}5{2}2,32 Sabendo que, uma hora pós a divulgação, a metade da população já tinha conhecimento da notícia, é correto afirmar que a população desse país, em milhões de habitantes, é, aproximadamente",
                             Increments = "[{\"Index\":0,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:mfrac><mml:mrow><mml:mi>x</mml:mi></mml:mrow><mml:mrow><mml:mn>1</mml:mn><mml:mo>+</mml:mo><mml:msup><mml:mrow><mml:mn>5</mml:mn><mml:mi> </mml:mi><mml:mo>∙</mml:mo><mml:mi> </mml:mi><mml:mn>2</mml:mn><mml:mi> </mml:mi></mml:mrow><mml:mrow><mml:mfrac><mml:mrow><mml:mo>-</mml:mo><mml:mi> </mml:mi><mml:mi>x</mml:mi><mml:mi> </mml:mi><mml:mo>.</mml:mo><mml:mi> </mml:mi><mml:mi>t</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:mfrac></mml:mrow></mml:msup><mml:mi> </mml:mi></mml:mrow></mml:mfrac></mml:math>\",\"Type\":0},{\"Index\":1,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:msub><mml:mrow><mml:mi>L</mml:mi><mml:mi>o</mml:mi><mml:mi>g</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:msub></mml:math>\",\"Type\":0},{\"Index\":2,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:mi> </mml:mi><mml:mo>≅</mml:mo><mml:mi> </mml:mi></mml:math>\",\"Type\":0}]"
                         },
                         new
                         {
-                            Id = new Guid("a945303d-83b7-432e-bd97-a5e358df463a"),
+                            Id = new Guid("f41835f2-27fa-4b8c-940b-d057d3dace31"),
                             Content = "Se {0}, {1}, {2}, ... , {3} são os ângulos internos de um heptágono convexo e se as medidas destes ângulos formam, nesta ordem, uma progressão aritmética, então, a medida, em graus, do ângulo {4}é um número",
                             Increments = "[{\"Index\":0,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:msub><mml:mrow><mml:mi>a</mml:mi></mml:mrow><mml:mrow><mml:mn>1</mml:mn></mml:mrow></mml:msub></mml:math>\",\"Type\":0},{\"Index\":1,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:msub><mml:mrow><mml:mi>a</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:msub></mml:math>\",\"Type\":0},{\"Index\":2,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:msub><mml:mrow><mml:mi>a</mml:mi></mml:mrow><mml:mrow><mml:mn>3</mml:mn></mml:mrow></mml:msub></mml:math>\",\"Type\":0},{\"Index\":3,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:msub><mml:mrow><mml:mi>a</mml:mi></mml:mrow><mml:mrow><mml:mn>7</mml:mn></mml:mrow></mml:msub></mml:math>\",\"Type\":0},{\"Index\":4,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:msub><mml:mrow><mml:mi>a</mml:mi></mml:mrow><mml:mrow><mml:mn>4</mml:mn></mml:mrow></mml:msub><mml:mi> </mml:mi></mml:math>\",\"Type\":0}]"
                         },
                         new
                         {
-                            Id = new Guid("3b1b42f9-dd09-4956-b913-043ca727b8c6"),
+                            Id = new Guid("d50bc897-cc29-4623-9c06-b700f967d51b"),
                             Content = "Das expressões latinas abaixo, todas de largo uso na linguagem culta, a única que contribui para exprimir corretamente uma afirmação presente no texto ocorre na frase:  "
                         },
                         new
                         {
-                            Id = new Guid("f0ffd4b9-7697-4b6d-b310-3ae696dc67b1"),
+                            Id = new Guid("6f855e6c-8e7d-4e35-a7df-9dcf8e1905a4"),
                             Content = "Um objeto é formado por 4 hastes rígidas conectadas em seus extremos por articulações, cujos centros são os vértices de um paralelogramo. As hastes movimentam‐se de tal forma que o paralelogramo permanece sempre no mesmo plano. A cada configuração desse objeto, associa‐se {0}, a medida do menor  ângulo interno do paralelogramo. A área da região delimitada pelo paralelogramo quando {1}90° é A\r\n{2}\r\nPara que a área da região delimitada pelo paralelogramo seja {3} , o valor de {4}necessariamente, igual a",
                             Increments = "[{\"Index\":0,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:mi>θ</mml:mi></mml:math>\",\"Type\":0},{\"Index\":1,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:mi>θ</mml:mi><mml:mo>=</mml:mo><mml:mi> </mml:mi></mml:math>\",\"Type\":0},{\"Index\":2,\"Value\":\"https://dev-reports-images.s3-sa-east-1.amazonaws.com/teste/Simulado01-Insper-2.png\",\"Type\":1},{\"Index\":3,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:mfrac><mml:mrow><mml:mi>A</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:mfrac></mml:math>\",\"Type\":0},{\"Index\":4,\"Value\":\"<mml:math xmlns:mml=\\\"http://www.w3.org/1998/Math/MathML\\\" xmlns:m=\\\"http://schemas.openxmlformats.org/officeDocument/2006/math\\\"><mml:mi>θ</mml:mi><mml:mi> </mml:mi><mml:mi>é</mml:mi><mml:mo>,</mml:mo><mml:mi> </mml:mi></mml:math>\",\"Type\":0}]"
                         },
                         new
                         {
-                            Id = new Guid("576519aa-93bc-472c-971e-a49a576bed78"),
+                            Id = new Guid("e40be5ba-4f26-4c8c-bef7-24cfdedfb4f0"),
                             Content = "menor do que 128."
                         },
                         new
                         {
-                            Id = new Guid("bbcf3790-cef7-45cf-b31b-d96d7c01428a"),
+                            Id = new Guid("579136da-f046-4af1-a80d-a7542e9fc3d2"),
                             Content = "entre 128 e 129."
                         },
                         new
                         {
-                            Id = new Guid("5599fcac-fedf-45ce-ba6e-a4c2d638f51a"),
+                            Id = new Guid("4a43647e-c993-47f6-b2f8-155f26c95839"),
                             Content = "entre 129 e 130."
                         },
                         new
                         {
-                            Id = new Guid("9adf8b4c-5d49-4015-a977-2735ec51c4fd"),
+                            Id = new Guid("076380e8-0379-42b3-934d-766b5e7d7707"),
                             Content = "entre 130 e 131."
                         },
                         new
                         {
-                            Id = new Guid("fd22dd33-0a96-4632-b2e4-15f064e0e549"),
+                            Id = new Guid("a33fa429-ead0-4b61-b3e7-153a355f392d"),
                             Content = "maior que 131"
                         },
                         new
                         {
-                            Id = new Guid("8858dd68-1fe5-4881-9aeb-da469d1bf7c1"),
+                            Id = new Guid("c3516ebc-0c19-4862-8f8a-81e12d5680d5"),
                             Content = "4,64"
                         },
                         new
                         {
-                            Id = new Guid("37adf8dc-d283-4e14-bf06-f066b685f92c"),
+                            Id = new Guid("96bef00d-efb0-4531-a8d1-fb04e34a6b45"),
                             Content = "8,32"
                         },
                         new
                         {
-                            Id = new Guid("f267d363-7880-43ec-a3a2-0f2691f0f6d9"),
+                            Id = new Guid("a77855c9-01b7-4f5a-a93e-f0fe677c258f"),
                             Content = "6.62"
                         },
                         new
                         {
-                            Id = new Guid("fddfe007-140e-433c-919b-a88f13beee83"),
+                            Id = new Guid("aba3c46d-6a71-4dfe-a967-e09b7612cc31"),
                             Content = "3,68"
                         },
                         new
                         {
-                            Id = new Guid("9f43d6eb-df52-4d1e-9298-40cff13fd1c6"),
+                            Id = new Guid("e117147d-7ff8-4bf3-8534-db1819fecec9"),
                             Content = "5,34"
                         },
                         new
                         {
-                            Id = new Guid("b0ebd166-90de-4171-8e33-d9377b92cff1"),
+                            Id = new Guid("3ba280f0-1929-4a52-abed-aab0dd020205"),
                             Content = "O debate é uma condição sine qua non para que da tese e da antítese resulte uma síntese."
                         },
                         new
                         {
-                            Id = new Guid("54dcd02d-9189-466e-acd3-481b1e5bd319"),
+                            Id = new Guid("b05ecef6-95b2-4fac-8e63-c7ed0b7edf73"),
                             Content = "O principal objetivo do terrorismo contemporâneo é manter o status quo por meio de mensagens falsas."
                         },
                         new
                         {
-                            Id = new Guid("56d1e34d-4581-40bc-848a-285f00669670"),
+                            Id = new Guid("8ace563b-1e49-4810-9dc5-e2a1bf92c62c"),
                             Content = "As pessoas devem replicar, ipsis litteris, relatos pré-concebidos que circulam na rede."
                         },
                         new
                         {
-                            Id = new Guid("a6472904-935a-4aef-aa24-bd284837a359"),
+                            Id = new Guid("6d491ecb-9333-4031-b89e-733d3e7b4cd3"),
                             Content = "Ao repercutir na internet fatos que causam grande comoção, os internautas devem checá-los a posteriori."
                         },
                         new
                         {
-                            Id = new Guid("30d3064e-2c57-4780-af68-be25310e0e26"),
+                            Id = new Guid("f8979a3b-2962-41a2-bb2c-b1fd5dc4c2bd"),
                             Content = "E Recomenda-se seguir a intuição, ao divulgar informações pelas redes sociais ou, lato sensu, ao retuitá-las."
                         },
                         new
                         {
-                            Id = new Guid("738b87eb-472c-4d80-88b1-6c1975bd435c"),
+                            Id = new Guid("ffd0bff3-40e4-443f-a625-9cb329fd5b40"),
                             Content = "15°"
                         },
                         new
                         {
-                            Id = new Guid("70d23acf-90b0-49cb-8a1b-fc362481fb58"),
+                            Id = new Guid("b5ee87ea-6f83-448c-a7dc-6720a01060a2"),
                             Content = "22,5°"
                         },
                         new
                         {
-                            Id = new Guid("649b1cda-57b2-48ac-8972-34055927b95e"),
+                            Id = new Guid("2650d896-bcf6-4608-89bd-18c8c43f9ac9"),
                             Content = "45°"
                         },
                         new
                         {
-                            Id = new Guid("348a45e4-9c52-4cf3-b605-2daa8f261762"),
+                            Id = new Guid("704664e2-12b4-42c8-9c4e-82ec7eac0449"),
                             Content = "30°"
                         },
                         new
                         {
-                            Id = new Guid("35932305-358a-481d-8bfd-7caac98bfad7"),
+                            Id = new Guid("2ccc210b-a607-45f2-96d9-b60ec1929fe6"),
                             Content = "60°"
                         },
                         new
                         {
-                            Id = new Guid("5743897c-ac4e-4d83-81a7-a83e63b7a65a"),
+                            Id = new Guid("c4aeff11-fe3d-4bcc-b590-aa80a1996b4e"),
                             Content = "menor do que 128."
                         },
                         new
                         {
-                            Id = new Guid("b053f9de-aa36-4f51-aa22-1fcbdaa0d47d"),
+                            Id = new Guid("1a0b07b7-b789-45be-a7cd-2581848cdd69"),
                             Content = "entre 128 e 129."
                         },
                         new
                         {
-                            Id = new Guid("4a5a630e-e086-4047-8c9d-f0b7fa84af81"),
+                            Id = new Guid("d08512a2-d3de-4108-9bad-4277df054b37"),
                             Content = "entre 129 e 130."
                         },
                         new
                         {
-                            Id = new Guid("4fc415f7-e6f8-4b0c-95f6-d0ed34d8a3e8"),
+                            Id = new Guid("bcb3e2df-0c79-4a3b-933c-1a18098d0d6d"),
                             Content = "entre 130 e 131."
                         },
                         new
                         {
-                            Id = new Guid("e6990ea6-23e1-4bac-bbf6-a1651ae2cde9"),
+                            Id = new Guid("c5153cc4-f304-480c-b0f8-acd8752daeef"),
                             Content = "maior que 131"
                         },
                         new
                         {
-                            Id = new Guid("d40bbbaf-db09-426f-b45e-02c449ab856f"),
+                            Id = new Guid("97639e4b-7a86-453b-9e92-5c318ec1d2c7"),
                             Content = "4,64"
                         },
                         new
                         {
-                            Id = new Guid("d65d3a17-17cc-406e-ba33-4b5cdb37e993"),
+                            Id = new Guid("f0496687-42aa-42a1-ac7e-a6c76ee44426"),
                             Content = "8,32"
                         },
                         new
                         {
-                            Id = new Guid("0c6a95fd-ddf4-407c-a31c-75f0baeaecdb"),
+                            Id = new Guid("1f453586-7302-4b67-8cc8-062324114408"),
                             Content = "6.62"
                         },
                         new
                         {
-                            Id = new Guid("b7dcd9e8-7fc5-4b6b-a5b2-b9dedd1a2f58"),
+                            Id = new Guid("b1d4f086-1231-4eae-9280-82505e245256"),
                             Content = "3,68"
                         },
                         new
                         {
-                            Id = new Guid("bd8803ba-ba25-495c-8c04-3783ff31b233"),
+                            Id = new Guid("8aee8ea8-70bd-4424-bdef-9f306af121f9"),
                             Content = "5,34"
                         },
                         new
                         {
-                            Id = new Guid("6c08cb1b-6533-4cbe-9465-d0161e54e91b"),
+                            Id = new Guid("98b62ddb-11fc-486b-916c-8da5834c6c1c"),
                             Content = "O debate é uma condição sine qua non para que da tese e da antítese resulte uma síntese."
                         },
                         new
                         {
-                            Id = new Guid("c8f4cd07-1bea-4fd3-84cb-cfa17c50c7b9"),
+                            Id = new Guid("d67e12ab-94f7-46b6-abc6-ea887dcafa4e"),
                             Content = "O principal objetivo do terrorismo contemporâneo é manter o status quo por meio de mensagens falsas."
                         },
                         new
                         {
-                            Id = new Guid("0315c0ab-3120-453a-9ab4-ffcbc29f90c1"),
+                            Id = new Guid("6e595aca-d6fa-45aa-954b-a2b9ab6b7c24"),
                             Content = "As pessoas devem replicar, ipsis litteris, relatos pré-concebidos que circulam na rede."
                         },
                         new
                         {
-                            Id = new Guid("41eec0ba-5fab-4620-8f83-c6aec58a686f"),
+                            Id = new Guid("6a36a531-6ac3-433a-b368-49f97d5e8179"),
                             Content = "Ao repercutir na internet fatos que causam grande comoção, os internautas devem checá-los a posteriori."
                         },
                         new
                         {
-                            Id = new Guid("71dd8b0e-9232-4bd3-bae9-251ca26d523e"),
+                            Id = new Guid("0a49b696-f5ae-44b2-b8ce-30a81d381e3c"),
                             Content = "E Recomenda-se seguir a intuição, ao divulgar informações pelas redes sociais ou, lato sensu, ao retuitá-las."
                         },
                         new
                         {
-                            Id = new Guid("c3e30d0e-dbb5-4b31-88b6-1816465c0e94"),
+                            Id = new Guid("863e9fba-4869-4855-835b-90cd254b7f7c"),
                             Content = "15°"
                         },
                         new
                         {
-                            Id = new Guid("6d15c8d2-5c3b-4180-a8e5-599b9a085ff3"),
+                            Id = new Guid("ca77f135-5a90-4793-81aa-6e17fbb4e8c3"),
                             Content = "22,5°"
                         },
                         new
                         {
-                            Id = new Guid("86cacd23-80e7-4e6d-9169-7a38e4758a79"),
+                            Id = new Guid("2578e1c4-adbc-48c4-a349-e0c626bf9d36"),
                             Content = "45°"
                         },
                         new
                         {
-                            Id = new Guid("9f0ae8d9-39ce-42d1-a58c-28a04684e6e7"),
+                            Id = new Guid("dc8c32e3-1174-495a-b9fa-5ee4959adbce"),
                             Content = "30°"
                         },
                         new
                         {
-                            Id = new Guid("7edd21f5-629f-4f5d-b574-fb21db6c17d3"),
+                            Id = new Guid("e44b1f61-90eb-44ad-b6ff-84dc2d1eca0c"),
                             Content = "60°"
                         },
                         new
                         {
-                            Id = new Guid("7c98f79e-023b-4a43-a7ea-86c6f9574784"),
+                            Id = new Guid("387b1481-c070-44b5-80ef-dafabffd66ac"),
                             Content = "menor do que 128."
                         },
                         new
                         {
-                            Id = new Guid("00e6d697-0dc5-421f-bf95-22af74b4a747"),
+                            Id = new Guid("ea08de75-de76-43a5-a900-26fa7bdb3a8b"),
                             Content = "entre 128 e 129."
                         },
                         new
                         {
-                            Id = new Guid("eec15771-bef4-4fb2-8038-04199c9a2a12"),
+                            Id = new Guid("0228672e-978f-42b3-b298-fba5e67f2c2f"),
                             Content = "entre 129 e 130."
                         },
                         new
                         {
-                            Id = new Guid("c1b4c4c0-f95a-4682-b0c8-b2a62cd89342"),
+                            Id = new Guid("ee26a392-bf2b-4869-8e33-9e3b5748cb99"),
                             Content = "entre 130 e 131."
                         },
                         new
                         {
-                            Id = new Guid("ba6b5d4c-45fb-4bb2-a42d-a88663d82406"),
+                            Id = new Guid("a22a7551-a513-4039-b5dc-9dbe179c7e61"),
                             Content = "maior que 131"
                         },
                         new
                         {
-                            Id = new Guid("34b29994-1994-45bb-82b0-f6245c364c53"),
+                            Id = new Guid("d3bb5e76-ee66-4714-ae84-47b2f1d95f71"),
                             Content = "4,64"
                         },
                         new
                         {
-                            Id = new Guid("9461b339-d713-4369-b920-388a6c05235c"),
+                            Id = new Guid("c2b02592-56a4-4bdc-8a1d-d61c4040b245"),
                             Content = "8,32"
                         },
                         new
                         {
-                            Id = new Guid("d924dae7-8b8c-4f95-8a81-ccfb659a9e55"),
+                            Id = new Guid("37785e1d-fcb0-4113-bdac-99ef7b56f90c"),
                             Content = "6.62"
                         },
                         new
                         {
-                            Id = new Guid("2b3ba25b-60ff-49f1-a45a-d894f05db2a4"),
+                            Id = new Guid("c3333419-3209-4d26-9101-812807039a42"),
                             Content = "3,68"
                         },
                         new
                         {
-                            Id = new Guid("22091b88-0463-4a72-80b9-b04f29f652a9"),
+                            Id = new Guid("bb09dde0-da40-400b-a8b8-5f61c74fdc2b"),
                             Content = "5,34"
                         },
                         new
                         {
-                            Id = new Guid("9939396d-78c5-4bdc-a6a2-82d85a69aa65"),
+                            Id = new Guid("bb17d6cb-5d13-4c6f-b441-3ca6e2e3bc71"),
                             Content = "O debate é uma condição sine qua non para que da tese e da antítese resulte uma síntese."
                         },
                         new
                         {
-                            Id = new Guid("25bc2496-fbb2-4c12-8e7f-9cfdbdeed26c"),
+                            Id = new Guid("945ac710-77fd-49e8-b80f-13261e33c115"),
                             Content = "O principal objetivo do terrorismo contemporâneo é manter o status quo por meio de mensagens falsas."
                         },
                         new
                         {
-                            Id = new Guid("5af1a9f5-be79-4703-a300-959fa1506299"),
+                            Id = new Guid("08678161-87ad-4ae7-9cd8-21edec558246"),
                             Content = "As pessoas devem replicar, ipsis litteris, relatos pré-concebidos que circulam na rede."
                         },
                         new
                         {
-                            Id = new Guid("bcc0791c-0f7c-4457-a338-3bba01fb0eb6"),
+                            Id = new Guid("01e86d51-bb0d-458d-8a8b-0add58b661ac"),
                             Content = "Ao repercutir na internet fatos que causam grande comoção, os internautas devem checá-los a posteriori."
                         },
                         new
                         {
-                            Id = new Guid("63126275-8d0f-491f-9433-2bd6063bb7f1"),
+                            Id = new Guid("31791314-91b2-4394-ab92-6be438829445"),
                             Content = "E Recomenda-se seguir a intuição, ao divulgar informações pelas redes sociais ou, lato sensu, ao retuitá-las."
                         },
                         new
                         {
-                            Id = new Guid("9a62e495-d936-47be-9776-11bbd565619a"),
+                            Id = new Guid("469e5ed2-2e70-4790-83ad-9af4ef75790f"),
                             Content = "15°"
                         },
                         new
                         {
-                            Id = new Guid("2c4ed05b-9ba2-4ca5-89a9-1a6059c7a704"),
+                            Id = new Guid("736b4453-6b1e-4c5a-a455-5c88e47ae5aa"),
                             Content = "22,5°"
                         },
                         new
                         {
-                            Id = new Guid("42fa4dc6-5564-409d-9b98-3a8480510452"),
+                            Id = new Guid("1d80f186-7d01-4dfe-b91e-087b537e6d39"),
                             Content = "45°"
                         },
                         new
                         {
-                            Id = new Guid("15872782-c08b-4b02-939b-f31afd011f4d"),
+                            Id = new Guid("ebbe4589-c510-4438-ad21-97bf684908b6"),
                             Content = "30°"
                         },
                         new
                         {
-                            Id = new Guid("19dfe1fe-a719-48f8-bc4b-4282e1f73a2f"),
+                            Id = new Guid("f778b369-dfd4-49fb-a0af-ef18fac23de1"),
                             Content = "60°"
+                        });
+                });
+
+            modelBuilder.Entity("BnE.EducationVest.Domain.Users.Entities.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("BirthDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("birth_date");
+
+                    b.Property<string>("CognitoUserId")
+                        .HasColumnType("text")
+                        .HasColumnName("cognito_user_id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_date");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("varchar(320)")
+                        .HasColumnName("email");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("varchar(10)")
+                        .HasColumnName("gender");
+
+                    b.Property<bool>("IsTeacher")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_teacher");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("phone_number");
+
+                    b.Property<DateTime?>("RemovedDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("removed_date");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_date");
+
+                    b.HasKey("Id")
+                        .HasName("pk_user");
+
+                    b.ToTable("user");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("d574be54-0eab-448d-8169-7da2367e7ffb"),
+                            BirthDate = new DateTime(2000, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CognitoUserId = "6e32ca6c-2a66-4ea6-a0c4-cf655dab5191",
+                            CreatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 274, DateTimeKind.Local).AddTicks(8043),
+                            Email = "sacchitiellogiovanni@gmail.com",
+                            Gender = "Masculino",
+                            IsTeacher = false,
+                            Name = "Giovanni Sacchitiello",
+                            PhoneNumber = "11991392711",
+                            UpdatedDate = new DateTime(2021, 5, 21, 15, 24, 14, 274, DateTimeKind.Local).AddTicks(8050)
                         });
                 });
 
@@ -1279,6 +1499,36 @@ namespace BnE.EducationVest.API.Migrations
                     b.Navigation("Subject");
                 });
 
+            modelBuilder.Entity("BnE.EducationVest.Domain.Exam.Entities.QuestionAnswer", b =>
+                {
+                    b.HasOne("BnE.EducationVest.Domain.Exam.Entities.Alternative", "ChosenAlternative")
+                        .WithMany("QuestionAnswers")
+                        .HasForeignKey("ChosenAlternativeId")
+                        .HasConstraintName("fk_question_answers_alternative_chosen_alternative_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BnE.EducationVest.Domain.Exam.Entities.Question", "Question")
+                        .WithMany("QuestionAnswers")
+                        .HasForeignKey("QuestionId")
+                        .HasConstraintName("fk_question_answers_question_question_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BnE.EducationVest.Domain.Users.Entities.User", "User")
+                        .WithMany("QuestionAnswers")
+                        .HasForeignKey("UserId")
+                        .HasConstraintName("fk_question_answers_user_user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChosenAlternative");
+
+                    b.Navigation("Question");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("BnE.EducationVest.Domain.Exam.Entities.Subject", b =>
                 {
                     b.HasOne("BnE.EducationVest.Domain.Exam.Entities.Subject", "SubjectFather")
@@ -1301,6 +1551,68 @@ namespace BnE.EducationVest.API.Migrations
                     b.Navigation("Exam");
                 });
 
+            modelBuilder.Entity("BnE.EducationVest.Domain.Users.Entities.User", b =>
+                {
+                    b.OwnsOne("BnE.EducationVest.Domain.Users.ValueObjects.AddressVO", "Address", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("CEP")
+                                .HasColumnType("char(9)")
+                                .HasColumnName("address.cep");
+
+                            b1.Property<string>("City")
+                                .HasColumnType("char(50)")
+                                .HasColumnName("adress.city");
+
+                            b1.Property<string>("Neighborhood")
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("address.neighborhood");
+
+                            b1.Property<string>("Number")
+                                .HasColumnType("text")
+                                .HasColumnName("address_number");
+
+                            b1.Property<string>("State")
+                                .HasColumnType("char(2)")
+                                .HasColumnName("adress.state");
+
+                            b1.Property<string>("Street")
+                                .HasColumnType("varchar(150)")
+                                .HasColumnName("address.street");
+
+                            b1.HasKey("UserId")
+                                .HasName("pk_user");
+
+                            b1.ToTable("user");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId")
+                                .HasConstraintName("fk_user_user_id");
+
+                            b1.HasData(
+                                new
+                                {
+                                    UserId = new Guid("d574be54-0eab-448d-8169-7da2367e7ffb"),
+                                    CEP = "03320020",
+                                    City = "São Paulo",
+                                    Neighborhood = "Carrão",
+                                    Number = "148",
+                                    State = "SP",
+                                    Street = "Rua antonio ciucio"
+                                });
+                        });
+
+                    b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("BnE.EducationVest.Domain.Exam.Entities.Alternative", b =>
+                {
+                    b.Navigation("QuestionAnswers");
+                });
+
             modelBuilder.Entity("BnE.EducationVest.Domain.Exam.Entities.Exam", b =>
                 {
                     b.Navigation("Periods");
@@ -1311,6 +1623,8 @@ namespace BnE.EducationVest.API.Migrations
             modelBuilder.Entity("BnE.EducationVest.Domain.Exam.Entities.Question", b =>
                 {
                     b.Navigation("Alternatives");
+
+                    b.Navigation("QuestionAnswers");
                 });
 
             modelBuilder.Entity("BnE.EducationVest.Domain.Exam.Entities.Subject", b =>
@@ -1325,6 +1639,11 @@ namespace BnE.EducationVest.API.Migrations
                     b.Navigation("Alternative");
 
                     b.Navigation("Question");
+                });
+
+            modelBuilder.Entity("BnE.EducationVest.Domain.Users.Entities.User", b =>
+                {
+                    b.Navigation("QuestionAnswers");
                 });
 #pragma warning restore 612, 618
         }

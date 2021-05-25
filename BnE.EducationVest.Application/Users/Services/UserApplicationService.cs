@@ -5,15 +5,25 @@ using BnE.EducationVest.Domain.Users.Interfaces.InfraService;
 using BnE.EducationVest.Domain.Users.Entities;
 using System.Threading.Tasks;
 using BnE.EducationVest.Domain.Users.ValueObjects;
+using BnE.EducationVest.Domain.Users.Interfaces.InfraData;
+using Microsoft.AspNetCore.Http;
+using BnE.EducationVest.Application.Common.Extensions;
+using System.Linq;
+using System.Net;
 
 namespace BnE.EducationVest.Application.Users.Services
 {
     public class UserApplicationService : IUserApplicationService
     {
         private readonly IUserAuthService _userAuthService;
-        public UserApplicationService(IUserAuthService userAuthService)
+        private readonly IUserRepository _userRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public UserApplicationService(IUserAuthService userAuthService, IUserRepository userRepository,
+                                      IHttpContextAccessor httpContextAccessor)
         {
             _userAuthService = userAuthService;
+            _userRepository = userRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<Either<ErrorResponseModel, object>> AddUserAsync(CreateUserRequestModel createUserRequestModel)
         {
@@ -26,7 +36,8 @@ namespace BnE.EducationVest.Application.Users.Services
                                 createUserRequestModel.PhoneNumber, createUserRequestModel.Gender, createUserRequestModel.Email, 
                                 createUserRequestModel.BirthDate, addressVO, createUserRequestModel.IsTeacher);
             await _userAuthService.CreateUserAsync(user);
-            return null;
+            await _userRepository.AddAsync(user);
+            return null ;
         }
 
         public async Task<Either<ErrorResponseModel, object>> ChangePasswordAsAdmin(FirstPasswordChangeRequestModel firstPasswordChangeRequestModel)
@@ -51,7 +62,18 @@ namespace BnE.EducationVest.Application.Users.Services
 
         public async Task<Either<ErrorResponseModel, object>> LoginAsync(LoginRequestModel loginRequestModel)
         {
-            return await _userAuthService.LoginAsync(loginRequestModel.Username, loginRequestModel.Password);
+            if (loginRequestModel.LoginFlow == ELoginFlow.Credentials)
+                return await _userAuthService.LoginAsync(loginRequestModel.Username, loginRequestModel.Password);
+            else
+                return await _userAuthService.LoginRefreshTokenAsync(loginRequestModel.RefreshToken);
+        }
+        public async Task<Either<ErrorResponseModel, UserMenuViewModel>> GetUserMenu()
+        {
+            var groups = _httpContextAccessor.GetTokenData().CognitoGroups.ToList();
+            //TODO: Refatorar forma de verificar grupos, está altamente acoplado com a nomenclatura do cognito
+            var menus = await _userRepository.GetAvailableMenusByUserGroup(groups.Contains("Teachers"), groups.Contains("Students"));
+
+            return new Either<ErrorResponseModel, UserMenuViewModel>(new UserMenuViewModel() { Menus = menus.Select(x => x.Name) }, HttpStatusCode.OK);
         }
     }
 }

@@ -23,6 +23,7 @@ namespace BnE.EducationVest.Infra.Data.Common
         public DbSet<IncrementedTextVO> IncrementedTexts { get; set; }
         public DbSet<ExamPeriodVO> ExamPeriods { get; set; }
         public DbSet<Subject> Subjects { get; set; }
+        public DbSet<UserMenu> UserMenus { get; set; }
 
         public EducationVestContext(DbContextOptions<EducationVestContext> options) :
             base(options)
@@ -40,6 +41,7 @@ namespace BnE.EducationVest.Infra.Data.Common
             modelBuilder.ApplyConfiguration(new SubjectMapping());
             modelBuilder.ApplyConfiguration(new QuestionAnswerMapping());
             modelBuilder.ApplyConfiguration(new UserMapping());
+            modelBuilder.ApplyConfiguration(new UserMenuMapping());
             modelBuilder.Seed();
         }
 

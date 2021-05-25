@@ -4,6 +4,7 @@ using Amazon.Extensions.CognitoAuthentication;
 using BnE.EducationVest.Domain;
 using BnE.EducationVest.Domain.Common;
 using BnE.EducationVest.Domain.Users.Interfaces.InfraService;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,8 @@ namespace BnE.EducationVest.Infra.Service.User.Services
         private readonly IMailSenderService _mailSender;
 
         public UserAuthService(IAmazonCognitoIdentityProvider amazonCognitoIdentityProviderClient, 
-                               CognitoUserPool cognitoUserPool, IDistributedCache cache, IMailSenderService mailSenderService)
+                               CognitoUserPool cognitoUserPool, IDistributedCache cache, IMailSenderService mailSenderService,
+                               IHttpContextAccessor httpContextAccessor)
         {
             _amazonCognitoIdentityProviderClient = amazonCognitoIdentityProviderClient;
             _cognitoUserPool = cognitoUserPool;
@@ -53,7 +55,7 @@ namespace BnE.EducationVest.Infra.Service.User.Services
             //Verificcar se usuario existe
             var recoverCode = GenerateRandomAlphanumeric(5);
             await SaveUserRecoverTokenOnCache(user.UserID, recoverCode);
-            await _mailSender.SendEmailAsync(username, "Recuperar senha", "TESTE: SEU CODIGO DE RECUPERACAO É"+ recoverCode);
+            await _mailSender.SendEmailAsync(username, "Recuperar senha", "TESTE: SEU CODIGO DE RECUPERACAO É: "+ recoverCode);
             //Enviar email
 
             return new Either<ErrorResponseModel, object>(null,System.Net.HttpStatusCode.OK);
@@ -141,6 +143,23 @@ namespace BnE.EducationVest.Infra.Service.User.Services
                 return new Either<ErrorResponseModel, object>(new ErrorResponseModel(response.ChallengeName), System.Net.HttpStatusCode.BadRequest);
             return new Either<ErrorResponseModel, object>(response.AuthenticationResult, response.HttpStatusCode);
         }
+
+        public async Task<Either<ErrorResponseModel, object>> LoginRefreshTokenAsync(string refreshToken)
+        {
+            var request = new AdminInitiateAuthRequest
+            {
+                UserPoolId = _cognitoUserPool.PoolID,
+                ClientId = _cognitoUserPool.ClientID,
+                AuthFlow = AuthFlowType.REFRESH_TOKEN_AUTH
+            };
+
+            request.AuthParameters.Add("REFRESH_TOKEN", refreshToken);
+
+            var response = await _amazonCognitoIdentityProviderClient.AdminInitiateAuthAsync(request);
+            if (response.AuthenticationResult == null)
+                return new Either<ErrorResponseModel, object>(new ErrorResponseModel(response.ChallengeName), System.Net.HttpStatusCode.BadRequest);
+            return new Either<ErrorResponseModel, object>(response.AuthenticationResult, response.HttpStatusCode);
+        }
         private List<AttributeType> GetUserAttributesByUserEntity(Domain.Users.Entities.User user)
         {
             long unixStart = (long)DateTime.Now
@@ -194,6 +213,11 @@ namespace BnE.EducationVest.Infra.Service.User.Services
                             Name = "updated_at",
                             Value = unixStart.ToString()
                         },
+                          new AttributeType()
+                          {
+                              Name = "custom:UserId",
+                              Value = user.Id.ToString()
+                          }
                     };
             return userAttributes;
         }
