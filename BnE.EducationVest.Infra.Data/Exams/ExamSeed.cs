@@ -377,7 +377,7 @@ namespace BnE.EducationVest.Infra.Data.Exams
 
             var user = new User("Giovanni Sacchitiello", "41758132841", "11991392711", "Masculino", "sacchitiellogiovanni@gmail.com", 
                                 DateTime.Parse("2000/05/05"), new AddressVO("03320020", "Rua antonio ciucio", "Carrão", "São Paulo", "SP", "148"), false);
-            user.SetCognitoUserId("6e32ca6c-2a66-4ea6-a0c4-cf655dab5191");
+            user.SetCognitoUserId(Guid.Parse("6e32ca6c-2a66-4ea6-a0c4-cf655dab5191"));
 
             var examQuizPeriods = new List<ExamPeriodVO>()
             {

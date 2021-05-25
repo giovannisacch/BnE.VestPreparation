@@ -14,6 +14,11 @@ namespace BnE.EducationVest.Infra.Data.Users.Mappings
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.HasKey(x => x.Id);
+            builder
+               .Property(x => x.CognitoUserId)
+               .HasColumnType("uuid");
+            builder.HasIndex(x => x.CognitoUserId);
+           
 
             builder.OwnsOne(owns => owns.Address, address =>
             {
@@ -30,12 +35,16 @@ namespace BnE.EducationVest.Infra.Data.Users.Mappings
                        .HasColumnType("varchar(50)");
                  
                 address.Property(x => x.City)
-                       .HasColumnName("adress.city")
+                       .HasColumnName("address.city")
                        .HasColumnType("char(50)");
 
                 address.Property(x => x.State)
-                     .HasColumnName("adress.state")
+                     .HasColumnName("address.state")
                      .HasColumnType("char(2)");
+
+                address.Property(x => x.Number)
+                       .HasColumnName("address.number")
+                       .HasColumnType("char(7)");
             });
 
             builder

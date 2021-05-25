@@ -90,7 +90,7 @@ namespace BnE.EducationVest.Infra.Service.User.Services
                   UserPoolId = _cognitoUserPool.PoolID
               });
 
-            user.SetCognitoUserId(result.User.Username);
+            user.SetCognitoUserId(Guid.Parse(result.User.Username));
         }
 
         public async Task<Either<ErrorResponseModel, object>> AdminUpdateUserPasswordAsync(string username, string newPassword, string oldPassword)

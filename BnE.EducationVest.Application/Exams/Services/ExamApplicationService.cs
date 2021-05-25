@@ -24,6 +24,15 @@ namespace BnE.EducationVest.Application.Exams.Services
             _examRepository = examRepository;
             _httpContextAccessor = httpContextAccessor;
         }
+        //public async Task<Either<ErrorResponseModel, Guid>> AddExamAnswer()
+        //{
+        //    var tokenData =_httpContextAccessor.GetTokenData();
+        //    if ()
+        //    {
+                
+        //    }
+
+        //}
         public async Task<Either<ErrorResponseModel, object>> AddExamPeriods(Guid examId, List<ExamPeriodViewModel> periods)
         {
             var exam = await _examRepository.FindByIdAsync(examId);

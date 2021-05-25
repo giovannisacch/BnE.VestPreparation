@@ -17,7 +17,7 @@ namespace BnE.EducationVest.Domain.Users.Entities
         public DateTime BirthDate { get; private set; }
         public AddressVO Address { get; private set; }
         public List<QuestionAnswer> QuestionAnswers { get; private set; }
-        public string CognitoUserId { get; private set; }
+        public Guid CognitoUserId { get; private set; }
         public bool IsTeacher { get; set; }
         internal User() { }
         public User(string name, string cpf, string phoneNumber, string gender, string email, 
@@ -33,7 +33,7 @@ namespace BnE.EducationVest.Domain.Users.Entities
             IsTeacher = isTeacher;
         }
         
-        public void SetCognitoUserId(string cognitoUserId)
+        public void SetCognitoUserId(Guid cognitoUserId)
         {
             CognitoUserId = cognitoUserId;
         }
