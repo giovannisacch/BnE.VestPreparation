@@ -75,10 +75,10 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
         {
             return await _context
                 .Questions
+                .Where(x => x.ExamId == examId)
                 .OrderBy(x => x.Index)
                 .Skip(from)
                 .Take(to)
-                .Where(x => x.ExamId == examId)
                 .Include(x => x.QuestionAnswers.Where(qa => qa.UserId == userId))
                 .ThenInclude(x => x.ChosenAlternative)
                 .Include(x => x.Enunciated)

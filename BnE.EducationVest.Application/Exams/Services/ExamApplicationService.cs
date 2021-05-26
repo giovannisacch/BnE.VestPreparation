@@ -106,7 +106,7 @@ namespace BnE.EducationVest.Application.Exams.Services
             foreach (var item in response.AvailableExams.Where(x => x.WasStarted).ToList())
             {
                 var questionList = await _examRepository.GetQuestionWithAnswersByUserExamAsync(item.ExamId, userId);
-                if (questionList.Any(x => x.QuestionAnswers == null))
+                if (questionList.Any(x => x.QuestionAnswers == null || x.QuestionAnswers.Count == 0))
                     continue;
                 response.AvailableExams.Remove(item);
             }
