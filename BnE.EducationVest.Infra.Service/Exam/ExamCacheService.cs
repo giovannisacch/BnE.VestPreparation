@@ -22,7 +22,7 @@ namespace BnE.EducationVest.Infra.Service.Exam
             _jsonSerializerSettings = new JsonSerializerSettings()
             {
                 ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
-                ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 ContractResolver = new PrivateResolver()
             };
         }
@@ -68,11 +68,15 @@ namespace BnE.EducationVest.Infra.Service.Exam
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
             var prop = base.CreateProperty(member, memberSerialization);
+
             if (!prop.Writable)
             {
                 var property = member as PropertyInfo;
-                var hasPrivateSetter = property?.GetSetMethod(true) != null;
-                prop.Writable = hasPrivateSetter;
+                if (property != null)
+                {
+                    var hasNonPublicSetter = property.GetSetMethod(true) != null;
+                    prop.Writable = hasNonPublicSetter;
+                }
             }
             return prop;
         }
