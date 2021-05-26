@@ -1,4 +1,5 @@
 ﻿using BnE.EducationVest.Application.Exams.ViewModels;
+using BnE.EducationVest.Application.Exams.ViewModels.Response;
 using BnE.EducationVest.Domain.Common;
 using System;
 using System.Collections.Generic;
@@ -13,5 +14,8 @@ namespace BnE.EducationVest.Application.Exams.Interfaces
         Task<Either<ErrorResponseModel, ExamViewModel>> GetExam(Guid examId);
         Task<Either<ErrorResponseModel, IEnumerable<ExamViewModel>>> GetAllExams();
         Task<Either<ErrorResponseModel, object>> AddExamPeriods(Guid examId, List<ExamPeriodViewModel> periods);
+        Task<Either<ErrorResponseModel, Guid>> AddExamQuestionAnswer(AnswerQuestionRequestViewModel answerQuestionResponse);
+        Task<Either<ErrorResponseModel, object>> UpdateExamQuestionAnswer(UpdateAnswerQuestionRequestViewModel updateAnswerQuestionResponse);
+        Task<Either<ErrorResponseModel, GetExamQuestionListViewModel>> GetQuestions(GetQuestionListPaginatedRequestViewModel getQuestionListPaginatedRequest);
     }
 }

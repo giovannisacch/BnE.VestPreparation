@@ -23,6 +23,7 @@ namespace BnE.EducationVest.Infra.Data.Common
         public DbSet<IncrementedTextVO> IncrementedTexts { get; set; }
         public DbSet<ExamPeriodVO> ExamPeriods { get; set; }
         public DbSet<Subject> Subjects { get; set; }
+        public DbSet<QuestionAnswer> QuestionsAnswers { get; set; }
         public DbSet<UserMenu> UserMenus { get; set; }
 
         public EducationVestContext(DbContextOptions<EducationVestContext> options) :

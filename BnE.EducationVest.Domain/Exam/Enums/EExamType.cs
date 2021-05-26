@@ -10,6 +10,7 @@ namespace BnE.EducationVest.Domain.Exam.Enums
     {
         Insper,
         FGV,
-        Quiz
+        Quiz,
+        InsperAntiga
     }
 }

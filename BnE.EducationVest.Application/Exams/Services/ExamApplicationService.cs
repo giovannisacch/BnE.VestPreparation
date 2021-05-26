@@ -2,10 +2,18 @@
 using BnE.EducationVest.Application.Exams.Interfaces;
 using BnE.EducationVest.Application.Exams.Mappings;
 using BnE.EducationVest.Application.Exams.ViewModels;
+using BnE.EducationVest.Application.Exams.ViewModels.Response;
 using BnE.EducationVest.Domain;
 using BnE.EducationVest.Domain.Common;
+using BnE.EducationVest.Domain.Exam.Entities;
 using BnE.EducationVest.Domain.Exam.Enums;
+using BnE.EducationVest.Domain.Exam.Extensions;
+using BnE.EducationVest.Domain.Exam.Interfaces;
 using BnE.EducationVest.Domain.Exam.Interfaces.Infra;
+using BnE.EducationVest.Domain.Exam.Interfaces.InfraService;
+using BnE.EducationVest.Domain.Users.Interfaces;
+using BnE.EducationVest.Domain.Users.Interfaces.InfraData;
+using BnE.EducationVest.Domain.Users.Interfaces.InfraService;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -19,20 +27,42 @@ namespace BnE.EducationVest.Application.Exams.Services
     {
         private readonly IExamRepository _examRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public ExamApplicationService(IExamRepository examRepository, IHttpContextAccessor httpContextAccessor)
+        private readonly IUserDomainService _userDomainService;
+        private readonly IExamDomainService _examDomainService;
+        private readonly IExamCacheService _examCacheService;
+        public ExamApplicationService(IExamRepository examRepository, IHttpContextAccessor httpContextAccessor,
+                                      IUserDomainService userDomainService, IExamDomainService examDomainService,
+                                      IExamCacheService examCacheService)
         {
             _examRepository = examRepository;
             _httpContextAccessor = httpContextAccessor;
+            _userDomainService = userDomainService;
+            _examDomainService = examDomainService;
+            _examCacheService = examCacheService;
         }
-        //public async Task<Either<ErrorResponseModel, Guid>> AddExamAnswer()
-        //{
-        //    var tokenData =_httpContextAccessor.GetTokenData();
-        //    if ()
-        //    {
-                
-        //    }
 
-        //}
+        public async Task<Either<ErrorResponseModel, object>> UpdateExamQuestionAnswer(UpdateAnswerQuestionRequestViewModel updateAnswerQuestionResponse)
+        {
+            var tokenData = _httpContextAccessor.GetTokenData();
+            var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
+            var actualQuestionAnswer = await _examRepository.GetQuestionAnswerById(updateAnswerQuestionResponse.QuestionAnswerId);
+            if (actualQuestionAnswer == null)
+                return new Either<ErrorResponseModel, object>(new ErrorResponseModel(ErrorConstants.QUESTION_ANSWER_NOT_FOUND), HttpStatusCode.BadRequest);
+            if (!actualQuestionAnswer.UserId.Equals(userId))
+                return new Either<ErrorResponseModel, object>(null, HttpStatusCode.Unauthorized);
+
+            actualQuestionAnswer.UpdateChosenAlternative(updateAnswerQuestionResponse.ChosenAlternativeId);
+            await _examRepository.UpdateExamQuestionAnswer(actualQuestionAnswer);
+            return new Either<ErrorResponseModel, object>(null, HttpStatusCode.OK);
+        }
+        public async Task<Either<ErrorResponseModel, Guid>> AddExamQuestionAnswer(AnswerQuestionRequestViewModel answerQuestionResponse)
+        {
+            var tokenData = _httpContextAccessor.GetTokenData();
+            var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
+            var newAnswer = new QuestionAnswer(answerQuestionResponse.QuestionId, userId, answerQuestionResponse.ChosenAlternativeId);
+            await _examDomainService.AnswerExamQuestion(answerQuestionResponse.ExamId, newAnswer);
+            return new Either<ErrorResponseModel, Guid>(newAnswer.Id, HttpStatusCode.OK);
+        }
         public async Task<Either<ErrorResponseModel, object>> AddExamPeriods(Guid examId, List<ExamPeriodViewModel> periods)
         {
             var exam = await _examRepository.FindByIdAsync(examId);
@@ -60,14 +90,26 @@ namespace BnE.EducationVest.Application.Exams.Services
         public async Task<Either<ErrorResponseModel, AvailableExamsViewModel>> GetAvailableExamsByUser()
         {
             var token =_httpContextAccessor.GetTokenData();
+            var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(token.CognitoId));
+
             var availableExams = await _examRepository.GetAvailableExams();
             var response = new AvailableExamsViewModel();
             response.AvailableExams = availableExams.Select(x => new AvailableExamViewModel()
             {
                 ExamId = x.Id,
                 ExamName = $"Simulado {x.ExamNumber} - {Enum.GetName(typeof(EExamType), x.ExamType)}",
-                ExpirationDate = x.GetActualAvailablePeriod().CloseDate
-            });
+                ExpirationDate = x.GetActualAvailablePeriod().CloseDate,
+                WasStarted = _examCacheService.VerifyIfUserStartedExam(userId, x.Id).Result,
+                QuestionsCount = x.ExamType.GetQuestionAmount()
+            }).ToList();
+
+            foreach (var item in response.AvailableExams.Where(x => x.WasStarted).ToList())
+            {
+                var questionList = await _examRepository.GetQuestionWithAnswersByUserExamAsync(item.ExamId, userId);
+                if (questionList.Any(x => x.QuestionAnswers == null))
+                    continue;
+                response.AvailableExams.Remove(item);
+            }
 
             return new Either<ErrorResponseModel, AvailableExamsViewModel>(response, HttpStatusCode.OK);
         }
@@ -85,6 +127,18 @@ namespace BnE.EducationVest.Application.Exams.Services
         {
             var examList = await _examRepository.FindAllAsync(true);
             return new Either<ErrorResponseModel, IEnumerable<ExamViewModel>>(examList.Select(x => x.MapToViewModel()), HttpStatusCode.OK);
+        }
+
+        public async Task<Either<ErrorResponseModel, GetExamQuestionListViewModel>> GetQuestions(GetQuestionListPaginatedRequestViewModel getQuestionListPaginatedRequest)
+        {
+            var tokenData = _httpContextAccessor.GetTokenData();
+            var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
+            var questions = await _examDomainService.GetExamQuestionsWithAnswers(getQuestionListPaginatedRequest.ExamId, userId, 
+                                                                                 getQuestionListPaginatedRequest.Page, getQuestionListPaginatedRequest.WasStarted);
+            return new Either<ErrorResponseModel, GetExamQuestionListViewModel>(new GetExamQuestionListViewModel() 
+            {
+                Questions = questions.Select(x => x.MapToViewModel())
+            }, HttpStatusCode.OK);
         }
     }
 }

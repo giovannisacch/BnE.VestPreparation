@@ -27,6 +27,7 @@ namespace BnE.EducationVest
             services.InjectApplicationServiceDependencies();
             services.InjectInfraServiceDependencies(Configuration);
             services.InjectInfraDataDependencies(Configuration);
+            services.InjectDomainServices();
             services.AddCors(x => { x.AddDefaultPolicy(x => x.AllowAnyOrigin()); });
             services.AddAuthentication("Bearer")
                 .AddJwtBearer(options =>

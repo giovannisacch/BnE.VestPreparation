@@ -8,12 +8,14 @@ namespace BnE.EducationVest.Application.Exams.ViewModels
 {
     public class AvailableExamsViewModel
     {
-        public IEnumerable<AvailableExamViewModel> AvailableExams { get; set; }
+        public List<AvailableExamViewModel> AvailableExams { get; set; }
     }
     public class AvailableExamViewModel
     {
         public Guid ExamId { get; set; }
         public string ExamName { get; set; }
         public DateTime ExpirationDate { get; set; }
+        public bool WasStarted { get; set; }
+        public int QuestionsCount { get; set; }
     }
 }

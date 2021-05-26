@@ -18,6 +18,12 @@ using BnE.EducationVest.Domain.Exam.Interfaces.Infra;
 using BnE.EducationVest.Infra.Data.Exams.Repositories;
 using BnE.EducationVest.Domain.Users.Interfaces.InfraData;
 using BnE.EducationVest.Infra.Data.Users.Repositories;
+using BnE.EducationVest.Domain.Exam.Interfaces.InfraService;
+using BnE.EducationVest.Infra.Service.Exam;
+using BnE.EducationVest.Domain.Exam.Interfaces;
+using BnE.EducationVest.Domain.Exam.Services;
+using BnE.EducationVest.Domain.Users.Interfaces;
+using BnE.EducationVest.Domain.Users.Services;
 
 namespace BnE.EducationVest.DI
 {
@@ -31,6 +37,26 @@ namespace BnE.EducationVest.DI
             services.AddScoped<IExamApplicationService, ExamApplicationService>(); 
         }
 
+        public static void InjectDomainServices(this IServiceCollection services)
+        {
+            services.AddScoped<IExamDomainService, ExamDomainService>();
+            services.AddScoped<IUserDomainService, UserDomainService>();
+        }
+        public static void InjectInfraDataDependencies(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDbContext<EducationVestContext>(options =>
+            {
+                options.EnableSensitiveDataLogging();
+                options.UseNpgsql(
+                    configuration.GetConnectionString("DefaultConnection"),
+                     x => x.MigrationsAssembly("BnE.EducationVest.API"));
+                options.UseSnakeCaseNamingConvention();
+            });
+
+            services.AddScoped<IExamRepository, ExamRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
+        }
         public static void InjectInfraServiceDependencies(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<AwsAuthSettings>(configuration.GetSection("AwsAuth"));
@@ -48,21 +74,8 @@ namespace BnE.EducationVest.DI
             });
 
             services.AddScoped<IMailSenderService, MailSenderService>();
-        }
-
-        public static void InjectInfraDataDependencies(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddDbContext<EducationVestContext>(options =>
-            {
-                options.EnableSensitiveDataLogging();
-                options.UseNpgsql(
-                    configuration.GetConnectionString("DefaultConnection"),
-                     x => x.MigrationsAssembly("BnE.EducationVest.API"));
-                options.UseSnakeCaseNamingConvention();
-            });
-
-            services.AddScoped<IExamRepository, ExamRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserCacheService, UserCacheService>();
+            services.AddScoped<IExamCacheService, ExamCacheService>();
         }
     }
 }

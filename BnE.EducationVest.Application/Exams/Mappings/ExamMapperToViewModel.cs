@@ -33,13 +33,24 @@ namespace BnE.EducationVest.Application.Exams.Mappings
                 QuestionId = question.Id,
                 Enunciated = question.Enunciated.MapToViewModel() ,
                 Index = question.Index,
-                Alternatives = question.Alternatives.Select(x => x.MapToViewModel()).ToList()
+                Alternatives = question.Alternatives.Select(x => x.MapToViewModel()).ToList(),
+                Answer = (question.QuestionAnswers != null && question.QuestionAnswers.Count > 0) 
+                        ? question.QuestionAnswers.First().MapToViewModel() : null
+            };
+        }
+        public static QuestionAnswerViewModel MapToViewModel(this QuestionAnswer questionAnswer)
+        {
+            return new QuestionAnswerViewModel()
+            {
+                ChosenAlternativeId = questionAnswer.ChosenAlternativeId,
+                AnswerId = questionAnswer.Id
             };
         }
         public static QuestionAlternativeViewModel MapToViewModel(this Alternative alternative)
         {
             return new QuestionAlternativeViewModel()
             {
+                AlternativeId = alternative.Id,
                 Text = alternative.TextContent.MapToViewModel(),
                 IsCorrect = false,
                 Index = alternative.Index

@@ -11,5 +11,6 @@ namespace BnE.EducationVest.Domain.Users.Interfaces.InfraData
     public interface IUserRepository : IBaseRepository<User>
     {
         Task<List<UserMenu>> GetAvailableMenusByUserGroup(bool isTeacher, bool isStudent);
+        Task<User> GetUserByCognitoId(Guid cognitoId);
     }
 }

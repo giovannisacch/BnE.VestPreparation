@@ -10,5 +10,7 @@ namespace BnE.EducationVest.Application.Exams.ViewModels
         public int Index { get; set; }
         public List<QuestionAlternativeViewModel> Alternatives { get; set; }
         public Guid SubjectId { get; set; }
+        public QuestionAnswerViewModel Answer { get; set; }
+
     }
 }

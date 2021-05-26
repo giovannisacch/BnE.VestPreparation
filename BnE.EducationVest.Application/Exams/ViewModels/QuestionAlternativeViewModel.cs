@@ -8,6 +8,7 @@ namespace BnE.EducationVest.Application.Exams.ViewModels
 {
     public class QuestionAlternativeViewModel
     {
+        public Guid AlternativeId { get; set; }
         public QuestionTextViewModel Text { get; set; }
         public bool IsCorrect { get; set; }
         public int Index { get; set; }

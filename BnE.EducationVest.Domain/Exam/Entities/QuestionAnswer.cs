@@ -24,5 +24,9 @@ namespace BnE.EducationVest.Domain.Exam.Entities
             UserId = userId;
             ChosenAlternativeId = chosenAlternativeId;
         }
+        public void UpdateChosenAlternative(Guid chosenAlternativeId)
+        {
+            ChosenAlternativeId = chosenAlternativeId;
+        }
     }
 }

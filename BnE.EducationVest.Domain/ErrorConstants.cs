@@ -18,6 +18,7 @@ namespace BnE.EducationVest.Domain
         public const string ALTERNATIVE_COUNT_SHOULD_BE_FIVE = "ALTERNATIVE_COUNT_SHOULD_BE_FIVE";
         public const string PERIOD_OPENDATE_SHOULD_BE_EARLIER_THAN_CLOSEDATE = "PERIOD_OPENDATE_SHOULD_BE_EARLIER_THAN_CLOSEDATE";
         public const string EXAM_NOT_FOUND = "EXAM_NOT_FOUND";
-
+        public const string QUESTION_NOT_FOUND = "QUESTION_NOT_FOUND";
+        public const string QUESTION_ANSWER_NOT_FOUND = "QUESTION_ANSWER_NOT_FOUND";
     }
 }
