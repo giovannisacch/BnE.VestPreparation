@@ -19,10 +19,9 @@ namespace BnE.EducationVest.API.Utilities
     {
         private static Regex _regexRemoveWhitespace = new Regex(@"\s+");
 
-         
-        public static ExamViewModel TransformExamWordFileInViewModel(this IFormFile examWordFile) 
+        public static ExamViewModel TransformExamWordFileInViewModel(this IFormFile examWordFile, List<ExamPeriodViewModel> periods) 
         {
-            var exam = new ExamViewModel() {QuestionList = new List<QuestionExamViewModel>() };
+            var exam = new ExamViewModel() {Periods = periods, QuestionList = new List<QuestionExamViewModel>() };
             using (WordprocessingDocument myDocument = WordprocessingDocument.Open(examWordFile.OpenReadStream(), false))
             {
                 var imagesStreamList = myDocument.GetAllImagesStream();

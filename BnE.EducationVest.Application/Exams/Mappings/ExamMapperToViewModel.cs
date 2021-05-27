@@ -13,9 +13,10 @@ namespace BnE.EducationVest.Application.Exams.Mappings
             {
                 Id = exam.Id,
                 ExamNumber = exam.ExamNumber,
-                ExamType = exam.ExamType,
+                ExamModel = exam.ExamModel,
                 QuestionList = exam.Questions?.Select(x => x.MapToViewModel()).ToList(),
-                Periods = exam.Periods?.Select(x => x.MapToViewModel()).ToList()
+                Periods = exam.Periods?.Select(x => x.MapToViewModel()).ToList(),
+                ExamType = exam.ExamType
             };
         }
         public static ExamPeriodViewModel MapToViewModel(this ExamPeriodVO examPeriod)

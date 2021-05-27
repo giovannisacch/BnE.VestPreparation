@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BnE.EducationVest.API</name>
+    </assembly>
+    <members>
+        <member name="M:BnE.EducationVest.API.Controllers.ExamController.UploadExamPeriods(BnE.EducationVest.Application.Exams.ViewModels.Request.UploadExamPeriodsRequestViewModel)">
+            <summary>
+            API Utilizada para definir os periodos do exame antes de fazer upload do arquivo da prova
+            </summary>
+            <param name="uploadExamPeriodsRequestViewModel"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BnE.EducationVest.API.Controllers.ExamController.UploadExamFile(Microsoft.AspNetCore.Http.IFormFile,BnE.EducationVest.Domain.Exam.Enums.EExamModel,BnE.EducationVest.Domain.Exam.Enums.EExamType,System.Int32)">
+            <summary>
+            API Utilizada para subir o arquivo da prova
+            </summary>
+            <param name="examFile"></param>
+            <param name="examModel"></param>
+            <param name="examType"></param>
+            <param name="number"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BnE.EducationVest.API.Controllers.ExamController.GetAvailableExams">
+            <summary>
+            API que busca os exames que estão dísponiveis(estão com periodo vingente e não foram realizados) para o usuario que está logado
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BnE.EducationVest.API.Controllers.ExamController.GetAllExams">
+            <summary>
+            Busca todos os exames(usado apenas em backoffice para ver os exames em fase de desenvolvimento)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BnE.EducationVest.API.Controllers.ExamController.GetExamQuestions(BnE.EducationVest.Application.Exams.ViewModels.Response.GetQuestionListPaginatedRequestViewModel)">
+            <summary>
+            Busca as questões de um exame, podendo trazer a resposta caso o usuario ja tenha respondido(busca resposta quando o parametro WasStarted é igual a true)
+            Utiliza paginação começando da pagina 1
+            </summary>
+            <param name="getQuestionListPaginatedRequest"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BnE.EducationVest.API.Controllers.ExamController.AddExamPeriod(System.Guid,System.Collections.Generic.List{BnE.EducationVest.Application.Exams.ViewModels.ExamPeriodViewModel})">
+            <summary>
+            Adiciona novos periodos em um exame já existente
+            </summary>
+            <param name="examId"></param>
+            <param name="periodViewModel"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BnE.EducationVest.API.Controllers.ExamController.AnswerQuestion(BnE.EducationVest.Application.Exams.ViewModels.Response.AnswerQuestionRequestViewModel)">
+            <summary>
+            Adiciona resposta para uma questão
+            </summary>
+            <param name="answerQuestionResponse"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BnE.EducationVest.API.Controllers.ExamController.UpdateAnswerQuestion(BnE.EducationVest.Application.Exams.ViewModels.Response.UpdateAnswerQuestionRequestViewModel)">
+            <summary>
+            Atualiza a alternativa escolhida para uma resposta
+            </summary>
+            <param name="updateAnswerQuestionResponse"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

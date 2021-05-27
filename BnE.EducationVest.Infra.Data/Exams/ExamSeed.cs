@@ -613,7 +613,7 @@ namespace BnE.EducationVest.Infra.Data.Exams
                 if (question.SubjectId == portSubject.Id)
                     question.SupportingTextId = supportingTextPortgueseWithImage.Id;
             };
-            var examQuiz = new Exam(1, EExamType.Quiz, examQuizPeriods, questionListQuiz);
+            var examInsperQuiz = new Exam(1, EExamModel.Insper, examQuizPeriods, questionListQuiz, EExamType.QUIZ);
 
             var actualPeriod = DateTime.Now;
             var examFgvPeriods = new List<ExamPeriodVO>()
@@ -630,7 +630,7 @@ namespace BnE.EducationVest.Infra.Data.Exams
                 if (question.SubjectId == portSubject.Id)
                     question.SupportingTextId = supportingTextPortgueseWithImageTwo.Id;
             };
-            var examFGV = new Exam(1, EExamType.FGV, examFgvPeriods, questionListFGV);
+            var examFGV = new Exam(1, EExamModel.FGV, examFgvPeriods, questionListFGV, EExamType.MOCK);
 
             var pastPeriod = DateTime.Now.AddDays(-2);
             foreach (var question in questionListPastFGV)
@@ -647,11 +647,11 @@ namespace BnE.EducationVest.Infra.Data.Exams
                 new ExamPeriodVO(pastPeriod, pastPeriod.AddHours(2)),
                 new ExamPeriodVO(pastPeriod.AddDays(1), pastPeriod.AddDays(1).AddHours(2))
             };
-            var examFGVPast = new Exam(2, EExamType.FGV, examFgvPastPeriods, questionListPastFGV);
+            var examFGVPast = new Exam(2, EExamModel.FGV, examFgvPastPeriods, questionListPastFGV, EExamType.MOCK);
 
             var examList = new List<Exam>()
             {
-                examQuiz,
+                examInsperQuiz,
                 examFGV,
                 examFGVPast
             };
@@ -769,7 +769,8 @@ namespace BnE.EducationVest.Infra.Data.Exams
                 exam.CreatedDate,
                 exam.UpdatedDate,
                 exam.ExamNumber,
-                exam.ExamType
+                exam.ExamType,
+                exam.ExamModel
             };
         }
         private static object MapToAnonnymousObject(this Question question, Guid examId, Guid EnunciatedId, Guid SubjectId, Guid? supportingTextId = null)

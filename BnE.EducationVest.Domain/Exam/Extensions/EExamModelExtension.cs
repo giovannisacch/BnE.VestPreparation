@@ -7,19 +7,17 @@ using System.Threading.Tasks;
 
 namespace BnE.EducationVest.Domain.Exam.Extensions
 {
-    public static class EExamTypeExtension
+    public static class EExamModelExtension
     {
-        public static int GetQuestionAmount(this EExamType examType) 
+        public static int GetQuestionAmount(this EExamModel examModel) 
         {
-            switch (examType)
+            switch (examModel)
             {
-                case EExamType.Insper:
+                case EExamModel.Insper:
                     return 60;
-                case EExamType.FGV:
+                case EExamModel.FGV:
                     return 71;
-                case EExamType.Quiz:
-                    return 60;
-                case EExamType.InsperAntiga:
+                case EExamModel.InsperAntiga:
                     return 50;
                 default:
                     return 60;

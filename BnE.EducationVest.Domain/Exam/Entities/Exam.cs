@@ -10,17 +10,19 @@ namespace BnE.EducationVest.Domain.Exam.Entities
     public class Exam : EntityBase
     {
         public int ExamNumber { get; set; }
+        public EExamModel ExamModel { get; private set; }
         public EExamType ExamType { get; private set; }
         public List<ExamPeriodVO> Periods { get; private set; }
         public List<Question> Questions { get; private set; }
 
         internal Exam() { }
-        public Exam(int examNumber, EExamType examType, List<ExamPeriodVO> periods, List<Question> questions)
+        public Exam(int examNumber, EExamModel examModel, List<ExamPeriodVO> periods, List<Question> questions, EExamType examType)
         {
             ExamNumber = examNumber;
-            ExamType = examType;
+            ExamModel = examModel;
             SetExamPeriods(periods);
             SetQuestionsList(questions);
+            ExamType = examType;
         }
 
         public ExamPeriodVO GetActualAvailablePeriod()
@@ -35,9 +37,9 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         public void SetQuestionsList(List<Question> questions)
         {
             //TODO: Externalizar para "Factory" por tipo de prova - quantidad e msg de erro
-            var insperQuestionsCount = 50;
-            if (ExamType == EExamType.Insper && questions.Count != insperQuestionsCount)
-                throw new DomainErrorException($"ExamType_Does_not_expect_{questions.Count}_questions");
+            //var insperQuestionsCount = 50;
+            //if (ExamModel == EExamModel.Insper && questions.Count != insperQuestionsCount)
+            //    throw new DomainErrorException($"ExamType_Does_not_expect_{questions.Count}_questions");
             Questions = questions;
 
         }

@@ -2,6 +2,7 @@
 using BnE.EducationVest.Application.Exams.Interfaces;
 using BnE.EducationVest.Application.Exams.Mappings;
 using BnE.EducationVest.Application.Exams.ViewModels;
+using BnE.EducationVest.Application.Exams.ViewModels.Request;
 using BnE.EducationVest.Application.Exams.ViewModels.Response;
 using BnE.EducationVest.Domain;
 using BnE.EducationVest.Domain.Common;
@@ -12,8 +13,6 @@ using BnE.EducationVest.Domain.Exam.Interfaces;
 using BnE.EducationVest.Domain.Exam.Interfaces.Infra;
 using BnE.EducationVest.Domain.Exam.Interfaces.InfraService;
 using BnE.EducationVest.Domain.Users.Interfaces;
-using BnE.EducationVest.Domain.Users.Interfaces.InfraData;
-using BnE.EducationVest.Domain.Users.Interfaces.InfraService;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -97,10 +96,10 @@ namespace BnE.EducationVest.Application.Exams.Services
             response.AvailableExams = availableExams.Select(x => new AvailableExamViewModel()
             {
                 ExamId = x.Id,
-                ExamName = $"Simulado {x.ExamNumber} - {Enum.GetName(typeof(EExamType), x.ExamType)}",
+                ExamName = $"Simulado {x.ExamNumber} - {Enum.GetName(typeof(EExamModel), x.ExamModel)}",
                 ExpirationDate = x.GetActualAvailablePeriod().CloseDate,
                 WasStarted = _examCacheService.VerifyIfUserStartedExam(userId, x.Id).Result,
-                QuestionsCount = x.ExamType.GetQuestionAmount()
+                QuestionsCount = x.ExamModel.GetQuestionAmount()
             }).ToList();
 
             foreach (var item in response.AvailableExams.Where(x => x.WasStarted).ToList())
@@ -139,6 +138,19 @@ namespace BnE.EducationVest.Application.Exams.Services
             {
                 Questions = questions.Select(x => x.MapToViewModel())
             }, HttpStatusCode.OK);
+        }
+
+        public async Task UploadExamPeriods(UploadExamPeriodsRequestViewModel uploadExamPeriodsRequestViewModel)
+        {
+            await _examCacheService.SaveExamPeriods(uploadExamPeriodsRequestViewModel.ExamModel, 
+                                              uploadExamPeriodsRequestViewModel.ExamType, 
+                                              uploadExamPeriodsRequestViewModel.ExamNumber,
+                                              uploadExamPeriodsRequestViewModel.ExamPeriods.Select(x => x.MapToVO()).ToList());
+        }
+        public async Task<List<ExamPeriodViewModel>> GetExamPeriods(EExamModel examModel, EExamType examType, int number)
+        {
+            var examPeriodVOList = await _examCacheService.GetExamPeriods(examModel, examType, number);
+            return examPeriodVOList.Select(x => x.MapToViewModel()).ToList();
         }
     }
 }

@@ -8,6 +8,9 @@ using Microsoft.IdentityModel.Tokens;
 using BnE.EducationVest.DI;
 using BnE.EducationVest.API.Middlewares;
 using BnE.EducationVest.Domain.Common.SettingsModels;
+using System.IO;
+using System;
+using Newtonsoft.Json.Converters;
 
 namespace BnE.EducationVest
 {
@@ -37,12 +40,23 @@ namespace BnE.EducationVest
                     options.RequireHttpsMetadata = false;
                 });
             services.AddControllers()
-                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
- 
+                .AddNewtonsoftJson(options =>
+                                        {
+                                            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                                            options.SerializerSettings.Converters.Add(new StringEnumConverter());
+                                         }
+                                        );
+            services.AddSwaggerGenNewtonsoftSupport();
+
             #region SWAGGER GEN
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BnE.EducationVest", Version = "v1" });
+                var XMLPath = AppDomain.CurrentDomain.BaseDirectory + "BnE.EducationVest.API" + ".xml";
+                if (File.Exists(XMLPath))
+                {
+                    c.IncludeXmlComments(XMLPath);
+                }
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
                     Name = "Authorization",

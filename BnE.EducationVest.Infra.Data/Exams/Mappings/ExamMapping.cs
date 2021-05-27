@@ -29,10 +29,16 @@ namespace BnE.EducationVest.Infra.Data.Exams.Mappings
                 .WithOne(x => x.Exam)
                 .HasForeignKey(x => x.ExamId);
 
+            builder.Property(x => x.ExamModel)
+                .HasConversion(toDB => (int)toDB,
+                                fromDB => (EExamModel)fromDB)
+                .IsRequired();
+
             builder.Property(x => x.ExamType)
                 .HasConversion(toDB => (int)toDB,
-                                fromDB => (EExamType)fromDB)
-                .IsRequired();
+                                fromDB => (EExamType)fromDB);
+
+
             builder
                 .HasMany(x => x.Periods)
                 .WithOne(x => x.Exam)

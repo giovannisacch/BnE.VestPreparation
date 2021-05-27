@@ -1,5 +1,7 @@
 ﻿using BnE.EducationVest.Domain.Exam.Entities;
+using BnE.EducationVest.Domain.Exam.Enums;
 using BnE.EducationVest.Domain.Exam.Interfaces.InfraService;
+using BnE.EducationVest.Domain.Exam.ValueObjects;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -15,6 +17,7 @@ namespace BnE.EducationVest.Infra.Service.Exam
         private readonly IDistributedCache _cache;
         private readonly string _examPrefix = "exam:{0}:";
         private readonly string _examQuestionsByPagePrefix = "exam:{0}:questionList:{1}";
+        private readonly string _examPeriodPrefix = "periods:{0}:{1}:{2}";
         private readonly JsonSerializerSettings _jsonSerializerSettings;
         public ExamCacheService(IDistributedCache cache)
         {
@@ -61,6 +64,25 @@ namespace BnE.EducationVest.Infra.Service.Exam
             };
             var questionListSerialized = JsonConvert.SerializeObject(questionList, _jsonSerializerSettings);
             await _cache.SetStringAsync(string.Format(_examQuestionsByPagePrefix, exam.Id, page), questionListSerialized, options);
+        }
+
+        public async Task SaveExamPeriods(EExamModel examModel, EExamType examType, int number, List<ExamPeriodVO> periods)
+        {
+            var options = new DistributedCacheEntryOptions()
+            {
+                SlidingExpiration = TimeSpan.FromMinutes(2)
+            };
+            var key = string.Format(_examPeriodPrefix, Enum.GetName(typeof(EExamModel), examModel), Enum.GetName(typeof(EExamType), examType), number);
+            var periodsSerialized = JsonConvert.SerializeObject(periods, _jsonSerializerSettings);
+            await _cache.SetStringAsync(key, periodsSerialized, options);
+        }
+
+        public async Task<List<ExamPeriodVO>> GetExamPeriods(EExamModel examModel, EExamType examType, int number)
+        {
+            var key = string.Format(_examPeriodPrefix, Enum.GetName(typeof(EExamModel), examModel), Enum.GetName(typeof(EExamType), examType), number);
+            var periodsSerialized = await _cache.GetStringAsync(key);
+            return JsonConvert.DeserializeObject<List<ExamPeriodVO>>(periodsSerialized, _jsonSerializerSettings);
+
         }
     }
     public class PrivateResolver : DefaultContractResolver

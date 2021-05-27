@@ -14,9 +14,10 @@ namespace BnE.EducationVest.Application.Exams.Mappings
     {
         public static Exam MapToDomain(this ExamViewModel examViewModel)
         {
-            var exam = new Exam(examViewModel.ExamNumber, examViewModel.ExamType,
+            var exam = new Exam(examViewModel.ExamNumber, examViewModel.ExamModel,
                              examViewModel.Periods.Select(x => x.MapToVO()).ToList(),
-                             examViewModel.QuestionList.Select(x => x.MapToDomain()).ToList()
+                             examViewModel.QuestionList.Select(x => x.MapToDomain()).ToList(),
+                             examViewModel.ExamType
                              );
             return exam;
         }

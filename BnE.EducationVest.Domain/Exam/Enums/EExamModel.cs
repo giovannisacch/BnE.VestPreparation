@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace BnE.EducationVest.Domain.Exam.Enums
 {
-    public enum EExamType
+    public enum EExamModel
     {
-        QUIZ,
-        MOCK,
-        PAST_EXAM
+        Insper,
+        FGV,
+        Quiz,
+        InsperAntiga
     }
 }
