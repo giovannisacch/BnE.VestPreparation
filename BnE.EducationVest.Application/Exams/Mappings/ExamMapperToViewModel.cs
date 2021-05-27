@@ -35,7 +35,8 @@ namespace BnE.EducationVest.Application.Exams.Mappings
                 Index = question.Index,
                 Alternatives = question.Alternatives.Select(x => x.MapToViewModel()).ToList(),
                 Answer = (question.QuestionAnswers != null && question.QuestionAnswers.Count > 0) 
-                        ? question.QuestionAnswers.First().MapToViewModel() : null
+                        ? question.QuestionAnswers.First().MapToViewModel() : null,
+                SupportingText = question.SupportingText?.Content.MapToViewModel()
             };
         }
         public static QuestionAnswerViewModel MapToViewModel(this QuestionAnswer questionAnswer)

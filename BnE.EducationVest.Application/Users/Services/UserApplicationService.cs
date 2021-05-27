@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using BnE.EducationVest.Application.Common.Extensions;
 using System.Linq;
 using System.Net;
+using System;
 
 namespace BnE.EducationVest.Application.Users.Services
 {
@@ -25,7 +26,7 @@ namespace BnE.EducationVest.Application.Users.Services
             _userRepository = userRepository;
             _httpContextAccessor = httpContextAccessor;
         }
-        public async Task<Either<ErrorResponseModel, object>> AddUserAsync(CreateUserRequestModel createUserRequestModel)
+        public async Task<Either<ErrorResponseModel, Guid>> AddUserAsync(CreateUserRequestModel createUserRequestModel)
         {
             //Adicionar no banco de dados
             //Criar mapper
@@ -37,7 +38,7 @@ namespace BnE.EducationVest.Application.Users.Services
                                 createUserRequestModel.BirthDate, addressVO, createUserRequestModel.IsTeacher);
             await _userAuthService.CreateUserAsync(user);
             await _userRepository.AddAsync(user);
-            return null ;
+            return new Either<ErrorResponseModel, Guid>(user.Id, HttpStatusCode.OK);
         }
 
         public async Task<Either<ErrorResponseModel, object>> ChangePasswordAsAdmin(FirstPasswordChangeRequestModel firstPasswordChangeRequestModel)

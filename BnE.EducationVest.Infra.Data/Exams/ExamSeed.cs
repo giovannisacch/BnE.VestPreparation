@@ -22,7 +22,166 @@ namespace BnE.EducationVest.Infra.Data.Exams
             var mathSubject = new Subject("Matemática");
             var portSubject = new Subject("Português");
             var percentageSubject = new Subject("Porcentagem");
+            var polinomSubject = new Subject("Polinômios");
             percentageSubject.SetSubjectFather(mathSubject.Id);
+
+            #region SupportingTexts
+            var supportingTextMathContentOne = new IncrementedTextVO("Um objeto é formado por 4 hastes rígidas conectadas em seus extremos por articulações, cujos centros são os vértices de um paralelogramo. As hastes movimentam‐se de tal forma que o paralelogramo permanece sempre no mesmo plano. A cada configuração desse objeto, associa‐se {0}, a medida do menor  ângulo interno do paralelogramo. A área da região delimitada pelo paralelogramo quando {1}90° é A\r\n{2}\r\nPara que a área da região delimitada pelo paralelogramo seja {3} , o valor de {4}necessariamente, igual a",
+                new List<CompleteTextIncrementVO>(){
+                        new CompleteTextIncrementVO(
+                            0,
+                            "<mml:math xmlns:mml=\"http://www.w3.org/1998/Math/MathML\" xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><mml:mi>θ</mml:mi></mml:math>",
+                            ECompleteTextIncrementType.Equation
+                            ),
+                        new CompleteTextIncrementVO(
+                            1,
+                            "<mml:math xmlns:mml=\"http://www.w3.org/1998/Math/MathML\" xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><mml:mi>θ</mml:mi><mml:mo>=</mml:mo><mml:mi> </mml:mi></mml:math>",
+                            ECompleteTextIncrementType.Equation
+                            ),
+                        new CompleteTextIncrementVO(
+                            2,
+                            "https://dev-reports-images.s3-sa-east-1.amazonaws.com/teste/Simulado01-Insper-2.png",
+                            ECompleteTextIncrementType.Image
+                            ),
+                        new CompleteTextIncrementVO(
+                            3,
+                            "<mml:math xmlns:mml=\"http://www.w3.org/1998/Math/MathML\" xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><mml:mfrac><mml:mrow><mml:mi>A</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:mfrac></mml:math>",
+                            ECompleteTextIncrementType.Equation
+                            ),
+                        new CompleteTextIncrementVO(
+                            4,
+                            "<mml:math xmlns:mml=\"http://www.w3.org/1998/Math/MathML\" xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><mml:mi>θ</mml:mi><mml:mi> </mml:mi><mml:mi>é</mml:mi><mml:mo>,</mml:mo><mml:mi> </mml:mi></mml:math>",
+                            ECompleteTextIncrementType.Equation
+                            )
+                    }
+                );
+            var supportingTextMathContentTwo = new IncrementedTextVO("Um objeto é formado por 4 hastes rígidas conectadas em seus extremos por articulações, cujos centros são os vértices de um paralelogramo. As hastes movimentam‐se de tal forma que o paralelogramo permanece sempre no mesmo plano. A cada configuração desse objeto, associa‐se {0}, a medida do menor  ângulo interno do paralelogramo. A área da região delimitada pelo paralelogramo quando {1}90° é A\r\n{2}\r\nPara que a área da região delimitada pelo paralelogramo seja {3} , o valor de {4}necessariamente, igual a",
+                new List<CompleteTextIncrementVO>(){
+                        new CompleteTextIncrementVO(
+                            0,
+                            "<mml:math xmlns:mml=\"http://www.w3.org/1998/Math/MathML\" xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><mml:mi>θ</mml:mi></mml:math>",
+                            ECompleteTextIncrementType.Equation
+                            ),
+                        new CompleteTextIncrementVO(
+                            1,
+                            "<mml:math xmlns:mml=\"http://www.w3.org/1998/Math/MathML\" xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><mml:mi>θ</mml:mi><mml:mo>=</mml:mo><mml:mi> </mml:mi></mml:math>",
+                            ECompleteTextIncrementType.Equation
+                            ),
+                        new CompleteTextIncrementVO(
+                            2,
+                            "https://dev-reports-images.s3-sa-east-1.amazonaws.com/teste/Simulado01-Insper-2.png",
+                            ECompleteTextIncrementType.Image
+                            ),
+                        new CompleteTextIncrementVO(
+                            3,
+                            "<mml:math xmlns:mml=\"http://www.w3.org/1998/Math/MathML\" xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><mml:mfrac><mml:mrow><mml:mi>A</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:mfrac></mml:math>",
+                            ECompleteTextIncrementType.Equation
+                            ),
+                        new CompleteTextIncrementVO(
+                            4,
+                            "<mml:math xmlns:mml=\"http://www.w3.org/1998/Math/MathML\" xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><mml:mi>θ</mml:mi><mml:mi> </mml:mi><mml:mi>é</mml:mi><mml:mo>,</mml:mo><mml:mi> </mml:mi></mml:math>",
+                            ECompleteTextIncrementType.Equation
+                            )
+                    }
+                );
+            var supportingTextMathContentThree = new IncrementedTextVO("Um objeto é formado por 4 hastes rígidas conectadas em seus extremos por articulações, cujos centros são os vértices de um paralelogramo. As hastes movimentam‐se de tal forma que o paralelogramo permanece sempre no mesmo plano. A cada configuração desse objeto, associa‐se {0}, a medida do menor  ângulo interno do paralelogramo. A área da região delimitada pelo paralelogramo quando {1}90° é A\r\n{2}\r\nPara que a área da região delimitada pelo paralelogramo seja {3} , o valor de {4}necessariamente, igual a",
+                new List<CompleteTextIncrementVO>(){
+                        new CompleteTextIncrementVO(
+                            0,
+                            "<mml:math xmlns:mml=\"http://www.w3.org/1998/Math/MathML\" xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><mml:mi>θ</mml:mi></mml:math>",
+                            ECompleteTextIncrementType.Equation
+                            ),
+                        new CompleteTextIncrementVO(
+                            1,
+                            "<mml:math xmlns:mml=\"http://www.w3.org/1998/Math/MathML\" xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><mml:mi>θ</mml:mi><mml:mo>=</mml:mo><mml:mi> </mml:mi></mml:math>",
+                            ECompleteTextIncrementType.Equation
+                            ),
+                        new CompleteTextIncrementVO(
+                            2,
+                            "https://dev-reports-images.s3-sa-east-1.amazonaws.com/teste/Simulado01-Insper-2.png",
+                            ECompleteTextIncrementType.Image
+                            ),
+                        new CompleteTextIncrementVO(
+                            3,
+                            "<mml:math xmlns:mml=\"http://www.w3.org/1998/Math/MathML\" xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><mml:mfrac><mml:mrow><mml:mi>A</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:mfrac></mml:math>",
+                            ECompleteTextIncrementType.Equation
+                            ),
+                        new CompleteTextIncrementVO(
+                            4,
+                            "<mml:math xmlns:mml=\"http://www.w3.org/1998/Math/MathML\" xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><mml:mi>θ</mml:mi><mml:mi> </mml:mi><mml:mi>é</mml:mi><mml:mo>,</mml:mo><mml:mi> </mml:mi></mml:math>",
+                            ECompleteTextIncrementType.Equation
+                            )
+                    }
+                );
+            var supportingTextPortgueseWithImageContentOne = new IncrementedTextVO("TEXTO DE APOIO DE PORTUGUES COM IMAGEM \r\n {0}",
+               new List<CompleteTextIncrementVO>(){
+                        new CompleteTextIncrementVO(
+                            0,
+                            "https://dev-reports-images.s3-sa-east-1.amazonaws.com/teste/Simulado01-Insper-2.png",
+                            ECompleteTextIncrementType.Image
+                            )
+                   }
+               );
+            var supportingTextPortgueseWithImageContentTwo = new IncrementedTextVO("TEXTO DE APOIO DE PORTUGUES COM IMAGEM \r\n {0}",
+              new List<CompleteTextIncrementVO>(){
+                        new CompleteTextIncrementVO(
+                            0,
+                            "https://dev-reports-images.s3-sa-east-1.amazonaws.com/teste/Simulado01-Insper-2.png",
+                            ECompleteTextIncrementType.Image
+                            )
+                  }
+              );
+            var supportingTextPortgueseWithImageContentThree = new IncrementedTextVO("TEXTO DE APOIO DE PORTUGUES COM IMAGEM \r\n {0}",
+              new List<CompleteTextIncrementVO>(){
+                        new CompleteTextIncrementVO(
+                            0,
+                            "https://dev-reports-images.s3-sa-east-1.amazonaws.com/teste/Simulado01-Insper-2.png",
+                            ECompleteTextIncrementType.Image
+                            )
+                  }
+              );
+            var simpleSupportingTextContentOne = new IncrementedTextVO("TEXTO DE APOIO SIMPLES SEM INCREMENTO", null);
+            var simpleSupportingTextContentTwo = new IncrementedTextVO("TEXTO DE APOIO SIMPLES SEM INCREMENTO", null);
+            var simpleSupportingTextContentThree = new IncrementedTextVO("TEXTO DE APOIO SIMPLES SEM INCREMENTO", null);
+            var supportingTextsContents = new List<IncrementedTextVO>()
+            {
+                supportingTextMathContentOne,
+                supportingTextMathContentTwo,
+                supportingTextMathContentThree,
+                supportingTextPortgueseWithImageContentOne,
+                supportingTextPortgueseWithImageContentTwo,
+                supportingTextPortgueseWithImageContentThree,
+                simpleSupportingTextContentOne,
+                simpleSupportingTextContentTwo,
+                simpleSupportingTextContentThree,
+            };
+
+            var supportingTextMath = new SupportingText(supportingTextMathContentOne.Id);
+            var supportingTextPortgueseWithImage = new SupportingText(supportingTextPortgueseWithImageContentOne.Id);
+            var simpleSupportingText = new SupportingText(simpleSupportingTextContentOne.Id);
+
+            var supportingTextMathTwo = new SupportingText(supportingTextMathContentTwo.Id);
+            var supportingTextPortgueseWithImageTwo = new SupportingText(supportingTextPortgueseWithImageContentTwo.Id);
+            var simpleSupportingTextTwo = new SupportingText(simpleSupportingTextContentTwo.Id);
+
+            var supportingTextMathThree = new SupportingText(supportingTextMathContentThree.Id);
+            var supportingTextPortgueseWithImageThree = new SupportingText(supportingTextPortgueseWithImageContentThree.Id);
+            var simpleSupportingTextThree = new SupportingText(simpleSupportingTextContentThree.Id);
+
+            var supportingTexts = new List<SupportingText>()
+            {
+                supportingTextMath,
+                supportingTextPortgueseWithImage,
+                simpleSupportingText,
+                supportingTextMathTwo,
+                supportingTextPortgueseWithImageTwo,
+                simpleSupportingTextTwo,
+                supportingTextMathThree,
+                supportingTextPortgueseWithImageThree,
+                simpleSupportingTextThree
+            };
+            #endregion
+
             //Apartar regions em metodos
             #region QuestionEnunciateds
             var questionsEnunciatedsQuiz = new List<IncrementedTextVO>()
@@ -105,7 +264,20 @@ namespace BnE.EducationVest.Infra.Data.Exams
                             ECompleteTextIncrementType.Equation
                             )
                     }
-                )
+                ),
+                 new IncrementedTextVO("Enunciado teste com equacao {0} e imagem:  \r\n{1}\r\n  para teste",
+                new List<CompleteTextIncrementVO>(){
+                        new CompleteTextIncrementVO(
+                            0,
+                            "<mml:math xmlns:mml=\"http://www.w3.org/1998/Math/MathML\" xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><mml:mi>θ</mml:mi></mml:math>",
+                            ECompleteTextIncrementType.Equation
+                            ),
+                        new CompleteTextIncrementVO(
+                            1,
+                            "https://dev-reports-images.s3-sa-east-1.amazonaws.com/teste/Simulado01-Insper-2.png",
+                            ECompleteTextIncrementType.Image
+                            ),
+                    })
             };
 
             var questionsEnunciatedsFGV = new List<IncrementedTextVO>()
@@ -187,6 +359,20 @@ namespace BnE.EducationVest.Infra.Data.Exams
                             "<mml:math xmlns:mml=\"http://www.w3.org/1998/Math/MathML\" xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><mml:mi>θ</mml:mi><mml:mi> </mml:mi><mml:mi>é</mml:mi><mml:mo>,</mml:mo><mml:mi> </mml:mi></mml:math>",
                             ECompleteTextIncrementType.Equation
                             )
+                    }
+                ),
+                  new IncrementedTextVO("Enunciado teste com equacao {0} e imagem:  \r\n{1}\r\n  para teste",
+                new List<CompleteTextIncrementVO>(){
+                        new CompleteTextIncrementVO(
+                            0,
+                            "<mml:math xmlns:mml=\"http://www.w3.org/1998/Math/MathML\" xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><mml:mi>θ</mml:mi></mml:math>",
+                            ECompleteTextIncrementType.Equation
+                            ),
+                        new CompleteTextIncrementVO(
+                            1,
+                            "https://dev-reports-images.s3-sa-east-1.amazonaws.com/teste/Simulado01-Insper-2.png",
+                            ECompleteTextIncrementType.Image
+                            ),
                     }
                 )
             };
@@ -271,7 +457,20 @@ namespace BnE.EducationVest.Infra.Data.Exams
                             ECompleteTextIncrementType.Equation
                             )
                     }
-                )
+                ),
+                 new IncrementedTextVO("Enunciado teste com equacao {0} e imagem:  \r\n{1}\r\n  para teste",
+                new List<CompleteTextIncrementVO>(){
+                        new CompleteTextIncrementVO(
+                            0,
+                            "<mml:math xmlns:mml=\"http://www.w3.org/1998/Math/MathML\" xmlns:m=\"http://schemas.openxmlformats.org/officeDocument/2006/math\"><mml:mi>θ</mml:mi></mml:math>",
+                            ECompleteTextIncrementType.Equation
+                            ),
+                        new CompleteTextIncrementVO(
+                            1,
+                            "https://dev-reports-images.s3-sa-east-1.amazonaws.com/teste/Simulado01-Insper-2.png",
+                            ECompleteTextIncrementType.Image
+                            ),
+                    })
             };
             #endregion
             #region QuestList
@@ -283,7 +482,7 @@ namespace BnE.EducationVest.Infra.Data.Exams
                     new Alternative(new IncrementedTextVO("entre 129 e 130.", null), false, 2),
                     new Alternative(new IncrementedTextVO("entre 130 e 131.", null), false, 3),
                     new Alternative(new IncrementedTextVO("maior que 131", null), false, 4),
-                }, mathSubject.Id),
+                }, mathSubject.Id) ,
                 new Question(1, questionsEnunciatedsQuiz[1], new List<Alternative>(){
                     new Alternative(new IncrementedTextVO("4,64", null), true, 0),
                     new Alternative(new IncrementedTextVO("8,32", null), false, 1),
@@ -304,7 +503,14 @@ namespace BnE.EducationVest.Infra.Data.Exams
                     new Alternative(new IncrementedTextVO("45°", null), false, 2),
                     new Alternative(new IncrementedTextVO("30°", null), false, 3),
                     new Alternative(new IncrementedTextVO("60°", null), false, 4),
-                }, percentageSubject.Id)
+                }, percentageSubject.Id),
+                new Question(4, questionsEnunciatedsQuiz[4], new List<Alternative>(){
+                     new Alternative(new IncrementedTextVO("Teste", null), true, 0),
+                    new Alternative(new IncrementedTextVO("Testeee2", null), false, 1),
+                    new Alternative(new IncrementedTextVO("45°", null), false, 2),
+                    new Alternative(new IncrementedTextVO("30°", null), false, 3),
+                    new Alternative(new IncrementedTextVO("60°", null), false, 4),
+                }, polinomSubject.Id)
 
             };
 
@@ -337,7 +543,14 @@ namespace BnE.EducationVest.Infra.Data.Exams
                     new Alternative(new IncrementedTextVO("45°", null), false, 2),
                     new Alternative(new IncrementedTextVO("30°", null), false, 3),
                     new Alternative(new IncrementedTextVO("60°", null), false, 4),
-                }, percentageSubject.Id)
+                }, percentageSubject.Id),
+                 new Question(4, questionsEnunciatedsFGV[4], new List<Alternative>(){
+                     new Alternative(new IncrementedTextVO("Teste", null), true, 0),
+                    new Alternative(new IncrementedTextVO("Testeee2", null), false, 1),
+                    new Alternative(new IncrementedTextVO("45°", null), false, 2),
+                    new Alternative(new IncrementedTextVO("30°", null), false, 3),
+                    new Alternative(new IncrementedTextVO("60°", null), false, 4),
+                }, polinomSubject.Id)
 
             };
 
@@ -370,7 +583,14 @@ namespace BnE.EducationVest.Infra.Data.Exams
                     new Alternative(new IncrementedTextVO("45°", null), false, 2),
                     new Alternative(new IncrementedTextVO("30°", null), false, 3),
                     new Alternative(new IncrementedTextVO("60°", null), false, 4),
-                }, percentageSubject.Id)
+                }, percentageSubject.Id),
+                 new Question(4, questionsEnunciatedsFGVPast[4], new List<Alternative>(){
+                     new Alternative(new IncrementedTextVO("Teste", null), true, 0),
+                    new Alternative(new IncrementedTextVO("Testeee2", null), false, 1),
+                    new Alternative(new IncrementedTextVO("45°", null), false, 2),
+                    new Alternative(new IncrementedTextVO("30°", null), false, 3),
+                    new Alternative(new IncrementedTextVO("60°", null), false, 4),
+                }, polinomSubject.Id)
 
             };
             #endregion
@@ -384,6 +604,15 @@ namespace BnE.EducationVest.Infra.Data.Exams
                 new ExamPeriodVO(firstPeriod, firstPeriod.AddHours(2)),
                 new ExamPeriodVO(firstPeriod.AddDays(1), firstPeriod.AddDays(1).AddHours(2))
             };
+            foreach (var question in questionListQuiz)
+            {
+                if (question.SubjectId == percentageSubject.Id)
+                    question.SupportingTextId = simpleSupportingText.Id;
+                if (question.SubjectId == mathSubject.Id)
+                    question.SupportingTextId = supportingTextMath.Id;
+                if (question.SubjectId == portSubject.Id)
+                    question.SupportingTextId = supportingTextPortgueseWithImage.Id;
+            };
             var examQuiz = new Exam(1, EExamType.Quiz, examQuizPeriods, questionListQuiz);
 
             var actualPeriod = DateTime.Now;
@@ -392,9 +621,27 @@ namespace BnE.EducationVest.Infra.Data.Exams
                 new ExamPeriodVO(actualPeriod, actualPeriod.AddHours(4)),
                 new ExamPeriodVO(actualPeriod.AddDays(1), actualPeriod.AddDays(1).AddHours(2))
             };
+            foreach (var question in questionListFGV)
+            {
+                if (question.SubjectId == percentageSubject.Id)
+                    question.SupportingTextId = simpleSupportingTextTwo.Id;
+                if (question.SubjectId == mathSubject.Id)
+                    question.SupportingTextId = supportingTextMathTwo.Id;
+                if (question.SubjectId == portSubject.Id)
+                    question.SupportingTextId = supportingTextPortgueseWithImageTwo.Id;
+            };
             var examFGV = new Exam(1, EExamType.FGV, examFgvPeriods, questionListFGV);
 
             var pastPeriod = DateTime.Now.AddDays(-2);
+            foreach (var question in questionListPastFGV)
+            {
+                if (question.SubjectId == percentageSubject.Id)
+                    question.SupportingTextId = simpleSupportingTextThree.Id;
+                if (question.SubjectId == mathSubject.Id)
+                    question.SupportingTextId = simpleSupportingTextThree.Id;
+                if (question.SubjectId == portSubject.Id)
+                    question.SupportingTextId = simpleSupportingTextThree.Id;
+            };
             var examFgvPastPeriods = new List<ExamPeriodVO>()
             {
                 new ExamPeriodVO(pastPeriod, pastPeriod.AddHours(2)),
@@ -409,7 +656,7 @@ namespace BnE.EducationVest.Infra.Data.Exams
                 examFGVPast
             };
 
-            modelBuilder.Entity<Subject>().HasData(mathSubject, portSubject, percentageSubject);
+            modelBuilder.Entity<Subject>().HasData(mathSubject, portSubject, percentageSubject, polinomSubject);
 
 
             modelBuilder.Entity<Exam>(x =>
@@ -427,6 +674,8 @@ namespace BnE.EducationVest.Infra.Data.Exams
                     .HasData(user.Address.MapToAnonnymousObject(user.Id));
             });
 
+            modelBuilder.Entity<SupportingText>().HasData(supportingTexts);
+
             modelBuilder.Entity<IncrementedTextVO>(x =>
             {
                 //Enunciado das questões
@@ -439,14 +688,13 @@ namespace BnE.EducationVest.Infra.Data.Exams
                            .SelectMany(question => question.Alternatives
                            .Select(x => x.TextContent.MapToAnonnymousObject())))
                          );
+                x.HasData(supportingTextsContents.Select(x => x.MapToAnonnymousObject()));
             });
-
-            
 
             modelBuilder.Entity<Question>().HasData(examList
                             .SelectMany(exam => exam.Questions
                             .Select(question =>
-                                    question.MapToAnonnymousObject(exam.Id, question.Enunciated.Id, question.SubjectId)
+                                    question.MapToAnonnymousObject(exam.Id, question.Enunciated.Id, question.SubjectId, question.SupportingTextId)
                                     )
                             )
                          );
@@ -479,6 +727,14 @@ namespace BnE.EducationVest.Infra.Data.Exams
             };
         }
 
+        private static object MapToAnonnymousObject(this SupportingText supportingText)
+        {
+            return new
+            {
+                Id = supportingText.Id,
+                ContentId = supportingText.ContentId
+            };
+        }
         private static object MapToAnonnymousObject(this User user)
         {
             return new
@@ -516,7 +772,7 @@ namespace BnE.EducationVest.Infra.Data.Exams
                 exam.ExamType
             };
         }
-        private static object MapToAnonnymousObject(this Question question, Guid examId, Guid EnunciatedId, Guid SubjectId)
+        private static object MapToAnonnymousObject(this Question question, Guid examId, Guid EnunciatedId, Guid SubjectId, Guid? supportingTextId = null)
         {
             return new
             {
@@ -526,7 +782,8 @@ namespace BnE.EducationVest.Infra.Data.Exams
                 ExamId = examId,
                 EnunciatedId,
                 SubjectId,
-                question.Index
+                question.Index,
+                SupportingTextId = supportingTextId
             };
         }
         private static object MapToAnonnymousObject(this IncrementedTextVO incrementedText)

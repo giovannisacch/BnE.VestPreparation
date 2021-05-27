@@ -15,6 +15,7 @@ namespace BnE.EducationVest.Domain.Exam.ValueObjects
 
         public Question Question { get; private set; }
         public Alternative Alternative { get; private set; }
+        public SupportingText SupportingText { get; set; }
 
         public IncrementedTextVO(string content, List<CompleteTextIncrementVO> increments)
         {

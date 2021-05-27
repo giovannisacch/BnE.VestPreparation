@@ -84,6 +84,8 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
                 .Include(x => x.Enunciated)
                 .Include(x => x.Alternatives)
                 .ThenInclude(x => x.TextContent)
+                .Include(x => x.SupportingText)
+                .ThenInclude(x => x.Content)
                 .AsNoTracking()
                 .ToListAsync();
         }

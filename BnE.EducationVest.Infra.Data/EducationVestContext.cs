@@ -43,6 +43,7 @@ namespace BnE.EducationVest.Infra.Data.Common
             modelBuilder.ApplyConfiguration(new QuestionAnswerMapping());
             modelBuilder.ApplyConfiguration(new UserMapping());
             modelBuilder.ApplyConfiguration(new UserMenuMapping());
+            modelBuilder.ApplyConfiguration(new SupportingTextMapping());
             modelBuilder.Seed();
         }
 
