@@ -9,5 +9,6 @@ namespace BnE.EducationVest.Domain.Exam.Interfaces
     {
         Task<List<Question>> GetExamQuestionsWithAnswers(Guid examId, Guid userId, int pageNumber, bool userAlreadyStarted);
         Task AnswerExamQuestion(Guid examId, QuestionAnswer questionAnswer);
+        Task CreateExam(Entities.Exam exam);
     }
 }

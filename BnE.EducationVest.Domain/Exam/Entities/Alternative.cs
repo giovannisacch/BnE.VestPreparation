@@ -1,6 +1,7 @@
 ﻿using BnE.EducationVest.Domain.Exam.ValueObjects;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BnE.EducationVest.Domain.Exam.Entities
 {

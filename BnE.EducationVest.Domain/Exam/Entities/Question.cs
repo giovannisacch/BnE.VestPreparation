@@ -2,6 +2,7 @@
 using BnE.EducationVest.Domain.Exam.ValueObjects;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BnE.EducationVest.Domain.Exam.Entities
 {
@@ -29,6 +30,10 @@ namespace BnE.EducationVest.Domain.Exam.Entities
             Enunciated = enunciated;
             SetAlternatives(alternatives);
             SubjectId = subjectId;
+        }
+        public bool HasImageInEnunciated()
+        {
+            return Enunciated.GetIncrementsWithImageType() != null;
         }
         public void SetAlternatives(List<Alternative> alternatives)
         {

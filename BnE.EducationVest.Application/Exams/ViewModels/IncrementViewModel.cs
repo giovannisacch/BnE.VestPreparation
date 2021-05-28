@@ -12,7 +12,7 @@ namespace BnE.EducationVest.Application.Exams.ViewModels
     {
         public int Index { get; set; }
         public string Value { get; set; }
-        public Stream ImageStream { get; set; }
+        public byte[] ImageStream { get; set; }
 
         public ECompleteTextIncrementType Type { get; set; }
     }

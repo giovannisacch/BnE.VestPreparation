@@ -76,6 +76,7 @@ namespace BnE.EducationVest.DI
             services.AddScoped<IMailSenderService, MailSenderService>();
             services.AddScoped<IUserCacheService, UserCacheService>();
             services.AddScoped<IExamCacheService, ExamCacheService>();
+            services.AddScoped<IExamFileStorageService, ExamFileStorageService>();
         }
     }
 }

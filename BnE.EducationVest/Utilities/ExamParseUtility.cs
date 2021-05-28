@@ -81,17 +81,18 @@ namespace BnE.EducationVest.API.Utilities
                 }
                 exam.QuestionList.Add(actualQuestion);
             }
+            exam.QuestionList.RemoveAll(x => x.Alternatives == null);
             return exam;
         }
         private static void AddEnunciatedToQuestion(QuestionExamViewModel actualQuestion,
-                                                    Paragraph paragraph, List<Stream> imagesStreamList, int imagesParagraphsCount)
+                                                    Paragraph paragraph, List<byte[]> imagesStreamList, int imagesParagraphsCount)
         {
             actualQuestion.Enunciated = GetQuestionTextByParagraph(paragraph,
                                                                    imagesStreamList,
                                                                    imagesParagraphsCount);
         }
         private static void IncrementActualEnunciated(QuestionExamViewModel actualQuestion,
-                                                    Paragraph paragraph, List<Stream> imagesStreamList, int imagesParagraphsCount)
+                                                    Paragraph paragraph, List<byte[]> imagesStreamList, int imagesParagraphsCount)
         {
             var paragraphAsQuestionText = GetQuestionTextByParagraph(paragraph,
                                                          imagesStreamList,
@@ -109,7 +110,7 @@ namespace BnE.EducationVest.API.Utilities
             }
         }
 
-        private static QuestionTextViewModel GetQuestionTextByParagraph(Paragraph paragraph, List<Stream> imageStreamList,
+        private static QuestionTextViewModel GetQuestionTextByParagraph(Paragraph paragraph, List<byte[]> imageStreamList,
                                                        int actualImageIndex, int initialIncrementIndex = 0)
         {
             var paragraphContent = new QuestionTextViewModel();
@@ -173,17 +174,25 @@ namespace BnE.EducationVest.API.Utilities
                 }
             }
         }
-        private static List<Stream> GetAllImagesStream(this WordprocessingDocument document)
+        private static List<byte[]> GetAllImagesStream(this WordprocessingDocument document)
         {
             var images = document.MainDocumentPart.ImageParts;
-            var streamList = new List<Stream>();
+            var streamList = new List<byte[]>();
             for (int index = 0; index < images.Count(); index++)
             {
                 var image = images.ElementAt(index);
                 var imageDocumentPart = image.OpenXmlPackage.Package.GetPart(image.Uri);
-                streamList.Add(imageDocumentPart.GetStream());
+                streamList.Add(ConvertStreamToByteArray(imageDocumentPart.GetStream()));
             }
             return streamList;
+        }
+        public static byte[] ConvertStreamToByteArray(Stream stream)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                stream.CopyTo(ms);
+                return ms.ToArray();
+            }
         }
     }
 }

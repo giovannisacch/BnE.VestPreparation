@@ -2,6 +2,7 @@
 
 namespace BnE.EducationVest.Domain.Exam.ValueObjects
 {
+    //TODO: ATUALIZAR, NAO É UM VALUE OBJECT
     public class CompleteTextIncrementVO
     {
         public int Index { get; private set; }
@@ -13,6 +14,13 @@ namespace BnE.EducationVest.Domain.Exam.ValueObjects
             Index = index;
             Value = value;
             Type = type;
+        }
+        public void UpdateValueToImageUrl(string imageUrl)
+        {
+            if (Type == ECompleteTextIncrementType.Equation)
+                throw new System.Exception();
+
+            Value = imageUrl;
         }
     }
 }

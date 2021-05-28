@@ -4,6 +4,7 @@ using BnE.EducationVest.Domain.Exam.Enums;
 using BnE.EducationVest.Domain.Exam.ValueObjects;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,7 +46,7 @@ namespace BnE.EducationVest.Application.Exams.Mappings
         public static IncrementedTextVO MapToVO(this QuestionTextViewModel questionTextViewModel)
         {
             return new IncrementedTextVO(questionTextViewModel.Content, 
-                                    questionTextViewModel.Increments.Select(x => x.MapToVO()).ToList());
+                                    questionTextViewModel.Increments?.Select(x => x.MapToVO()).ToList());
         }
 
         public static CompleteTextIncrementVO MapToVO(this IncrementViewModel incrementViewModel)
@@ -54,9 +55,17 @@ namespace BnE.EducationVest.Application.Exams.Mappings
                                             (
                                                 (incrementViewModel.Type == ECompleteTextIncrementType.Equation) ?
                                                                                         incrementViewModel.Value :
-                                                                                        incrementViewModel.ImageStream
+                                                                                        (incrementViewModel.ImageStream)
                                              ),
                                             incrementViewModel.Type);
         }
+        //private static byte[] TransformStreamInByteArray(Stream sourceStream) 
+        //{
+        //    using (var memoryStream = new MemoryStream())
+        //    {
+        //        sourceStream.CopyTo(memoryStream);
+        //        return memoryStream.ToArray();
+        //    }
+        //}
     }
 }

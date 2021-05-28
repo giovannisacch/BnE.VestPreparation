@@ -83,6 +83,7 @@ namespace BnE.EducationVest.Application.Exams.Services
                 CloseDate = DateTime.Now
             };
             var exam = examViewModel.MapToDomain();
+            await _examDomainService.CreateExam(exam);
             throw new NotImplementedException();
         }
 
@@ -133,16 +134,31 @@ namespace BnE.EducationVest.Application.Exams.Services
             var tokenData = _httpContextAccessor.GetTokenData();
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
             var questions = await _examDomainService.GetExamQuestionsWithAnswers(getQuestionListPaginatedRequest.ExamId, userId, 
-                                                                                 getQuestionListPaginatedRequest.Page, getQuestionListPaginatedRequest.WasStarted);
+                                                                                 1, getQuestionListPaginatedRequest.WasStarted);
+
+            //TODO: Remover a parte de adicionar questão
+            var responseList = new List<QuestionExamViewModel>();
+            var actualIndex = 0;
+            for (int i = 0; i < 10; i++)
+            {
+
+                if (actualIndex == questions.Count)
+                    actualIndex = 0;
+
+                var actualQuestion = questions[actualIndex].MapToViewModel();
+                actualQuestion.Index = i;
+                responseList.Add(actualQuestion);
+                actualIndex++;
+            }
             return new Either<ErrorResponseModel, GetExamQuestionListViewModel>(new GetExamQuestionListViewModel() 
             {
-                Questions = questions.Select(x => x.MapToViewModel())
+                Questions = responseList
             }, HttpStatusCode.OK);
         }
 
         public async Task UploadExamPeriods(UploadExamPeriodsRequestViewModel uploadExamPeriodsRequestViewModel)
         {
-            await _examCacheService.SaveExamPeriods(uploadExamPeriodsRequestViewModel.ExamModel, 
+            await _examCacheService.SaveExamPeriods(uploadExamPeriodsRequestViewModel.ExamModel,
                                               uploadExamPeriodsRequestViewModel.ExamType, 
                                               uploadExamPeriodsRequestViewModel.ExamNumber,
                                               uploadExamPeriodsRequestViewModel.ExamPeriods.Select(x => x.MapToVO()).ToList());

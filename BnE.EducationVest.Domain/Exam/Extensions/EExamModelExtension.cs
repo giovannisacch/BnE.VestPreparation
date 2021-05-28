@@ -16,9 +16,9 @@ namespace BnE.EducationVest.Domain.Exam.Extensions
                 case EExamModel.Insper:
                     return 60;
                 case EExamModel.FGV:
-                    return 71;
+                    return 60;
                 case EExamModel.InsperAntiga:
-                    return 50;
+                    return 60;
                 default:
                     return 60;
             }

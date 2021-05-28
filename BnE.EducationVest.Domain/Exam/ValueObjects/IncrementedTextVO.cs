@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace BnE.EducationVest.Domain.Exam.ValueObjects
 {
+    //TODO: NÃO E UM VALUE OBJECT
     public class IncrementedTextVO
     {
         public Guid Id { get; private set; }
@@ -22,6 +23,11 @@ namespace BnE.EducationVest.Domain.Exam.ValueObjects
             Id = Guid.NewGuid();
             Content = content;
             Increments = increments;
+        }
+
+        public IEnumerable<CompleteTextIncrementVO> GetIncrementsWithImageType()
+        {
+            return Increments.Where(x => x.Type == Enums.ECompleteTextIncrementType.Image);
         }
     }
 }

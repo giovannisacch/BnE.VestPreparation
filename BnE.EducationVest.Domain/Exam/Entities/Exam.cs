@@ -30,6 +30,10 @@ namespace BnE.EducationVest.Domain.Exam.Entities
             return Periods
                 .FirstOrDefault(x => x.OpenDate <= DateTime.Now && x.CloseDate > DateTime.Now.AddMinutes(10));
         }
+        public IEnumerable<Question> GetQuestionsWithImageInEnunciated()
+        {
+            return Questions.Where(x => x.HasImageInEnunciated());
+        }
         public bool IsAvailable()
         {
             return GetActualAvailablePeriod() != null;
