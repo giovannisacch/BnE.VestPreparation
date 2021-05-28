@@ -37,8 +37,7 @@ namespace BnE.EducationVest
                 opt.AddPolicy("CorsDefault", builder => builder
                     .AllowAnyOrigin()
                     .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials());
+                    .AllowAnyHeader());
             });
 
             services.AddAuthentication("Bearer")
