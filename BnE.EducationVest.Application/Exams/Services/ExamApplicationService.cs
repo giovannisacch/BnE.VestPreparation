@@ -135,7 +135,6 @@ namespace BnE.EducationVest.Application.Exams.Services
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
             var questions = await _examDomainService.GetExamQuestionsWithAnswers(getQuestionListPaginatedRequest.ExamId, userId, 
                                                                                  1, getQuestionListPaginatedRequest.WasStarted);
-
             //TODO: Remover a parte de adicionar questão
             var responseList = new List<QuestionExamViewModel>();
             var actualIndex = 0;

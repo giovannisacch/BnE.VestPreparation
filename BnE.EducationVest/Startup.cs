@@ -31,7 +31,16 @@ namespace BnE.EducationVest
             services.InjectInfraServiceDependencies(Configuration);
             services.InjectInfraDataDependencies(Configuration);
             services.InjectDomainServices();
-            services.AddCors(x => { x.AddDefaultPolicy(x => x.AllowAnyOrigin()); });
+
+            services.AddCors(opt => 
+            {
+                opt.AddPolicy("CorsDefault", builder => builder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+            });
+
             services.AddAuthentication("Bearer")
                 .AddJwtBearer(options =>
                 {
@@ -93,7 +102,7 @@ namespace BnE.EducationVest
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseCors(opt => { opt.AllowAnyOrigin(); });
+            app.UseCors("CorsDefault");
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BnE.EducationVest v1"));
 
