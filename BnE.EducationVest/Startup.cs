@@ -62,13 +62,12 @@ namespace BnE.EducationVest
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BnE.EducationVest", Version = "v1" });
                 Console.WriteLine("Base DIrectory");
                 Console.WriteLine(AppDomain.CurrentDomain.BaseDirectory);
-                var XMLPath = AppDomain.CurrentDomain.BaseDirectory + "BnE.EducationVest.API" + ".xml";
+                var XMLPath = "BnE.EducationVest.API" + ".xml";
                 if (File.Exists(XMLPath))
                 {
                     c.IncludeXmlComments(XMLPath);
-                }
-                else
-                    c.IncludeXmlComments("../" + AppDomain.CurrentDomain.BaseDirectory + "BnE.EducationVest/" + "BnE.EducationVest.API" + ".xml");
+                }else
+                    "../" + c.IncludeXmlComments(XMLPath);
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
                     Name = "Authorization",
