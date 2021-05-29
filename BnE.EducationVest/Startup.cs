@@ -68,7 +68,7 @@ namespace BnE.EducationVest
                     c.IncludeXmlComments(XMLPath);
                 }
                 else
-                    c.IncludeXmlComments(Path.GetFullPath("app/BnE.EducationVest/BnE.EducationVest.API.xml"));
+                    c.IncludeXmlComments(Path.GetFullPath("../BnE.EducationVest/BnE.EducationVest.API.xml"));
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
                     Name = "Authorization",
