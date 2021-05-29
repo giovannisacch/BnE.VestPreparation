@@ -99,7 +99,7 @@ namespace BnE.EducationVest
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseDeveloperExceptionPage();  
             }
             app.UseCors("CorsDefault");
             app.UseSwagger();

@@ -68,13 +68,13 @@ namespace BnE.EducationVest.Application.Users.Services
             else
                 return await _userAuthService.LoginRefreshTokenAsync(loginRequestModel.RefreshToken);
         }
-        public async Task<Either<ErrorResponseModel, UserMenuViewModel>> GetUserMenu()
+        public async Task<Either<ErrorResponseModel, UserMenusViewModel>> GetUserMenu()
         {
             var groups = _httpContextAccessor.GetTokenData().CognitoGroups.ToList();
             //TODO: Refatorar forma de verificar grupos, está altamente acoplado com a nomenclatura do cognito
             var menus = await _userRepository.GetAvailableMenusByUserGroup(groups.Contains("Teachers"), groups.Contains("Students"));
 
-            return new Either<ErrorResponseModel, UserMenuViewModel>(new UserMenuViewModel() { Menus = menus.Select(x => x.Name) }, HttpStatusCode.OK);
+            return new Either<ErrorResponseModel, UserMenusViewModel>(new UserMenusViewModel() { Menus = menus.Select(x => new MenuViewModel() {Key = x.Key, Label = x.Label } ) }, HttpStatusCode.OK);
         }
     }
 }

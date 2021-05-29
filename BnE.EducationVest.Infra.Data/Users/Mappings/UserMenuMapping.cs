@@ -12,8 +12,13 @@ namespace BnE.EducationVest.Infra.Data.Users.Mappings
             builder.ToTable("user_menu");
 
             builder
-                .Property(x => x.Name)
+                .Property(x => x.Key)
                 .HasColumnType("varchar(30)");
+
+            builder
+                .Property(x => x.Label)
+                .HasColumnType("varchar(50)");
+
         }
     }
 }

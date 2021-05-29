@@ -12,6 +12,6 @@ namespace BnE.EducationVest.Application.Users.Interface
         Task<Either<ErrorResponseModel, object>> ChangePasswordAsAdmin(FirstPasswordChangeRequestModel userNameAndPasswordRequestModel);
         Task<Either<ErrorResponseModel, object>> InitiateRecoverPassword(string username);
         Task<Either<ErrorResponseModel, object>> ConfirmPasswordRecover(string username, string code, string newPassword);
-        Task<Either<ErrorResponseModel, UserMenuViewModel>> GetUserMenu();
+        Task<Either<ErrorResponseModel, UserMenusViewModel>> GetUserMenu();
     }
 }

@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 
 namespace BnE.EducationVest.Application.Users.ViewModels
 {
-    public class UserMenuViewModel
+    public class UserMenusViewModel
     {
-        public IEnumerable<string> Menus { get; set; }
+        public IEnumerable<MenuViewModel> Menus { get; set; }
+    }
+    public class MenuViewModel
+    {
+        public string Key { get; set; }
+        public string Label { get; set; }
     }
 }

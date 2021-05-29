@@ -9,7 +9,8 @@ namespace BnE.EducationVest.Domain.Users.Entities
 {
     public class UserMenu : EntityBase
     {
-        public string Name { get; set; }
+        public string Key { get; set; }
+        public string Label { get; set; }
         public bool ToTeacher { get; set; }
         public bool ToStudent { get; set; }
     }
