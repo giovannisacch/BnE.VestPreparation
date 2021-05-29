@@ -60,6 +60,8 @@ namespace BnE.EducationVest
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BnE.EducationVest", Version = "v1" });
+                Console.WriteLine("Base DIrectory");
+                Console.WriteLine(AppDomain.CurrentDomain.BaseDirectory);
                 var XMLPath = AppDomain.CurrentDomain.BaseDirectory + "BnE.EducationVest.API" + ".xml";
                 if (File.Exists(XMLPath))
                 {
