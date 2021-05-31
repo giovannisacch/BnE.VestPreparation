@@ -70,11 +70,14 @@ namespace BnE.EducationVest.Application.Users.Services
         }
         public async Task<Either<ErrorResponseModel, UserMenusViewModel>> GetUserMenu()
         {
-            var groups = _httpContextAccessor.GetTokenData().CognitoGroups.ToList();
+            var tokenData = _httpContextAccessor.GetTokenData();
+            var groups = tokenData.CognitoGroups.ToList();
             //TODO: Refatorar forma de verificar grupos, está altamente acoplado com a nomenclatura do cognito
             var menus = await _userRepository.GetAvailableMenusByUserGroup(groups.Contains("Teachers"), groups.Contains("Students"));
+            var user = await _userRepository.GetUserByCognitoId(Guid.Parse(tokenData.CognitoId));
 
-            return new Either<ErrorResponseModel, UserMenusViewModel>(new UserMenusViewModel() { Menus = menus.Select(x => new MenuViewModel() {Key = x.Key, Label = x.Label } ) }, HttpStatusCode.OK);
+            return new Either<ErrorResponseModel, UserMenusViewModel>(new UserMenusViewModel() { Name = user.Name, BirthDate = user.BirthDate,
+                                                                                                Menus = menus.Select(x => new MenuViewModel() {Key = x.Key, Label = x.Label } ) }, HttpStatusCode.OK);
         }
     }
 }

@@ -9,6 +9,8 @@ namespace BnE.EducationVest.Application.Users.ViewModels
     public class UserMenusViewModel
     {
         public IEnumerable<MenuViewModel> Menus { get; set; }
+        public string Name { get; set; }
+        public DateTime BirthDate { get; set; }
     }
     public class MenuViewModel
     {
