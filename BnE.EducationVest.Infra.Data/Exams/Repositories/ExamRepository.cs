@@ -105,5 +105,18 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
                          .Include(x => x.Periods)
                          .FirstAsync(x => x.Id == examId);
         }
+        //public async Task<List<Exam>> GetExamsFinalizedByUser(Guid userId)
+        //{
+        //    var answers = await _context
+        //        .QuestionsAnswers
+        //        .Where(x => x.UserId == userId)
+        //        .Include(x => x.Question)
+        //        .ThenInclude(x => x.Exam)
+        //        .ToListAsync();
+        //    //TODO: Criar tabela entre usuario e exame para marcar os exames finalizados ou atualizar o count de forma dinamica
+        //    var answersFromFinalizedExams = answers.Select(x => x.Question).GroupBy(x => x.ExamId);
+        //    return answersFromFinalizedExams;
+
+        //}
     }
 }

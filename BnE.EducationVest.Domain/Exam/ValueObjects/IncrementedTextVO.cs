@@ -13,7 +13,6 @@ namespace BnE.EducationVest.Domain.Exam.ValueObjects
         public Guid Id { get; private set; }
         public string Content { get; private set; }
         public List<CompleteTextIncrementVO> Increments { get; private set; }
-
         public Question Question { get; private set; }
         public Alternative Alternative { get; private set; }
         public SupportingText SupportingText { get; set; }
@@ -27,7 +26,7 @@ namespace BnE.EducationVest.Domain.Exam.ValueObjects
 
         public IEnumerable<CompleteTextIncrementVO> GetIncrementsWithImageType()
         {
-            return Increments.Where(x => x.Type == Enums.ECompleteTextIncrementType.Image);
+            return Increments?.Where(x => x.Type == Enums.ECompleteTextIncrementType.Image);
         }
     }
 }

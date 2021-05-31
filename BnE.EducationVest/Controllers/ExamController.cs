@@ -47,10 +47,12 @@ namespace BnE.EducationVest.API.Controllers
         public async Task<IActionResult> UploadExamFile(IFormFile examFile, [FromQuery]EExamModel examModel, EExamType examType, int number)
         {
             var examPeriods = await _examApplicationService.GetExamPeriods(examModel, examType, number);
-            var viewModel = examFile.TransformExamWordFileInViewModel(examPeriods);
-            await _examApplicationService.CreateExam(viewModel);
-
-            return Ok();
+            var viewModel = examFile.TransformExamWordFileInViewModel(examPeriods, examModel, examType, number);
+            var response = await _examApplicationService.CreateExam(viewModel);
+            return StatusCode((int)response.StatusCode,
+                           response.IsSuccess
+                           ? response.SuccessResponseModel
+                           : response.ErrorResponseModel);
         }
         /// <summary>
         /// API que busca os exames que estão dísponiveis(estão com periodo vingente e não foram realizados) para o usuario que está logado

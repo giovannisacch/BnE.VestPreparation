@@ -77,14 +77,9 @@ namespace BnE.EducationVest.Application.Exams.Services
 
         public async Task<Either<ErrorResponseModel, Guid>> CreateExam(ExamViewModel examViewModel)
         {
-            var examPeriod = new ExamPeriodViewModel()
-            {
-                OpenDate = DateTime.Now,
-                CloseDate = DateTime.Now
-            };
             var exam = examViewModel.MapToDomain();
             await _examDomainService.CreateExam(exam);
-            throw new NotImplementedException();
+            return new Either<ErrorResponseModel, Guid>(exam.Id, HttpStatusCode.OK);
         }
 
         public async Task<Either<ErrorResponseModel, AvailableExamsViewModel>> GetAvailableExamsByUser()
@@ -135,23 +130,9 @@ namespace BnE.EducationVest.Application.Exams.Services
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
             var questions = await _examDomainService.GetExamQuestionsWithAnswers(getQuestionListPaginatedRequest.ExamId, userId, 
                                                                                  1, getQuestionListPaginatedRequest.WasStarted);
-            //TODO: Remover a parte de adicionar questão
-            var responseList = new List<QuestionExamViewModel>();
-            var actualIndex = 0;
-            for (int i = 0; i < 10; i++)
-            {
-
-                if (actualIndex == questions.Count)
-                    actualIndex = 0;
-
-                var actualQuestion = questions[actualIndex].MapToViewModel();
-                actualQuestion.Index = i;
-                responseList.Add(actualQuestion);
-                actualIndex++;
-            }
             return new Either<ErrorResponseModel, GetExamQuestionListViewModel>(new GetExamQuestionListViewModel() 
             {
-                Questions = responseList
+                Questions = questions.Select(x => x.MapToViewModel())
             }, HttpStatusCode.OK);
         }
 

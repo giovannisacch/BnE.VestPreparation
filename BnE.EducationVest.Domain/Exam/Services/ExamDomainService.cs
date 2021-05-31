@@ -57,27 +57,32 @@ namespace BnE.EducationVest.Domain.Exam.Services
         {
             foreach (var question in exam.Questions)
             {
+                question.SubjectId = Guid.Parse("1cb8a145-53f2-4ef1-87af-5b7870f852a4");
                 var imageNamePrefix = $"{Enum.GetName(typeof(EExamModel), exam.ExamModel)}/{Enum.GetName(typeof(EExamType), exam.ExamType)}/{exam.Id}/{question.Index}/";
 
                 var questionEnunciatedImages = question.Enunciated.GetIncrementsWithImageType();
                 if(questionEnunciatedImages != null)
-                    questionEnunciatedImages.ToList().ForEach(async x => await UpdateIncrementImageContentToImageUrl(x, 
-                                                                                                imageNamePrefix + $"enunciated/{question.Enunciated.Id}/{x.Index}"));
+                    foreach (var item in questionEnunciatedImages)
+                        await UpdateIncrementImageContentToImageUrl(item, imageNamePrefix + $"enunciated/{question.Enunciated.Id}/{item.Index}");
+                    
                 var supportTextImages = question.SupportingText?.Content.GetIncrementsWithImageType();
-                supportTextImages.ToList().ForEach(async x => await UpdateIncrementImageContentToImageUrl(x,
-                                                                                                imageNamePrefix + $"supportText/{x.Index}"));
                 if (supportTextImages != null)
+                    foreach (var item in supportTextImages)
+                        await UpdateIncrementImageContentToImageUrl(item, imageNamePrefix + $"supportText/{item.Index}");
+                
                 foreach (var alternative in question.Alternatives)
                 {
                     var alternativeIncrementsWithImageType = alternative.TextContent.GetIncrementsWithImageType();
                     if (alternativeIncrementsWithImageType == null)
                         continue;
-                        alternativeIncrementsWithImageType.ToList().ForEach(async x => await UpdateIncrementImageContentToImageUrl(x,
-                                                                                                    imageNamePrefix + $"alternative/{alternative.Index}/{x.Index}"));
-                    }
+                        foreach (var item in alternativeIncrementsWithImageType)
+                        {
+                            await UpdateIncrementImageContentToImageUrl(item, imageNamePrefix + $"alternative/{alternative.Index}/{item.Index}");
+                        }
+                }
             }
+            await _examRepository.AddAsync(exam);
         }
-
         public async Task UpdateIncrementImageContentToImageUrl(CompleteTextIncrementVO increment, string imageName)
         {
             var imageStream = increment.Value as byte[];
