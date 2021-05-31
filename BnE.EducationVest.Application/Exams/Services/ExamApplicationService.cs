@@ -129,7 +129,7 @@ namespace BnE.EducationVest.Application.Exams.Services
             var tokenData = _httpContextAccessor.GetTokenData();
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
             var questions = await _examDomainService.GetExamQuestionsWithAnswers(getQuestionListPaginatedRequest.ExamId, userId, 
-                                                                                 1, getQuestionListPaginatedRequest.WasStarted);
+                                                                                 getQuestionListPaginatedRequest.Page, getQuestionListPaginatedRequest.WasStarted);
             return new Either<ErrorResponseModel, GetExamQuestionListViewModel>(new GetExamQuestionListViewModel() 
             {
                 Questions = questions.Select(x => x.MapToViewModel())
