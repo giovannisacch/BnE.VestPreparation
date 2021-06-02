@@ -57,7 +57,8 @@ namespace BnE.EducationVest.Domain.Exam.Services
         {
             foreach (var question in exam.Questions)
             {
-                question.SubjectId = Guid.Parse("1cb8a145-53f2-4ef1-87af-5b7870f852a4");
+                //Remover ao mapear subject pra adicionar 
+                question.SubjectId = Guid.Parse("ad88e83e-fae0-4286-a8a6-40bc83e0a065");
                 var imageNamePrefix = $"{Enum.GetName(typeof(EExamModel), exam.ExamModel)}/{Enum.GetName(typeof(EExamType), exam.ExamType)}/{exam.Id}/{question.Index}/";
 
                 var questionEnunciatedImages = question.Enunciated.GetIncrementsWithImageType();

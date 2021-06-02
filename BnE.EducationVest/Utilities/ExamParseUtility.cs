@@ -31,9 +31,12 @@ namespace BnE.EducationVest.API.Utilities
                                             .Where(paragraph => !string.IsNullOrEmpty(paragraph.InnerText) || paragraph.Count() > 1);
 
                 QuestionExamViewModel actualQuestion = new QuestionExamViewModel();
+                var supportingTexts = new List<QuestionSupportingTextRequestViewModel>();
                 bool isInAlternatives = false;
                 var imagesParagraphsCount = 0;
                 var alternativeIndex = 0;
+                var isInSupportingText = false;
+                var actualSupportingText = new QuestionSupportingTextRequestViewModel();
                 foreach (var paragraph in paragraphsWithContent)
                 {
                     var isImageParagraph = paragraph.Any(child =>
@@ -42,13 +45,21 @@ namespace BnE.EducationVest.API.Utilities
                                                             );
                     var paragraphContent = paragraph.InnerText;
                     var contentWithoutWhiteSpaces = _regexRemoveWhitespace.Replace(paragraphContent, "");
-                    if (contentWithoutWhiteSpaces == "-{Questao}")
+                    if (contentWithoutWhiteSpaces == "-{TextoApoio}")
+                    {
+                        if (actualSupportingText.Questions != null)
+                            supportingTexts.Add(actualSupportingText);
+                        actualSupportingText = new QuestionSupportingTextRequestViewModel();
+                        isInSupportingText = true;
+                    }
+                    else if (contentWithoutWhiteSpaces == "-{Questao}")
                     {
                         exam.QuestionList.Add(actualQuestion);
                         var nextIndex = actualQuestion.Index + 1;
                         actualQuestion = new QuestionExamViewModel();
                         actualQuestion.Index = nextIndex;
                         isInAlternatives = false;
+                        isInSupportingText = false;
                     }
                     else if (contentWithoutWhiteSpaces == "-{Alternativas}")
                     {
@@ -68,8 +79,26 @@ namespace BnE.EducationVest.API.Utilities
                         });
                         alternativeIndex++;
                     }
-                    else
+                    else if (isInSupportingText)
                     {
+                        var splitedQuestions = paragraphContent.Split("Questoes:");
+                        if(splitedQuestions.Length > 1)
+                        {
+                            var questionNumbersDividedByComma = splitedQuestions[1];
+                            actualSupportingText.Questions = questionNumbersDividedByComma.Split(',').Select(x => int.Parse(x));
+                        }
+                        else
+                        {
+                            if (actualSupportingText.Text == null)
+                                SetSupportingTextContent(actualSupportingText, paragraph,
+                                                    imagesStreamList, imagesParagraphsCount);
+                            else
+                                UpdateSupportingTextContent(actualSupportingText, paragraph,
+                                                    imagesStreamList, imagesParagraphsCount);
+                        }
+                    }
+                    else
+                            {
                         if (actualQuestion.Enunciated == null)
                             AddEnunciatedToQuestion(actualQuestion, paragraph,
                                                 imagesStreamList, imagesParagraphsCount);
@@ -81,6 +110,13 @@ namespace BnE.EducationVest.API.Utilities
                         imagesParagraphsCount++;
                 }
                 exam.QuestionList.Add(actualQuestion);
+                if(actualSupportingText != null)
+                    supportingTexts.Add(actualSupportingText);
+
+                foreach (var supportText in supportingTexts)
+                {
+                    exam.QuestionList.Where(x => supportText.Questions.Contains(x.Index)).ToList().ForEach(question => question.SupportingText = supportText.Text);
+                }
             }
             exam.QuestionList.RemoveAll(x => x.Alternatives == null);
             return exam;
@@ -108,6 +144,32 @@ namespace BnE.EducationVest.API.Utilities
                     actualQuestion.Enunciated.Increments = paragraphAsQuestionText.Increments;
                 else
                     actualQuestion.Enunciated.Increments.AddRange(paragraphAsQuestionText.Increments);
+            }
+        }
+
+        private static void SetSupportingTextContent(QuestionSupportingTextRequestViewModel actualSupportingText,
+                                            Paragraph paragraph, List<byte[]> imagesStreamList, int imagesParagraphsCount)
+        {
+            actualSupportingText.Text = GetQuestionTextByParagraph(paragraph,
+                                                                   imagesStreamList,
+                                                                   imagesParagraphsCount);
+        }
+        private static void UpdateSupportingTextContent(QuestionSupportingTextRequestViewModel actualSupportingText,
+                                                    Paragraph paragraph, List<byte[]> imagesStreamList, int imagesParagraphsCount)
+        {
+            var paragraphAsQuestionText = GetQuestionTextByParagraph(paragraph,
+                                                         imagesStreamList,
+                                                         imagesParagraphsCount,
+                                                      actualSupportingText.Text.Increments == null
+                                                      ? 0 : actualSupportingText.Text.Increments.Last().Index + 1);
+            actualSupportingText.Text.Content += Environment.NewLine;
+            actualSupportingText.Text.Content += paragraphAsQuestionText.Content;
+            if (paragraphAsQuestionText.Increments != null)
+            {
+                if (actualSupportingText.Text.Increments == null)
+                    actualSupportingText.Text.Increments = paragraphAsQuestionText.Increments;
+                else
+                    actualSupportingText.Text.Increments.AddRange(paragraphAsQuestionText.Increments);
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using BnE.EducationVest.Domain.Users.Entities;
+using BnE.EducationVest.Domain.Users.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -42,9 +43,6 @@ namespace BnE.EducationVest.Infra.Data.Users.Mappings
                      .HasColumnName("address.state")
                      .HasColumnType("char(2)");
 
-                address.Property(x => x.Number)
-                       .HasColumnName("address.number")
-                       .HasColumnType("char(7)");
             });
 
             builder
@@ -54,6 +52,12 @@ namespace BnE.EducationVest.Infra.Data.Users.Mappings
             builder
             .Property(x => x.Gender)
             .HasColumnType("varchar(10)");
+
+            builder
+             .Property(x => x.UserType)
+             .HasConversion(toDB => (int)toDB,
+                                fromDB => (EUserType)fromDB)
+                .IsRequired();
 
             builder
             .Property(x => x.PhoneNumber)

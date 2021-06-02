@@ -3,6 +3,7 @@ using Amazon.CognitoIdentityProvider.Model;
 using Amazon.Extensions.CognitoAuthentication;
 using BnE.EducationVest.Domain;
 using BnE.EducationVest.Domain.Common;
+using BnE.EducationVest.Domain.Users.Enums;
 using BnE.EducationVest.Domain.Users.Interfaces.InfraService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
@@ -85,7 +86,7 @@ namespace BnE.EducationVest.Infra.Service.User.Services
             await _amazonCognitoIdentityProviderClient.AdminAddUserToGroupAsync(
               new AdminAddUserToGroupRequest
               {
-                  GroupName = user.IsTeacher ? "Teachers" : "Students",
+                  GroupName = user.UserType == EUserType.Teacher ? "Teachers" : (user.UserType == EUserType.InternalStudent) ? "Students" : "ExternalStudents",
                   Username = user.Email,
                   UserPoolId = _cognitoUserPool.PoolID
               });
@@ -196,17 +197,12 @@ namespace BnE.EducationVest.Infra.Service.User.Services
                         new AttributeType()
                         {
                             Name = "birthdate",
-                            Value = user.BirthDate.ToString("YYYY/MM/dd")
+                            Value = user.BirthDate.ToString("yyyy/MM/dd")
                         },
                          new AttributeType()
                         {
                             Name = "address",
                             Value = user.Address.Street
-                        },
-                          new AttributeType()
-                        {
-                            Name = "custom:custom:CPF",
-                            Value = user.CPF
                         },
                           new AttributeType()
                         {
@@ -219,6 +215,12 @@ namespace BnE.EducationVest.Infra.Service.User.Services
                               Value = user.Id.ToString()
                           }
                     };
+            if (user.CPF != null)
+                userAttributes.Add(new AttributeType()
+                {
+                    Name = "custom:custom:CPF",
+                    Value = user.CPF
+                });
             return userAttributes;
         }
 

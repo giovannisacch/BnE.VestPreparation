@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace BnE.EducationVest.Application.Exams.ViewModels
 {
-    public class ExamQuestionListViewModel
+    public class QuestionSupportingTextRequestViewModel
     {
-        public bool MyProperty { get; set; }
+        public QuestionTextViewModel Text { get; set; }
+        public IEnumerable<int> Questions { get; set; }
     }
 }

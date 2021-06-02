@@ -20,6 +20,11 @@ namespace BnE.EducationVest.Domain.Exam.Entities
             Id = Guid.NewGuid();
             ContentId = contentId;
         }
+        public SupportingText(IncrementedTextVO content)
+        {
+            Id = Guid.NewGuid();
+            Content = content;
+        }
 
         internal SupportingText()
         {

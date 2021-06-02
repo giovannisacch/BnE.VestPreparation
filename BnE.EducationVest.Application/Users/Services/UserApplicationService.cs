@@ -32,10 +32,10 @@ namespace BnE.EducationVest.Application.Users.Services
             //Criar mapper
             var addressVO = new AddressVO(createUserRequestModel.Address.CEP, createUserRequestModel.Address.Street,
                                            createUserRequestModel.Address.Neighborhood, createUserRequestModel.Address.City,
-                                           createUserRequestModel.Address.State, createUserRequestModel.Address.Number);
+                                           createUserRequestModel.Address.State);
             var user = new User(createUserRequestModel.Name, createUserRequestModel.CPF, 
                                 createUserRequestModel.PhoneNumber, createUserRequestModel.Gender, createUserRequestModel.Email, 
-                                createUserRequestModel.BirthDate, addressVO, createUserRequestModel.IsTeacher);
+                                createUserRequestModel.BirthDate, addressVO, createUserRequestModel.UserType);
             await _userAuthService.CreateUserAsync(user);
             await _userRepository.AddAsync(user);
             return new Either<ErrorResponseModel, Guid>(user.Id, HttpStatusCode.OK);

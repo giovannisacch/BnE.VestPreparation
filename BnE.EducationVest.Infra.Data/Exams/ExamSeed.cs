@@ -2,6 +2,7 @@
 using BnE.EducationVest.Domain.Exam.Enums;
 using BnE.EducationVest.Domain.Exam.ValueObjects;
 using BnE.EducationVest.Domain.Users.Entities;
+using BnE.EducationVest.Domain.Users.Enums;
 using BnE.EducationVest.Domain.Users.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -596,7 +597,7 @@ namespace BnE.EducationVest.Infra.Data.Exams
             #endregion
 
             var user = new User("Giovanni Sacchitiello", "41758132841", "11991392711", "Masculino", "sacchitiellogiovanni@gmail.com", 
-                                DateTime.Parse("2000/05/05"), new AddressVO("03320020", "Rua antonio ciucio", "Carrão", "São Paulo", "SP", "148"), false);
+                                DateTime.Parse("2000/05/05"), new AddressVO("03320020", "Rua antonio ciucio", "Carrão", "São Paulo", "SP"), EUserType.InternalStudent);
             user.SetCognitoUserId(Guid.Parse("6e32ca6c-2a66-4ea6-a0c4-cf655dab5191"));
 
             var examQuizPeriods = new List<ExamPeriodVO>()
@@ -722,8 +723,7 @@ namespace BnE.EducationVest.Infra.Data.Exams
                 address.Street,
                 address.Neighborhood,
                 address.City,
-                address.State,
-                address.Number
+                address.State
             };
         }
 
@@ -748,7 +748,7 @@ namespace BnE.EducationVest.Infra.Data.Exams
                 user.Email,
                 user.BirthDate,
                 user.CognitoUserId,
-                user.IsTeacher,
+                user.UserType,
             };
         }
         private static object MapToAnonnymousObject(this ExamPeriodVO examPeriod, Guid examId)

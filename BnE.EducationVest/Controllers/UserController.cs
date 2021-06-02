@@ -57,7 +57,7 @@ namespace BnE.EducationVest.API.Controllers
 
             return StatusCode((int)response.StatusCode, 
                 response.IsSuccess 
-                ? response.SuccessResponseModel 
+                ? new { UserId = response.SuccessResponseModel } 
                 : response.ErrorResponseModel);
         }
         [HttpPost("recoverPassword")]

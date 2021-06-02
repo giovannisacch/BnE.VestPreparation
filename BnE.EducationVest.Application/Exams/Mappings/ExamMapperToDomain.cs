@@ -30,10 +30,13 @@ namespace BnE.EducationVest.Application.Exams.Mappings
 
         public static Question MapToDomain(this QuestionExamViewModel questionViewModel)
         {
-            return new Question(questionViewModel.Index, 
+            var question = new Question(questionViewModel.Index, 
                                 questionViewModel.Enunciated.MapToVO(), 
                                 questionViewModel.Alternatives.Select(x => x.MapToDomain()).ToList(),
                                 questionViewModel.SubjectId);
+            if (questionViewModel.SupportingText != null)
+                question.SetSupportingText(questionViewModel.SupportingText.MapToSupportText());
+            return question;
         }
         
         public static Alternative MapToDomain(this QuestionAlternativeViewModel questionAlternativeViewModel)
@@ -42,7 +45,10 @@ namespace BnE.EducationVest.Application.Exams.Mappings
                                     questionAlternativeViewModel.IsCorrect, 
                                     questionAlternativeViewModel.Index);
         }
-
+        public static SupportingText MapToSupportText(this QuestionTextViewModel questionTextViewModel)
+        {
+            return new SupportingText(questionTextViewModel.MapToVO());
+        }
         public static IncrementedTextVO MapToVO(this QuestionTextViewModel questionTextViewModel)
         {
             return new IncrementedTextVO(questionTextViewModel.Content, 

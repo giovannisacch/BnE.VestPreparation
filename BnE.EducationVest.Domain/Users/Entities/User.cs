@@ -1,5 +1,6 @@
 ﻿using BnE.EducationVest.Domain.Common;
 using BnE.EducationVest.Domain.Exam.Entities;
+using BnE.EducationVest.Domain.Users.Enums;
 using BnE.EducationVest.Domain.Users.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -18,19 +19,19 @@ namespace BnE.EducationVest.Domain.Users.Entities
         public AddressVO Address { get; private set; }
         public List<QuestionAnswer> QuestionAnswers { get; private set; }
         public Guid CognitoUserId { get; private set; }
-        public bool IsTeacher { get; set; }
+        public EUserType UserType { get; set; }
         internal User() { }
         public User(string name, string cpf, string phoneNumber, string gender, string email, 
-            DateTime birthDate, AddressVO address, bool isTeacher)
+            DateTime birthDate, AddressVO address, EUserType userType)
         {
             Name = name;
-            CPF = cpf;
+            CPF = userType == EUserType.InternalStudent ? cpf : null;
             PhoneNumber = phoneNumber;
             Gender = gender;
             Email = email;
             BirthDate = birthDate;
             Address = address;
-            IsTeacher = isTeacher;
+            UserType = userType;
         }
         
         public void SetCognitoUserId(Guid cognitoUserId)

@@ -1,17 +1,18 @@
-﻿using System;
+﻿using BnE.EducationVest.Domain.Users.Enums;
+using System;
 
 namespace BnE.EducationVest.Application.Users.ViewModels
 {
     public class CreateUserRequestModel
     {
         public string Name { get; set; }
-        public string CPF { get; set; }
+        public string CPF { get; set; } = null;
         public string PhoneNumber { get; set; }
         public string Gender { get; set; }
         public string Email { get; set; }
         public DateTime BirthDate { get; set; }
         public UserAddressRequestModel Address { get; set; }
-        public bool IsTeacher { get; set; }
+        public EUserType UserType { get; set; } = EUserType.ExternalStudent;
     }
 
     public class UserAddressRequestModel
@@ -21,6 +22,5 @@ namespace BnE.EducationVest.Application.Users.ViewModels
         public string Neighborhood { get; set; }
         public string City { get; set; }
         public string State { get; set; }
-        public string Number { get; set; }
     }
 }
