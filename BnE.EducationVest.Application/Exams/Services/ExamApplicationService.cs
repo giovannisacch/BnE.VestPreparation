@@ -80,6 +80,11 @@ namespace BnE.EducationVest.Application.Exams.Services
 
         public async Task<Either<ErrorResponseModel, Guid>> CreateExam(ExamViewModel examViewModel)
         {
+            //Colocar na leitura de documento
+            var subjectIdList = await _examCacheService.GetExamSubjects(examViewModel.ExamModel, examViewModel.ExamType, examViewModel.ExamNumber);
+            for (int i = 0; i < subjectIdList.Count; i++)
+                examViewModel.QuestionList[i].SubjectId = subjectIdList[i];
+            
             var exam = examViewModel.MapToDomain();
             await _examDomainService.CreateExam(exam);
             return new Either<ErrorResponseModel, Guid>(exam.Id, HttpStatusCode.OK);
@@ -131,12 +136,13 @@ namespace BnE.EducationVest.Application.Exams.Services
             }, HttpStatusCode.OK);
         }
 
-        public async Task UploadExamPeriods(UploadExamPeriodsRequestViewModel uploadExamPeriodsRequestViewModel)
+        public async Task UploadExamPeriodsAndSubjects(UploadExamPeriodsRequestViewModel uploadExamPeriodsRequestViewModel)
         {
-            await _examCacheService.SaveExamPeriods(uploadExamPeriodsRequestViewModel.ExamModel,
+            await _examCacheService.SaveExamPeriodsAndSubjects(uploadExamPeriodsRequestViewModel.ExamModel,
                                               uploadExamPeriodsRequestViewModel.ExamType, 
                                               uploadExamPeriodsRequestViewModel.ExamNumber,
-                                              uploadExamPeriodsRequestViewModel.ExamPeriods.Select(x => x.MapToVO()).ToList());
+                                              uploadExamPeriodsRequestViewModel.ExamPeriods.Select(x => x.MapToVO()).ToList(),
+                                              uploadExamPeriodsRequestViewModel.Subjects);
         }
         public async Task<List<ExamPeriodViewModel>> GetExamPeriods(EExamModel examModel, EExamType examType, int number)
         {
@@ -150,6 +156,12 @@ namespace BnE.EducationVest.Application.Exams.Services
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
             var finalizedExam = new FinalizedExam(userId, ExamId);
             await _examRepository.FinalizeExam(finalizedExam);
+        }
+
+        public async Task<IEnumerable<SubjectResponseViewModel>> GetSubjects()
+        {
+            var subjects = await _examRepository.GetSubjects();
+            return subjects.Select(x => new SubjectResponseViewModel() { Id = x.Id, Name = x.Name });
         }
     }
 }

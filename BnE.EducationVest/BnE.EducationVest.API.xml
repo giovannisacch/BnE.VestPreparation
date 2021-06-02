@@ -67,7 +67,12 @@
             <summary>
             Finaliza um exame
             </summary>
-            <param name="updateAnswerQuestionResponse"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BnE.EducationVest.API.Controllers.ExamController.GetSubjects">
+            <summary>
+            Busca todos os tópicos disponiveis
+            </summary>
             <returns></returns>
         </member>
     </members>

@@ -32,7 +32,7 @@ namespace BnE.EducationVest.API.Controllers
         [HttpPost("periods")]
         public async Task<IActionResult> UploadExamPeriods(UploadExamPeriodsRequestViewModel uploadExamPeriodsRequestViewModel)
         {
-            await _examApplicationService.UploadExamPeriods(uploadExamPeriodsRequestViewModel);
+            await _examApplicationService.UploadExamPeriodsAndSubjects(uploadExamPeriodsRequestViewModel);
             return Ok();
         }
         /// <summary>
@@ -145,7 +145,6 @@ namespace BnE.EducationVest.API.Controllers
         /// <summary>
         /// Finaliza um exame
         /// </summary>
-        /// <param name="updateAnswerQuestionResponse"></param>
         /// <returns></returns>
         [HttpPost("finalize")]
         public async Task<IActionResult> FinalizeExam(Guid examId)
@@ -153,6 +152,18 @@ namespace BnE.EducationVest.API.Controllers
             await _examApplicationService.FinalizeExam(examId);
 
             return Ok();
+        }
+
+        /// <summary>
+        /// Busca todos os tópicos disponiveis
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("subjects")]
+        public async Task<IActionResult> GetSubjects()
+        {
+            var response = await _examApplicationService.GetSubjects();
+
+            return Ok(new {Subjects = response});
         }
     }
 }

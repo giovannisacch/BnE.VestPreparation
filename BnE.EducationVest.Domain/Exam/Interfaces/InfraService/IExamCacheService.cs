@@ -15,7 +15,8 @@ namespace BnE.EducationVest.Domain.Exam.Interfaces.InfraService
         Task<bool> VerifyIfUserStartedExam(Guid userId, Guid examId);
         Task<List<Question>> GetQuestionsByPageAsync(Guid examId, int page);
         Task SaveQuestionListByPage(Entities.Exam exam, List<Question> questionList, int page);
-        Task SaveExamPeriods(EExamModel examModel,EExamType examType, int number, List<ExamPeriodVO> periods);
+        Task SaveExamPeriodsAndSubjects(EExamModel examModel,EExamType examType, int number, List<ExamPeriodVO> periods, List<Guid> subjectIdList);
         Task<List<ExamPeriodVO>> GetExamPeriods(EExamModel examModel, EExamType examType, int number);
+        Task<List<Guid>> GetExamSubjects(EExamModel examModel, EExamType examType, int number);
     }
 }

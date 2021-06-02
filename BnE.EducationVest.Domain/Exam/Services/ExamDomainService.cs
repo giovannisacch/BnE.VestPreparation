@@ -46,7 +46,7 @@ namespace BnE.EducationVest.Domain.Exam.Services
         {
             var questionList = await _examCacheService.GetQuestionsByPageAsync(examId, 1);
             var questionInQuestionList = questionList.FirstOrDefault(x => x.Id == questionAnswer.QuestionId);
-            if (questionInQuestionList != null && questionInQuestionList.Index == 0)
+            if (questionInQuestionList != null && questionInQuestionList.Index == 1)
             {
                 var exam = await _examRepository.GetExamWithPeriodsById(examId);
                 await _examCacheService.SaveUserStartedExam(questionAnswer.UserId, exam);
@@ -58,7 +58,7 @@ namespace BnE.EducationVest.Domain.Exam.Services
             foreach (var question in exam.Questions)
             {
                 //Remover ao mapear subject pra adicionar 
-                question.SubjectId = Guid.Parse("8c1830ed-d266-4063-b37d-030fe357755c");
+                question.SubjectId = Guid.Parse("c17f6f96-7216-4c82-ba71-a23cb24a9bbb");
                 var imageNamePrefix = $"{Enum.GetName(typeof(EExamModel), exam.ExamModel)}/{Enum.GetName(typeof(EExamType), exam.ExamType)}/{exam.Id}/{question.Index}/";
 
                 var questionEnunciatedImages = question.Enunciated.GetIncrementsWithImageType();

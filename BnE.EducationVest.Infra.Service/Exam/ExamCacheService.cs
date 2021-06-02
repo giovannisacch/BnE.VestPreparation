@@ -18,6 +18,7 @@ namespace BnE.EducationVest.Infra.Service.Exam
         private readonly string _examPrefix = "exam:{0}:";
         private readonly string _examQuestionsByPagePrefix = "exam:{0}:questionList:{1}";
         private readonly string _examPeriodPrefix = "periods:{0}:{1}:{2}";
+        private readonly string _examSubjectsPrefix = "subjects:{0}:{1}:{2}";
         private readonly JsonSerializerSettings _jsonSerializerSettings;
         public ExamCacheService(IDistributedCache cache)
         {
@@ -66,15 +67,18 @@ namespace BnE.EducationVest.Infra.Service.Exam
             await _cache.SetStringAsync(string.Format(_examQuestionsByPagePrefix, exam.Id, page), questionListSerialized, options);
         }
 
-        public async Task SaveExamPeriods(EExamModel examModel, EExamType examType, int number, List<ExamPeriodVO> periods)
+        public async Task SaveExamPeriodsAndSubjects(EExamModel examModel, EExamType examType, int number, List<ExamPeriodVO> periods, List<Guid> subjectIdList)
         {
             var options = new DistributedCacheEntryOptions()
             {
                 SlidingExpiration = TimeSpan.FromMinutes(2)
             };
-            var key = string.Format(_examPeriodPrefix, Enum.GetName(typeof(EExamModel), examModel), Enum.GetName(typeof(EExamType), examType), number);
+            var keyPeriods = string.Format(_examPeriodPrefix, Enum.GetName(typeof(EExamModel), examModel), Enum.GetName(typeof(EExamType), examType), number);
+            var keySubjects= string.Format(_examSubjectsPrefix, Enum.GetName(typeof(EExamModel), examModel), Enum.GetName(typeof(EExamType), examType), number);
             var periodsSerialized = JsonConvert.SerializeObject(periods, _jsonSerializerSettings);
-            await _cache.SetStringAsync(key, periodsSerialized, options);
+            var subjectIdListSerialized = JsonConvert.SerializeObject(subjectIdList, _jsonSerializerSettings);
+            await _cache.SetStringAsync(keyPeriods, periodsSerialized, options);
+            await _cache.SetStringAsync(keySubjects, subjectIdListSerialized, options);
         }
 
         public async Task<List<ExamPeriodVO>> GetExamPeriods(EExamModel examModel, EExamType examType, int number)
@@ -82,7 +86,12 @@ namespace BnE.EducationVest.Infra.Service.Exam
             var key = string.Format(_examPeriodPrefix, Enum.GetName(typeof(EExamModel), examModel), Enum.GetName(typeof(EExamType), examType), number);
             var periodsSerialized = await _cache.GetStringAsync(key);
             return JsonConvert.DeserializeObject<List<ExamPeriodVO>>(periodsSerialized, _jsonSerializerSettings);
-
+        }
+        public async Task<List<Guid>> GetExamSubjects(EExamModel examModel, EExamType examType, int number)
+        {
+            var key = string.Format(_examSubjectsPrefix, Enum.GetName(typeof(EExamModel), examModel), Enum.GetName(typeof(EExamType), examType), number);
+            var subjectsSerialized = await _cache.GetStringAsync(key);
+            return JsonConvert.DeserializeObject<List<Guid>>(subjectsSerialized, _jsonSerializerSettings);
         }
     }
     public class PrivateResolver : DefaultContractResolver

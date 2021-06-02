@@ -120,6 +120,15 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
                     .AddAsync(finalizedExam);
             await _context.Commit();
         }
+
+        public async Task<List<Subject>> GetSubjects()
+        {
+            return await 
+                _context
+                .Subjects
+                .AsNoTracking()
+                .ToListAsync();
+        }
         //public async Task<List<Exam>> GetExamsFinalizedByUser(Guid userId)
         //{
         //    var answers = await _context
