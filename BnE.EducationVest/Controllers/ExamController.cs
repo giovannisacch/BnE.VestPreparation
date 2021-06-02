@@ -141,5 +141,18 @@ namespace BnE.EducationVest.API.Controllers
               ? response.SuccessResponseModel
               : response.ErrorResponseModel);
         }
+
+        /// <summary>
+        /// Finaliza um exame
+        /// </summary>
+        /// <param name="updateAnswerQuestionResponse"></param>
+        /// <returns></returns>
+        [HttpPost("finalize")]
+        public async Task<IActionResult> FinalizeExam(Guid examId)
+        {
+            await _examApplicationService.FinalizeExam(examId);
+
+            return Ok();
+        }
     }
 }

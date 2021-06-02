@@ -20,5 +20,6 @@ namespace BnE.EducationVest.Domain
         public const string EXAM_NOT_FOUND = "EXAM_NOT_FOUND";
         public const string QUESTION_NOT_FOUND = "QUESTION_NOT_FOUND";
         public const string QUESTION_ANSWER_NOT_FOUND = "QUESTION_ANSWER_NOT_FOUND";
+        public const string ALREADY_FINALIZED_EXAM = "ALREADY_FINALIZED_EXAM";
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BnE.EducationVest.Domain.Common;
 using BnE.EducationVest.Domain.Exam.Enums;
+using BnE.EducationVest.Domain.Exam.RelationEntities;
 using BnE.EducationVest.Domain.Exam.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         public EExamType ExamType { get; private set; }
         public List<ExamPeriodVO> Periods { get; private set; }
         public List<Question> Questions { get; private set; }
+        public List<FinalizedExam> Finalizeds { get; private set; }
 
         internal Exam() { }
         public Exam(int examNumber, EExamModel examModel, List<ExamPeriodVO> periods, List<Question> questions, EExamType examType)
@@ -37,6 +39,10 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         public bool IsAvailable()
         {
             return GetActualAvailablePeriod() != null;
+        }
+        public bool UserHasFinalized(Guid userId)
+        {
+            return Finalizeds.Any(x => x.UserId == userId);
         }
         public void SetQuestionsList(List<Question> questions)
         {

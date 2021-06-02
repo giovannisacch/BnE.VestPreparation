@@ -1,9 +1,11 @@
 ﻿using BnE.EducationVest.Domain.Common;
 using BnE.EducationVest.Domain.Exam.Entities;
+using BnE.EducationVest.Domain.Exam.RelationEntities;
 using BnE.EducationVest.Domain.Users.Enums;
 using BnE.EducationVest.Domain.Users.ValueObjects;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BnE.EducationVest.Domain.Users.Entities
 {
@@ -19,6 +21,7 @@ namespace BnE.EducationVest.Domain.Users.Entities
         public AddressVO Address { get; private set; }
         public List<QuestionAnswer> QuestionAnswers { get; private set; }
         public ExternalUserProfile ExternalUserProfile { get; private set; }
+        public List<FinalizedExam> FinalizedExams { get; private set; }
         public Guid CognitoUserId { get; private set; }
         public EUserType UserType { get; set; }
         internal User() { }
@@ -34,7 +37,6 @@ namespace BnE.EducationVest.Domain.Users.Entities
             Address = address;
             UserType = userType;
         }
-        
         public void SetCognitoUserId(Guid cognitoUserId)
         {
             CognitoUserId = cognitoUserId;

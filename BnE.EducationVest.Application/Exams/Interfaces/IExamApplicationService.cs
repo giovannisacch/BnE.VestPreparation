@@ -21,5 +21,6 @@ namespace BnE.EducationVest.Application.Exams.Interfaces
         Task<Either<ErrorResponseModel, GetExamQuestionListViewModel>> GetQuestions(GetQuestionListPaginatedRequestViewModel getQuestionListPaginatedRequest);
         Task UploadExamPeriods(UploadExamPeriodsRequestViewModel uploadExamPeriodsRequestViewModel);
         Task<List<ExamPeriodViewModel>> GetExamPeriods(EExamModel examModel, EExamType examType, int number);
+        Task FinalizeExam(Guid ExamId);
     }
 }

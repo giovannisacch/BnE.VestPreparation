@@ -1,5 +1,6 @@
 ﻿using BnE.EducationVest.Domain.Common.Infra;
 using BnE.EducationVest.Domain.Exam.Entities;
+using BnE.EducationVest.Domain.Exam.RelationEntities;
 using BnE.EducationVest.Domain.Exam.ValueObjects;
 using BnE.EducationVest.Domain.Users.Entities;
 using BnE.EducationVest.Infra.Data.Exams;
@@ -26,6 +27,7 @@ namespace BnE.EducationVest.Infra.Data.Common
         public DbSet<QuestionAnswer> QuestionsAnswers { get; set; }
         public DbSet<UserMenu> UserMenus { get; set; }
         public DbSet<ExternalUserProfile> ExternalUserProfiles { get; set; }
+        public DbSet<FinalizedExam> FinalizedExams { get; set; }
 
         public EducationVestContext(DbContextOptions<EducationVestContext> options) :
             base(options)
@@ -46,6 +48,7 @@ namespace BnE.EducationVest.Infra.Data.Common
             modelBuilder.ApplyConfiguration(new UserMenuMapping());
             modelBuilder.ApplyConfiguration(new SupportingTextMapping());
             modelBuilder.ApplyConfiguration(new ExternalUserProfileMapping());
+            modelBuilder.ApplyConfiguration(new FinalizedExamMapping());
             modelBuilder.Seed();
         }
 

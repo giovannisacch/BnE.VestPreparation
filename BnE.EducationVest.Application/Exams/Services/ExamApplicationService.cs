@@ -12,6 +12,7 @@ using BnE.EducationVest.Domain.Exam.Extensions;
 using BnE.EducationVest.Domain.Exam.Interfaces;
 using BnE.EducationVest.Domain.Exam.Interfaces.Infra;
 using BnE.EducationVest.Domain.Exam.Interfaces.InfraService;
+using BnE.EducationVest.Domain.Exam.RelationEntities;
 using BnE.EducationVest.Domain.Users.Interfaces;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -44,11 +45,13 @@ namespace BnE.EducationVest.Application.Exams.Services
         {
             var tokenData = _httpContextAccessor.GetTokenData();
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
-            var actualQuestionAnswer = await _examRepository.GetQuestionAnswerById(updateAnswerQuestionResponse.QuestionAnswerId);
+            var actualQuestionAnswer = await _examRepository.GetQuestionAnswerByIdAndUser(updateAnswerQuestionResponse.QuestionAnswerId, userId);
             if (actualQuestionAnswer == null)
                 return new Either<ErrorResponseModel, object>(new ErrorResponseModel(ErrorConstants.QUESTION_ANSWER_NOT_FOUND), HttpStatusCode.BadRequest);
             if (!actualQuestionAnswer.UserId.Equals(userId))
                 return new Either<ErrorResponseModel, object>(null, HttpStatusCode.Unauthorized);
+            if(actualQuestionAnswer.Question.Exam.UserHasFinalized(userId))
+                return new Either<ErrorResponseModel, object>(new ErrorResponseModel(ErrorConstants.ALREADY_FINALIZED_EXAM), HttpStatusCode.BadRequest);
 
             actualQuestionAnswer.UpdateChosenAlternative(updateAnswerQuestionResponse.ChosenAlternativeId);
             await _examRepository.UpdateExamQuestionAnswer(actualQuestionAnswer);
@@ -87,7 +90,7 @@ namespace BnE.EducationVest.Application.Exams.Services
             var token =_httpContextAccessor.GetTokenData();
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(token.CognitoId));
 
-            var availableExams = await _examRepository.GetAvailableExams();
+            var availableExams = await _examRepository.GetAvailableExamsByUser(userId);
             var response = new AvailableExamsViewModel();
             response.AvailableExams = availableExams.Select(x => new AvailableExamViewModel()
             {
@@ -97,14 +100,6 @@ namespace BnE.EducationVest.Application.Exams.Services
                 WasStarted = _examCacheService.VerifyIfUserStartedExam(userId, x.Id).Result,
                 QuestionsCount = x.ExamModel.GetQuestionAmount()
             }).ToList();
-
-            foreach (var item in response.AvailableExams.Where(x => x.WasStarted).ToList())
-            {
-                var questionList = await _examRepository.GetQuestionWithAnswersByUserExamAsync(item.ExamId, userId);
-                if (questionList.Any(x => x.QuestionAnswers == null || x.QuestionAnswers.Count == 0))
-                    continue;
-                response.AvailableExams.Remove(item);
-            }
 
             return new Either<ErrorResponseModel, AvailableExamsViewModel>(response, HttpStatusCode.OK);
         }
@@ -147,6 +142,14 @@ namespace BnE.EducationVest.Application.Exams.Services
         {
             var examPeriodVOList = await _examCacheService.GetExamPeriods(examModel, examType, number);
             return examPeriodVOList.Select(x => x.MapToViewModel()).ToList();
+        }
+
+        public async Task FinalizeExam(Guid ExamId)
+        {
+            var tokenData = _httpContextAccessor.GetTokenData();
+            var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
+            var finalizedExam = new FinalizedExam(userId, ExamId);
+            await _examRepository.FinalizeExam(finalizedExam);
         }
     }
 }

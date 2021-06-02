@@ -63,5 +63,12 @@
             <param name="updateAnswerQuestionResponse"></param>
             <returns></returns>
         </member>
+        <member name="M:BnE.EducationVest.API.Controllers.ExamController.FinalizeExam(System.Guid)">
+            <summary>
+            Finaliza um exame
+            </summary>
+            <param name="updateAnswerQuestionResponse"></param>
+            <returns></returns>
+        </member>
     </members>
 </doc>

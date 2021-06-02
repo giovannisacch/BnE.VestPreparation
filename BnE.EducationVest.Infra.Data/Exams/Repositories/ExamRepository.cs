@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BnE.EducationVest.Domain.Users.Entities;
+using BnE.EducationVest.Domain.Exam.RelationEntities;
 
 namespace BnE.EducationVest.Infra.Data.Exams.Repositories
 {
@@ -16,13 +17,16 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
         {
         }
 
-        public async Task<List<Exam>> GetAvailableExams()
+        public async Task<List<Exam>> GetAvailableExamsByUser(Guid userId)
         {
             var actualDate = DateTime.Now;
-            return await _db
+            var exams = await _db
                 .Include(x => x.Periods)
+                .Include(x => x.Finalizeds.Where(x => x.UserId == userId))
                 .Where(exam => exam.Periods.Any(x => x.OpenDate <= actualDate && x.CloseDate > actualDate.AddMinutes(10)))
                 .ToListAsync();
+            exams.RemoveAll(x => x.Finalizeds.Any());
+            return exams;
         }
 
         public async Task<Exam> GetByIdWithAllIncludes(Guid id)
@@ -65,10 +69,13 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
                 .Update(questionAnswer);
             await _context.Commit();
         }
-        public async Task<QuestionAnswer> GetQuestionAnswerById(Guid questionAnswerId)
+        public async Task<QuestionAnswer> GetQuestionAnswerByIdAndUser(Guid questionAnswerId, Guid userId)
         {
             return await _context
                         .QuestionsAnswers
+                        .Include(x => x.Question)
+                        .ThenInclude(x => x.Exam)
+                        .ThenInclude(x => x.Finalizeds.Where(x => x.UserId == userId))
                         .FirstOrDefaultAsync(x => x.Id == questionAnswerId);
         }
         public async Task<List<Question>> GetExamQuestions(Guid examId, Guid userId, int from, int to)
@@ -104,6 +111,14 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
             return await _db
                          .Include(x => x.Periods)
                          .FirstAsync(x => x.Id == examId);
+        }
+
+        public async Task FinalizeExam(FinalizedExam finalizedExam)
+        {
+            await _context
+                    .FinalizedExams
+                    .AddAsync(finalizedExam);
+            await _context.Commit();
         }
         //public async Task<List<Exam>> GetExamsFinalizedByUser(Guid userId)
         //{
