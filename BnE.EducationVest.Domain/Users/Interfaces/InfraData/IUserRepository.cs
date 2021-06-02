@@ -12,5 +12,6 @@ namespace BnE.EducationVest.Domain.Users.Interfaces.InfraData
     {
         Task<List<UserMenu>> GetAvailableMenusByUserGroup(bool isTeacher, bool isStudent);
         Task<User> GetUserByCognitoId(Guid cognitoId);
+        Task AddExternalUserProfile(ExternalUserProfile externalUserProfile);
     }
 }

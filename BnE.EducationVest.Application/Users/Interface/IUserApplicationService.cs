@@ -1,4 +1,5 @@
-﻿using BnE.EducationVest.Application.Users.ViewModels;
+﻿using BnE.EducationVest.Application.Exams.ViewModels.Request;
+using BnE.EducationVest.Application.Users.ViewModels;
 using BnE.EducationVest.Domain.Common;
 using System;
 using System.Threading.Tasks;
@@ -13,5 +14,6 @@ namespace BnE.EducationVest.Application.Users.Interface
         Task<Either<ErrorResponseModel, object>> InitiateRecoverPassword(string username);
         Task<Either<ErrorResponseModel, object>> ConfirmPasswordRecover(string username, string code, string newPassword);
         Task<Either<ErrorResponseModel, UserMenusViewModel>> GetUserMenu();
+        Task<Either<ErrorResponseModel, object>> AddExternalUserProfile(ExternalUserProfileRequestViewModel externalUserProfileRequestView);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
 using Amazon.Extensions.CognitoAuthentication;
+using BnE.EducationVest.Application.Exams.ViewModels.Request;
 using BnE.EducationVest.Application.Users.Interface;
 using BnE.EducationVest.Application.Users.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -93,6 +94,47 @@ namespace BnE.EducationVest.API.Controllers
                 response.IsSuccess
                 ? response.SuccessResponseModel
                 : response.ErrorResponseModel);
+        }
+        [HttpPost("externalProfile")]
+        public async Task<IActionResult> AddExternalUserProfile(ExternalUserProfileRequestViewModel externalUserProfileRequestViewModel)
+        {
+            var response = await _userApplicationService.AddExternalUserProfile(externalUserProfileRequestViewModel);
+
+            return StatusCode((int)response.StatusCode,
+                response.IsSuccess
+                ? response.SuccessResponseModel
+                : response.ErrorResponseModel);
+        }
+        [HttpGet("externalProfile")]
+        public IActionResult GetExternalProfileList()
+        {
+            var collegeList = new List<string>() 
+            {
+                "ESPM",
+                "Ibmec",
+                "Link School",
+                "FGV",
+                "Insper",
+                "Outras"
+            };
+            var courseList = new List<string>()
+            {
+                "Administração",
+                "Engenharias",
+                "Direito",
+                "Economia",
+                "Ciência da Computação",
+                "Outros"
+            };
+            var occupationList = new List<string>()
+            {
+                "1o Ano do EM",
+                "2o Ano do EM",
+                "3o Ano do EM",
+                "Curso Preparatório",
+                "Outro"
+            };
+            return Ok(new { collegeList, courseList, occupationList });
         }
     }
 }

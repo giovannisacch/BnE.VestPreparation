@@ -11,6 +11,7 @@ using BnE.EducationVest.Application.Common.Extensions;
 using System.Linq;
 using System.Net;
 using System;
+using BnE.EducationVest.Application.Exams.ViewModels.Request;
 
 namespace BnE.EducationVest.Application.Users.Services
 {
@@ -78,6 +79,20 @@ namespace BnE.EducationVest.Application.Users.Services
 
             return new Either<ErrorResponseModel, UserMenusViewModel>(new UserMenusViewModel() { Name = user.Name, BirthDate = user.BirthDate,
                                                                                                 Menus = menus.Select(x => new MenuViewModel() {Key = x.Key, Label = x.Label } ) }, HttpStatusCode.OK);
+        }
+
+        public async Task<Either<ErrorResponseModel, object>> AddExternalUserProfile(ExternalUserProfileRequestViewModel externalUserProfileRequestView)
+        {
+            var externalUserProfileDOmain = new ExternalUserProfile()
+            {
+                ExpectedCollege = externalUserProfileRequestView.ExpectedCollege,
+                ExpectedCourse = externalUserProfileRequestView.ExpectedCourse,
+                ActualCollege = externalUserProfileRequestView.ActualCollege,
+                ActualOccupation = externalUserProfileRequestView.ActualOccupation,
+                UserId = externalUserProfileRequestView.UserId
+            };
+            await _userRepository.AddExternalUserProfile(externalUserProfileDOmain);
+            return new Either<ErrorResponseModel, object>(new {id = externalUserProfileDOmain.Id}, HttpStatusCode.OK);
         }
     }
 }

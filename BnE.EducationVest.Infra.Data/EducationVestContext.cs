@@ -25,6 +25,7 @@ namespace BnE.EducationVest.Infra.Data.Common
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<QuestionAnswer> QuestionsAnswers { get; set; }
         public DbSet<UserMenu> UserMenus { get; set; }
+        public DbSet<ExternalUserProfile> ExternalUserProfiles { get; set; }
 
         public EducationVestContext(DbContextOptions<EducationVestContext> options) :
             base(options)
@@ -44,6 +45,7 @@ namespace BnE.EducationVest.Infra.Data.Common
             modelBuilder.ApplyConfiguration(new UserMapping());
             modelBuilder.ApplyConfiguration(new UserMenuMapping());
             modelBuilder.ApplyConfiguration(new SupportingTextMapping());
+            modelBuilder.ApplyConfiguration(new ExternalUserProfileMapping());
             modelBuilder.Seed();
         }
 

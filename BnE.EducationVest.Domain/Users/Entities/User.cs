@@ -18,6 +18,7 @@ namespace BnE.EducationVest.Domain.Users.Entities
         public DateTime BirthDate { get; private set; }
         public AddressVO Address { get; private set; }
         public List<QuestionAnswer> QuestionAnswers { get; private set; }
+        public ExternalUserProfile ExternalUserProfile { get; private set; }
         public Guid CognitoUserId { get; private set; }
         public EUserType UserType { get; set; }
         internal User() { }

@@ -14,6 +14,15 @@ namespace BnE.EducationVest.Infra.Data.Users.Repositories
         public UserRepository(EducationVestContext context) : base(context)
         {
         }
+
+        public async Task AddExternalUserProfile(ExternalUserProfile externalUserProfile)
+        {
+            await _context
+                .ExternalUserProfiles
+                .AddAsync(externalUserProfile);
+            await _context.Commit();
+        }
+
         public async Task<List<UserMenu>> GetAvailableMenusByUserGroup(bool isTeacher, bool isStudent)
         {
             return await _context
