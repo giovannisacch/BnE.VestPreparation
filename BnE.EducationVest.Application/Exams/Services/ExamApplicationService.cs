@@ -100,7 +100,7 @@ namespace BnE.EducationVest.Application.Exams.Services
             response.AvailableExams = availableExams.Select(x => new AvailableExamViewModel()
             {
                 ExamId = x.Id,
-                ExamName = $"Simulado {x.ExamNumber} - {Enum.GetName(typeof(EExamModel), x.ExamModel)}",
+                ExamName = GetFormatedExamName(x),
                 ExpirationDate = x.GetActualAvailablePeriod().CloseDate,
                 WasStarted = _examCacheService.VerifyIfUserStartedExam(userId, x.Id).Result,
                 QuestionsCount = x.ExamModel.GetQuestionAmount()
@@ -162,6 +162,27 @@ namespace BnE.EducationVest.Application.Exams.Services
         {
             var subjects = await _examRepository.GetSubjects();
             return subjects.Select(x => new SubjectResponseViewModel() { Id = x.Id, Name = x.Name });
+        }
+        
+        public async Task<RealizedExamListViewModel> GetUserRealizedExamList()
+        {
+            var tokenData = _httpContextAccessor.GetTokenData();
+            var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
+            var exams = await _examRepository.GetUserFinalizedExams(userId);
+            return new RealizedExamListViewModel()
+            {
+                RealizedExams =
+                                                    exams.Select(x => new RealizedExamViewModel()
+                                                    {
+                                                        ExamId = x.Id,
+                                                        Name = GetFormatedExamName(x),
+                                                        ImageUrl = "https://emc.acidadeon.com/dbimagens/pedreira__1024x576_11032021174053.jpg"
+                                                    })
+            }; 
+        }
+        private string GetFormatedExamName(Exam exam)
+        {
+            return $"Simulado {exam.ExamNumber} - {Enum.GetName(typeof(EExamModel), exam.ExamModel)}";
         }
     }
 }

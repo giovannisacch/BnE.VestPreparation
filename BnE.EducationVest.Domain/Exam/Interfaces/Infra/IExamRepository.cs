@@ -20,5 +20,6 @@ namespace BnE.EducationVest.Domain.Exam.Interfaces.Infra
         Task<Entities.Exam> GetExamWithPeriodsById(Guid examId);
         Task FinalizeExam(FinalizedExam finalizedExam);
         Task<List<Subject>> GetSubjects();
+        Task<List<Entities.Exam>> GetUserFinalizedExams(Guid userId);
     }
 }

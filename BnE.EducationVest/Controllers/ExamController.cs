@@ -165,5 +165,16 @@ namespace BnE.EducationVest.API.Controllers
 
             return Ok(new {Subjects = response});
         }
+        /// <summary>
+        /// Busca todos os exames realizados pelo usuario logado
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("realizeds")]
+        public async Task<IActionResult> GetUserRealizedExams()
+        {
+            var response = await _examApplicationService.GetUserRealizedExamList();
+
+            return Ok(response);
+        }
     }
 }

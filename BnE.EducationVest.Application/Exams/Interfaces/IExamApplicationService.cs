@@ -23,5 +23,6 @@ namespace BnE.EducationVest.Application.Exams.Interfaces
         Task<List<ExamPeriodViewModel>> GetExamPeriods(EExamModel examModel, EExamType examType, int number);
         Task FinalizeExam(Guid ExamId);
         Task<IEnumerable<SubjectResponseViewModel>> GetSubjects();
+        Task<RealizedExamListViewModel> GetUserRealizedExamList();
     }
 }

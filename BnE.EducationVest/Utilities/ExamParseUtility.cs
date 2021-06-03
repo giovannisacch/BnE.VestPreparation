@@ -51,6 +51,7 @@ namespace BnE.EducationVest.API.Utilities
                             supportingTexts.Add(actualSupportingText);
                         actualSupportingText = new QuestionSupportingTextRequestViewModel();
                         isInSupportingText = true;
+                        isInAlternatives = false;
                     }
                     else if (contentWithoutWhiteSpaces == "-{Questao}")
                     {
@@ -72,7 +73,7 @@ namespace BnE.EducationVest.API.Utilities
                         actualQuestion.Alternatives.Add(new
                           QuestionAlternativeViewModel()
                         {
-                            Text = isImageParagraph ? null : GetQuestionTextByParagraph(paragraph,
+                            Text = GetQuestionTextByParagraph(paragraph,
                                                                                       imagesStreamList,
                                                                                       imagesParagraphsCount),
                             Index = alternativeIndex

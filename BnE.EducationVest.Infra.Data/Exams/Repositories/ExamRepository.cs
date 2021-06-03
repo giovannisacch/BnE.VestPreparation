@@ -129,6 +129,15 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
                 .AsNoTracking()
                 .ToListAsync();
         }
+
+        public async Task<List<Exam>> GetUserFinalizedExams(Guid userId)
+        {
+            return await
+                    _db
+                    .Include(x => x.Finalizeds)
+                    .Where(x => x.Finalizeds.Any(x => x.UserId == userId))
+                    .ToListAsync();
+        }
         //public async Task<List<Exam>> GetExamsFinalizedByUser(Guid userId)
         //{
         //    var answers = await _context
