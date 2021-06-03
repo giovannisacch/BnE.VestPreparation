@@ -35,5 +35,17 @@ namespace BnE.EducationVest.Infra.Data.Users.Repositories
         {
             return await _db.FirstAsync(x => x.CognitoUserId == cognitoId);
         }
+        public async Task<User> GetUserWithOptinsByIdAsync(Guid userId)
+        {
+            return await _db.Include(x => x.Optins).FirstAsync(x => x.Id == userId);
+        }
+        public async Task<List<Optin>> GetOptinsAndUserAccepts(Guid userId)
+        {
+            return await _context
+                            .Optins
+                            .Include(x => x.UsersAccepted.Where(x => x.UserId == userId))
+                            .ToListAsync();
+        }
+
     }
 }

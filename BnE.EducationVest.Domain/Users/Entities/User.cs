@@ -17,11 +17,13 @@ namespace BnE.EducationVest.Domain.Users.Entities
         public string  PhoneNumber { get; private set; }
         public string Gender { get; private set; }
         public string Email { get; private set; }
+        public bool WasAcceptedTerms { get; private set; }
         public DateTime BirthDate { get; private set; }
         public AddressVO Address { get; private set; }
         public List<QuestionAnswer> QuestionAnswers { get; private set; }
         public ExternalUserProfile ExternalUserProfile { get; private set; }
         public List<FinalizedExam> FinalizedExams { get; private set; }
+        public List<UserOptin> Optins { get; set; }
         public Guid CognitoUserId { get; private set; }
         public EUserType UserType { get; set; }
         internal User() { }
@@ -40,6 +42,16 @@ namespace BnE.EducationVest.Domain.Users.Entities
         public void SetCognitoUserId(Guid cognitoUserId)
         {
             CognitoUserId = cognitoUserId;
+        }
+        public void AcceptTerms()
+        {
+            WasAcceptedTerms = true;
+        }
+        public void AddAcceptedOptin(int optinId)
+        {
+            if (Optins == null)
+                Optins = new List<UserOptin>();
+            Optins.Add(new UserOptin(Id, optinId));
         }
         //TODO: ADICIONAR VALIDACOES
     }

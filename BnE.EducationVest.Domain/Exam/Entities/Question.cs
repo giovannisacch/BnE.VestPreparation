@@ -38,7 +38,7 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         public void SetAlternatives(List<Alternative> alternatives)
         {
             if (alternatives.Count != 5)
-                throw new DomainErrorException(ErrorConstants.ALTERNATIVE_COUNT_SHOULD_BE_FIVE);
+                throw new DomainErrorException($"Question: {Index} " + ErrorConstants.ALTERNATIVE_COUNT_SHOULD_BE_FIVE);
             Alternatives = alternatives;
         }
         public void SetSupportingText(SupportingText supportingText)

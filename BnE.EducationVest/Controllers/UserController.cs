@@ -136,5 +136,23 @@ namespace BnE.EducationVest.API.Controllers
             };
             return Ok(new { collegeList, courseList, occupationList });
         }
+        [HttpGet("termsAndOptins")]
+        public async Task<IActionResult> GetUserTermsAndOptins()
+        {
+            var termsANdOPtins = await _userApplicationService.GetUseTermAndOptins();
+            return Ok(termsANdOPtins);
+        }
+        [HttpPost("acceptTerms")]
+        public async Task<IActionResult> AcceptUserTerms()
+        {
+            await _userApplicationService.AcceptUserTerms();
+            return Ok();
+        }
+        [HttpPut("optins")]
+        public async Task<IActionResult> UpdateUserOptinRequestViewModel(UpdateUserOptinRequestViewModel updateUserOptinRequestViewModel)
+        {
+            await _userApplicationService.UpdateUserOptins(updateUserOptinRequestViewModel);
+            return Ok();
+        }
     }
 }

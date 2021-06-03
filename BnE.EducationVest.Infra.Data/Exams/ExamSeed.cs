@@ -749,6 +749,7 @@ namespace BnE.EducationVest.Infra.Data.Exams
                 user.BirthDate,
                 user.CognitoUserId,
                 user.UserType,
+                user.WasAcceptedTerms
             };
         }
         private static object MapToAnonnymousObject(this ExamPeriodVO examPeriod, Guid examId)

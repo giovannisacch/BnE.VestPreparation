@@ -70,12 +70,15 @@ namespace BnE.EducationVest.API.Utilities
                     }
                     else if (isInAlternatives)
                     {
+                        var textContent = GetQuestionTextByParagraph(paragraph,
+                                                                                      imagesStreamList,
+                                                                                      imagesParagraphsCount);
+                        if (string.IsNullOrEmpty(textContent.Content))
+                            continue;
                         actualQuestion.Alternatives.Add(new
                           QuestionAlternativeViewModel()
                         {
-                            Text = GetQuestionTextByParagraph(paragraph,
-                                                                                      imagesStreamList,
-                                                                                      imagesParagraphsCount),
+                            Text = textContent,
                             Index = alternativeIndex
                         });
                         alternativeIndex++;
@@ -209,7 +212,12 @@ namespace BnE.EducationVest.API.Utilities
                 else
                     content.Append(item.InnerText);
             }
-            paragraphContent.Content = content.ToString();
+            string[] alternativesPrefix = { "A)", "B)", "C)", "D)", "E)" };
+            paragraphContent.Content = content.ToString().Trim();
+
+            if (paragraphContent.Content.Length >= 2 && alternativesPrefix.Contains(paragraphContent.Content.Substring(0, 2)))
+                paragraphContent.Content = paragraphContent.Content.Remove(0, 2);
+
             return paragraphContent;
         }
         private static  string GetMathMLFormat(string officeMathXML)

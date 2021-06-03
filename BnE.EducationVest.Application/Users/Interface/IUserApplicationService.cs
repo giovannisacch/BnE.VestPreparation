@@ -15,5 +15,8 @@ namespace BnE.EducationVest.Application.Users.Interface
         Task<Either<ErrorResponseModel, object>> ConfirmPasswordRecover(string username, string code, string newPassword);
         Task<Either<ErrorResponseModel, UserMenusViewModel>> GetUserMenu();
         Task<Either<ErrorResponseModel, object>> AddExternalUserProfile(ExternalUserProfileRequestViewModel externalUserProfileRequestView);
+        Task AcceptUserTerms();
+        Task UpdateUserOptins(UpdateUserOptinRequestViewModel updateUserOptinRequestViewModel);
+        Task<TermAndOptinResponseViewModel> GetUseTermAndOptins();
     }
 }

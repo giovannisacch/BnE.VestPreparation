@@ -11,6 +11,7 @@ namespace BnE.EducationVest.Application.Users.ViewModels
         public IEnumerable<MenuViewModel> Menus { get; set; }
         public string Name { get; set; }
         public DateTime BirthDate { get; set; }
+        public bool TermsWasAccepted { get; set; }
     }
     public class MenuViewModel
     {

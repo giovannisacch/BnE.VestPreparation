@@ -28,6 +28,8 @@ namespace BnE.EducationVest.Infra.Data.Common
         public DbSet<UserMenu> UserMenus { get; set; }
         public DbSet<ExternalUserProfile> ExternalUserProfiles { get; set; }
         public DbSet<FinalizedExam> FinalizedExams { get; set; }
+        public DbSet<Optin> Optins { get; set; }
+        public DbSet<UserOptin> UserOptins { get; set; }
 
         public EducationVestContext(DbContextOptions<EducationVestContext> options) :
             base(options)
@@ -49,6 +51,8 @@ namespace BnE.EducationVest.Infra.Data.Common
             modelBuilder.ApplyConfiguration(new SupportingTextMapping());
             modelBuilder.ApplyConfiguration(new ExternalUserProfileMapping());
             modelBuilder.ApplyConfiguration(new FinalizedExamMapping());
+            modelBuilder.ApplyConfiguration(new UserOptinMapping());
+            modelBuilder.ApplyConfiguration(new OptinMapping());
             modelBuilder.Seed();
         }
 
