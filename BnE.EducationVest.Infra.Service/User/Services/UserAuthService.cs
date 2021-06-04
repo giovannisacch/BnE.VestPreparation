@@ -69,6 +69,15 @@ namespace BnE.EducationVest.Infra.Service.User.Services
             };
             await _cache.SetStringAsync($"user:recoverCode:{userId}", code, cacheOptions);
         }
+        public async Task RemoveUserAsync(string userName)
+        {
+            var adminDeleteUserRequest = new AdminDeleteUserRequest()
+            {
+                UserPoolId = _cognitoUserPool.PoolID,
+                Username = userName
+            };
+            await _amazonCognitoIdentityProviderClient.AdminDeleteUserAsync(adminDeleteUserRequest);
+        }
         public async Task CreateUserAsync(Domain.Users.Entities.User user)
         {
             var adminCreateUseRequest = new AdminCreateUserRequest()

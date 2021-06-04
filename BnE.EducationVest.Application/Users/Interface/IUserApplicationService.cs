@@ -18,5 +18,6 @@ namespace BnE.EducationVest.Application.Users.Interface
         Task AcceptUserTerms();
         Task UpdateUserOptins(UpdateUserOptinRequestViewModel updateUserOptinRequestViewModel);
         Task<TermAndOptinResponseViewModel> GetUseTermAndOptins();
+        Task DeleteUser();
     }
 }

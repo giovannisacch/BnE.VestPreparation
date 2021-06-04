@@ -9,6 +9,7 @@ namespace BnE.EducationVest.Domain.Users.Interfaces.InfraService
 {
     public interface IUserAuthService
     {
+        Task RemoveUserAsync(string userName);
         Task CreateUserAsync(Entities.User user);
         Task<Either<ErrorResponseModel, object>> AdminUpdateUserPasswordAsync(string username, string password, string oldPassword);
         Task<Either<ErrorResponseModel, object>> LoginAsync(string username, string password);

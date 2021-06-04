@@ -13,5 +13,6 @@ namespace BnE.EducationVest.Application.Common.Models
         public string Scope { get; set; }
         public string ExpirationTimespan { get; set; }
         public string ClientId { get; set; }
+        public string UserName { get; set; }
     }
 }

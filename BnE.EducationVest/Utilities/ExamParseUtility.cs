@@ -18,6 +18,10 @@ namespace BnE.EducationVest.API.Utilities
     public static class ExamParseUtility
     {
         private static Regex _regexRemoveWhitespace = new Regex(@"\s+");
+        private static XslCompiledTransform myXslTrans = new XslCompiledTransform();
+        private static XsltSettings sets = new XsltSettings(true, true);
+        private static XmlUrlResolver resolver = new XmlUrlResolver();
+        private static XslCompiledTransform xslTransform = new XslCompiledTransform();
 
         public static ExamViewModel TransformExamWordFileInViewModel(this IFormFile examWordFile, List<ExamPeriodViewModel> periods, 
                                                                     EExamModel examModel, EExamType examType, int number) 
@@ -203,7 +207,7 @@ namespace BnE.EducationVest.API.Utilities
                             new IncrementViewModel()
                             {
                                 Index = incrementIndex,
-                                Value = isMath ? GetMathMLFormat(item.OuterXml) : null,
+                                Value = isMath ? GetTexFromMathML(GetMathMLFormat(item.OuterXml)) : null,
                                 ImageStream = isMath ? null : imageStreamList[actualImageIndex],
                                 Type = isMath ? ECompleteTextIncrementType.Equation : ECompleteTextIncrementType.Image
                             });
@@ -220,10 +224,27 @@ namespace BnE.EducationVest.API.Utilities
 
             return paragraphContent;
         }
+        private static string GetTexFromMathML(string officeMathXml) 
+        {
+            using (XmlReader reader = XmlReader.Create(new StringReader(officeMathXml)))
+            {
+                StringBuilder content = new StringBuilder();
+
+                var xw = new StringWriter(content);
+                if(myXslTrans.OutputSettings == null);
+                    myXslTrans.Load(@".\utilities\libs\mmltex.xsl", sets, resolver);
+
+                // Transform our OfficeMathML to MathML
+                myXslTrans.Transform(reader, null, xw);
+                string MathML = content.ToString();
+                return MathML;
+
+            }
+        }
         private static  string GetMathMLFormat(string officeMathXML)
         {
-            XslCompiledTransform xslTransform = new XslCompiledTransform();
-            xslTransform.Load(@".\utilities\libs\omml2mml.xsl");
+            if (xslTransform.OutputSettings == null)
+                xslTransform.Load(@".\utilities\libs\omml2mml.xsl");
             using (XmlReader reader = XmlReader.Create(new StringReader(officeMathXML)))
             {
                 using (MemoryStream ms = new MemoryStream())

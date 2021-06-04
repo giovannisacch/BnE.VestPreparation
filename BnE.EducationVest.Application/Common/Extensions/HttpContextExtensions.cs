@@ -25,7 +25,8 @@ namespace BnE.EducationVest.Application.Common.Extensions
                 ExpirationTimespan = token.Claims.First(c => c.Type == "exp").Value,
                 CognitoId = token.Claims.First(c => c.Type == "sub").Value,
                 Scope = token.Claims.First(c => c.Type == "scope").Value,
-                CognitoGroups = token.Claims.Where(c => c.Type == "cognito:groups").Select(x => x.Value) 
+                CognitoGroups = token.Claims.Where(c => c.Type == "cognito:groups").Select(x => x.Value),
+                UserName = token.Claims.First(c => c.Type == "username").Value
             };
         }
     }

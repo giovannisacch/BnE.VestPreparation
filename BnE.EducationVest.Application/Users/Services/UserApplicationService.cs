@@ -31,6 +31,13 @@ namespace BnE.EducationVest.Application.Users.Services
             _httpContextAccessor = httpContextAccessor;
             _userDomainService = userDomainService;
         }
+        public async Task DeleteUser()
+        {
+            var tokenData = _httpContextAccessor.GetTokenData();
+            var user = await _userRepository.GetUserByCognitoId(Guid.Parse(tokenData.CognitoId));
+            await _userAuthService.RemoveUserAsync(tokenData.UserName);
+            await _userRepository.DeleteAsync(user);
+        }
         public async Task<Either<ErrorResponseModel, Guid>> AddUserAsync(CreateUserRequestModel createUserRequestModel)
         {
             //Adicionar no banco de dados
