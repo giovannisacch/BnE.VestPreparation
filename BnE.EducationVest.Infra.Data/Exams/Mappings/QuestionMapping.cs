@@ -33,6 +33,8 @@ namespace BnE.EducationVest.Infra.Data.Exams.Mappings
                 .WithMany(x => x.Questions)
                 .HasForeignKey(x => x.ExamId)
                 .IsRequired();
+
+            builder.Ignore(x => x.QuestionDifficulty);  
         }
     }
 }
