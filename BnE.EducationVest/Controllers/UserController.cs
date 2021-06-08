@@ -50,7 +50,7 @@ namespace BnE.EducationVest.API.Controllers
                : response.ErrorResponseModel);
         }
 
-        [HttpPost]
+        [HttpPost("signup")]
         public async Task<IActionResult> CreateUser(CreateUserRequestModel createUserRequestModel)
         {
 
