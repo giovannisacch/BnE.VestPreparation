@@ -28,5 +28,9 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         {
             ChosenAlternativeId = chosenAlternativeId;
         }
+        public bool IsCorrect()
+        {
+            return ChosenAlternative.IsCorrect;
+        }
     }
 }

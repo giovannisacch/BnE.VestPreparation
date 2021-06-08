@@ -26,7 +26,14 @@ namespace BnE.EducationVest.Domain.Exam.Entities
             SetQuestionsList(questions);
             ExamType = examType;
         }
-
+        public int GetPortugueseQuestionCount()
+        {
+            return Questions.Count(x => x.Subject.IsPortugueseTopic());
+        }
+        public int GetMathQuestionCount()
+        {
+            return Questions.Count(x => x.Subject.IsMathTopic());
+        }
         public ExamPeriodVO GetActualAvailablePeriod()
         {
             return Periods

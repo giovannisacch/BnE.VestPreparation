@@ -180,6 +180,78 @@ namespace BnE.EducationVest.Application.Exams.Services
                                                     })
             }; 
         }
+        public async Task<ExamReportViewModel> GetUserExamReport(Guid examId)
+        {
+            var tokenData = _httpContextAccessor.GetTokenData();
+            var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
+            var examWithQuestionAndAnswers = await _examRepository.GetExamWithQuestionsAndUserAnswers(examId, userId);
+            var questionsWithAnswers = examWithQuestionAndAnswers.Questions;
+            var questionsGroupsBySubject = questionsWithAnswers.GroupBy(x => x.Subject.Name);
+            //TODO: Separa mappings em outros metodos
+            var subjectsDifficulties = new List<ExamReportSubjectDifficultyViewModel>();
+            var subjectsDistribution = new List<ExamReportSubjectDistributionViewModel>();
+            var acertsAndErrorsBySubject = new List<ExamReportAcertsAndErrorBySubject>();
+            //VERIFICAR COMO DEFINIREMOS DIFICULDADEEEEEEE
+            foreach (var questionGroup in questionsGroupsBySubject)
+            {
+                var groupQuestionCount = questionGroup.Count();
+                subjectsDifficulties.Add(new ExamReportSubjectDifficultyViewModel()
+                {
+                    Name = questionGroup.Key,
+                    Easy = $"{questionGroup.Count(x => x.QuestionDifficulty == EQuestionDifficulty.Easy) / groupQuestionCount}%",
+                    Medium = $"{questionGroup.Count(x => x.QuestionDifficulty == EQuestionDifficulty.Medium) / groupQuestionCount}%",
+                    Hard = $"{questionGroup.Count(x => x.QuestionDifficulty == EQuestionDifficulty.Hard) / groupQuestionCount}%"
+                });
+                subjectsDistribution.Add(new ExamReportSubjectDistributionViewModel()
+                {
+                    Name = questionGroup.Key,
+                    QuestionNumbers = questionGroup.Select(x => x.Index)
+                });
+                acertsAndErrorsBySubject.Add(new ExamReportAcertsAndErrorBySubject()
+                {
+                    Subject = questionGroup.Key,
+                    QuestionCount = groupQuestionCount,
+                    CorrectCount = questionGroup.Count(x => x.GetUserAnswer(userId).IsCorrect())
+                });
+            }
+            var acertsAndErrorsByQuestion = questionsWithAnswers.Select(x => new ExamReportAcertsAndErrorByQuestion()
+            {
+                QuestionNumber = x.Index,
+                Subject = x.Subject.Name,
+                //Pegar alternativa pelo index (ex: index 0 = A)
+                ChosenAlternative = x.GetUserAnswer(userId).ChosenAlternative.Index.ToString(),
+                RightAlternative = x.GetRightAlternative().Index.ToString(),
+                Difficulty = x.QuestionDifficulty.ToString()
+            });
+            var userPerformances = new List<ExamReportPerformanceViewModel>()
+            {
+                new ExamReportPerformanceViewModel()
+                {
+                    Name = "Pontuação",
+                    Value = examWithQuestionAndAnswers.GetUserTotalScore(userId)
+                },
+                new ExamReportPerformanceViewModel()
+                {
+                    Name = "Matemática",
+                    Value = examWithQuestionAndAnswers.GetUserMathPerformance(userId)
+                },
+                new ExamReportPerformanceViewModel()
+                {
+                    Name = "Português",
+                    Value = examWithQuestionAndAnswers.GetUserPortuguesePerformance(userId)
+                }
+            };
+
+            return new ExamReportViewModel()
+            {
+                MyPerformances = null,
+                SubjectsDifficulties = subjectsDifficulties,
+                SubjectsDistribution = subjectsDistribution,
+                AcertsAndErrorsBySubject = acertsAndErrorsBySubject,
+                AcertsAndErrorsByQuestion = acertsAndErrorsByQuestion
+            };
+
+        }
         private string GetFormatedExamName(Exam exam)
         {
             return $"Simulado {exam.ExamNumber} - {Enum.GetName(typeof(EExamModel), exam.ExamModel)}";

@@ -96,14 +96,18 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
                 .AsNoTracking()
                 .ToListAsync();
         }
-        public async Task<List<Question>> GetQuestionWithAnswersByUserExamAsync(Guid examId, Guid userId)
+        public async Task<Exam> GetExamWithQuestionsAndUserAnswers(Guid examId, Guid userId)
         {
-            return await _context
-                            .Questions
-                            .Where(x => x.ExamId == examId)
-                            .Include(x => x.QuestionAnswers.Where(x => x.UserId == userId))
+            return await _db
+                            .Where(x => x.Id == examId)
+                            .Include(x => x.Questions)
+                            .ThenInclude(x => x.QuestionAnswers.Where(x => x.UserId == userId))
+                            .ThenInclude(x => x.ChosenAlternative)
+                            .Include(x => x.Questions)
+                            .ThenInclude(x => x.Subject)
+                            .ThenInclude(x => x.SubjectFather)
                             .AsNoTracking()
-                            .ToListAsync();
+                            .FirstOrDefaultAsync();
         }
 
         public async Task<Exam> GetExamWithPeriodsById(Guid examId)

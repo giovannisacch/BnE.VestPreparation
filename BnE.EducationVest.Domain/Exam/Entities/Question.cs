@@ -1,4 +1,5 @@
 ﻿using BnE.EducationVest.Domain.Common;
+using BnE.EducationVest.Domain.Exam.Enums;
 using BnE.EducationVest.Domain.Exam.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         public Guid EnunciatedId { get; set; }
         public Guid SubjectId { get; set; }
         public Guid? SupportingTextId { get; set; }
+        public EQuestionDifficulty QuestionDifficulty { get; set; }
         public int Index { get; private set; }
         public IncrementedTextVO Enunciated { get; private set; }
         public List<Alternative> Alternatives { get; private set; }
@@ -31,6 +33,10 @@ namespace BnE.EducationVest.Domain.Exam.Entities
             SetAlternatives(alternatives);
             SubjectId = subjectId;
         }
+        public QuestionAnswer GetUserAnswer(Guid userId)
+        {
+            return QuestionAnswers.First(x => x.UserId == userId);
+        }
         public bool HasImageInEnunciated()
         {
             return Enunciated.GetIncrementsWithImageType() != null;
@@ -44,6 +50,14 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         public void SetSupportingText(SupportingText supportingText)
         {
             SupportingText = supportingText;
+        }
+        public void SetQuestionDifficulty(EQuestionDifficulty questionDifficulty)
+        {
+            QuestionDifficulty = questionDifficulty;
+        }
+        public Alternative GetRightAlternative()
+        {
+            return Alternatives.First(x => x.IsCorrect);
         }
     }
 }

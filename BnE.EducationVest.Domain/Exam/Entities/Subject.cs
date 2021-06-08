@@ -22,5 +22,17 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         {
             SubjectFatherId = subjectFatherId;
         }
+        public bool IsMathTopic()
+        {
+            if (SubjectFather == null)
+                return Name == "Matemática";
+            return SubjectFather.IsMathTopic();
+        }
+        public bool IsPortugueseTopic()
+        {
+            if (SubjectFather == null)
+                return Name == "Português";
+            return SubjectFather.IsPortugueseTopic();
+        }
     }
 }
