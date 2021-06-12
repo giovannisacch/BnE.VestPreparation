@@ -40,6 +40,8 @@ namespace BnE.EducationVest.API.Utilities
                 var imagesParagraphsCount = 0;
                 var alternativeIndex = 0;
                 var isInSupportingText = false;
+                var isInAnswerKey = false;
+                var answerIndex = 0;
                 var actualSupportingText = new QuestionSupportingTextRequestViewModel();
                 foreach (var paragraph in paragraphsWithContent)
                 {
@@ -72,13 +74,56 @@ namespace BnE.EducationVest.API.Utilities
                         isInAlternatives = true;
                         alternativeIndex = 0;
                     }
+                    else if(contentWithoutWhiteSpaces == "-{Gabarito}")
+                    {
+                        exam.QuestionList.Add(actualQuestion);
+                        isInAnswerKey = true;
+                    }
+                    else if(isInAnswerKey)
+                    {
+                        //Modelo esperado do paragrafo: 1 E 
+                        var alternativeAnswer = paragraphContent.TrimStart().ToUpper().Split(' ');
+                        var correctAlternativeIndex = 0;
+                        switch (alternativeAnswer[1])
+                        {
+                            case "A":
+                                correctAlternativeIndex = 0;
+                                break;
+                            case "B":
+                                correctAlternativeIndex = 1;
+                                break;
+                            case "C":
+                                correctAlternativeIndex = 2;
+                                break;
+                            case "D":
+                                correctAlternativeIndex = 3;
+                                break;
+                            case "E":
+                                correctAlternativeIndex = 4;
+                                break;
+                            default:
+                                throw new Exception("Verificar gabarito, não foi encontrada alterrnativa: " + paragraphContent.TrimStart());
+                        }
+                        try
+                        {
+                            exam.QuestionList.First(x => x.Index == int.Parse(alternativeAnswer[0])).Alternatives[correctAlternativeIndex].IsCorrect = true;
+
+                        }
+                        catch (Exception ex)
+                        {
+
+                            throw;
+                        }
+                    }
                     else if (isInAlternatives)
                     {
                         var textContent = GetQuestionTextByParagraph(paragraph,
                                                                                       imagesStreamList,
                                                                                       imagesParagraphsCount);
+                        var textLastCharIndex = textContent.Content.Length - 1;
                         if (string.IsNullOrEmpty(textContent.Content))
                             continue;
+
                         actualQuestion.Alternatives.Add(new
                           QuestionAlternativeViewModel()
                         {
@@ -117,7 +162,6 @@ namespace BnE.EducationVest.API.Utilities
                     if (isImageParagraph)
                         imagesParagraphsCount++;
                 }
-                exam.QuestionList.Add(actualQuestion);
                 if(actualSupportingText != null)
                     supportingTexts.Add(actualSupportingText);
 

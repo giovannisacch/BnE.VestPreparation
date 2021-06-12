@@ -88,10 +88,16 @@ namespace BnE.EducationVest.Application.Users.Services
             var menus = await _userRepository.GetAvailableMenusByUserGroup(groups.Contains("Teachers"), groups.Contains("Students"));
             var user = await _userRepository.GetUserByCognitoId(Guid.Parse(tokenData.CognitoId));
 
-            return new Either<ErrorResponseModel, UserMenusViewModel>(new UserMenusViewModel() { Name = user.Name, 
-                                                                                                BirthDate = user.BirthDate, 
-                                                                                                TermsWasAccepted = user.WasAcceptedTerms,
-                                                                                                Menus = menus.Select(x => new MenuViewModel() {Key = x.Key, Label = x.Label } ) }, HttpStatusCode.OK);
+            return new Either<ErrorResponseModel, UserMenusViewModel>(new UserMenusViewModel() { 
+                                                                                                    Name = user.Name, 
+                                                                                                    BirthDate = user.BirthDate, 
+                                                                                                    TermsWasAccepted = user.WasAcceptedTerms,
+                                                                                                    ImageUrl = "https://pic.onlinewebfonts.com/svg/img_561160.png",
+                                                                                                    Menus = menus.Select(x => new MenuViewModel() 
+                                                                                                    {
+                                                                                                        Key = x.Key, Label = x.Label, Selected = (x.Key == "current_exams") ? true : false 
+                                                                                                    }) 
+                                                                                                }, HttpStatusCode.OK);
         }
 
         public async Task<Either<ErrorResponseModel, object>> AddExternalUserProfile(ExternalUserProfileRequestViewModel externalUserProfileRequestView)
