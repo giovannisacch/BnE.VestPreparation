@@ -166,6 +166,15 @@ namespace BnE.EducationVest.Application.Exams.Services
         
         public async Task<RealizedExamListViewModel> GetUserRealizedExamList()
         {
+            return new RealizedExamListViewModel()
+            {
+                RealizedExams = new List<RealizedExamViewModel>() { new RealizedExamViewModel()
+                {
+                    ExamId = Guid.NewGuid(),
+                    Name = "Simulado insper 2",
+                    ImageUrl = "https://emc.acidadeon.com/dbimagens/pedreira__1024x576_11032021174053.jpg" } }
+            };
+                
             var tokenData = _httpContextAccessor.GetTokenData();
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
             var exams = await _examRepository.GetUserFinalizedExams(userId);
@@ -182,6 +191,7 @@ namespace BnE.EducationVest.Application.Exams.Services
         }
         public async Task<ExamReportViewModel> GetUserExamReport(Guid examId)
         {
+            return GetMockExamReport();
             var tokenData = _httpContextAccessor.GetTokenData();
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
             var examWithQuestionAndAnswers = await _examRepository.GetExamWithQuestionsAndUserAnswers(examId, userId);
@@ -244,13 +254,249 @@ namespace BnE.EducationVest.Application.Exams.Services
 
             return new ExamReportViewModel()
             {
-                MyPerformances = null,
+                Performance = userPerformances,
                 SubjectsDifficulties = subjectsDifficulties,
                 SubjectsDistribution = subjectsDistribution,
                 AcertsAndErrorsBySubject = acertsAndErrorsBySubject,
                 AcertsAndErrorsByQuestion = acertsAndErrorsByQuestion
             };
 
+        }
+
+        private ExamReportViewModel GetMockExamReport()
+        {
+            var subjectsDifficulties = new List<ExamReportSubjectDifficultyViewModel>() 
+            {
+                new ExamReportSubjectDifficultyViewModel()
+                {
+                    Name = "Matemática",
+                    Easy = "70%",
+                    Medium = "80%",
+                    Hard = "50%"
+                },
+                 new ExamReportSubjectDifficultyViewModel()
+                {
+                    Name = "Português",
+                    Easy = "70%",
+                    Medium = "30%",
+                    Hard = "50%"
+                }
+            };
+            var subjectsDistribution = new List<ExamReportSubjectDistributionViewModel>()
+            {
+             new ExamReportSubjectDistributionViewModel()
+                {
+                    Name = "Português",
+                    QuestionNumbers = new List<int>(){0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 }
+                },
+                        new ExamReportSubjectDistributionViewModel()
+                {
+                    Name = "Polinomios",
+                    QuestionNumbers = new List<int>(){16, 17,17,19,20,21,22,23,24,25,26,27,28,29,30}
+                },
+                                     new ExamReportSubjectDistributionViewModel()
+                {
+                    Name = "Matematica financeira",
+                    QuestionNumbers = new List<int>(){31,32,33,34,35,36,37,38,39,40}
+                },
+                                                  new ExamReportSubjectDistributionViewModel()
+                {
+                    Name = "Geometria analitica",
+                    QuestionNumbers = new List<int>(){41,42,43,44,45,46,47,48,49,50 }
+                },
+            };
+            var acertsAndErrorsBySubject = new List<ExamReportAcertsAndErrorBySubject>() 
+            {
+                new ExamReportAcertsAndErrorBySubject()
+                {
+                    Subject = "Português",
+                    QuestionCount = 15,
+                    CorrectCount = 12
+                },
+                 new ExamReportAcertsAndErrorBySubject()
+                {
+                    Subject = "Polinomios",
+                    QuestionCount = 10,
+                    CorrectCount = 6
+                },
+                  new ExamReportAcertsAndErrorBySubject()
+                {
+                    Subject = "Matematica financeira",
+                    QuestionCount = 10,
+                    CorrectCount = 8
+                },
+                   new ExamReportAcertsAndErrorBySubject()
+                {
+                    Subject = "Geometria Analitica",
+                    QuestionCount = 10,
+                    CorrectCount = 4
+                },
+            };
+            var acertsAndErrorsByQuestion = new List<ExamReportAcertsAndErrorByQuestion>()
+            {
+                
+                new ExamReportAcertsAndErrorByQuestion()
+                {
+                    QuestionNumber = 1,
+                    Subject = "Português",
+                    //Pegar alternativa pelo index (ex: index 0 = A)
+                    ChosenAlternative = "A",
+                    RightAlternative = "B",
+                    Difficulty = "Fácil"
+                },
+                  new ExamReportAcertsAndErrorByQuestion()
+                {
+                    QuestionNumber = 2,
+                    Subject = "Português",
+                    //Pegar alternativa pelo index (ex: index 0 = A)
+                    ChosenAlternative = "A",
+                    RightAlternative = "B",
+                    Difficulty = "Fácil"
+                },
+                    new ExamReportAcertsAndErrorByQuestion()
+                {
+                    QuestionNumber = 3,
+                    Subject = "Português",
+                    //Pegar alternativa pelo index (ex: index 0 = A)
+                    ChosenAlternative = "A",
+                    RightAlternative = "B",
+                    Difficulty = "Fácil"
+                },
+                      new ExamReportAcertsAndErrorByQuestion()
+                {
+                    QuestionNumber = 4,
+                    Subject = "Português",
+                    //Pegar alternativa pelo index (ex: index 0 = A)
+                    ChosenAlternative = "A",
+                    RightAlternative = "B",
+                    Difficulty = "Difícil"
+                },
+                        new ExamReportAcertsAndErrorByQuestion()
+                {
+                    QuestionNumber = 5,
+                    Subject = "Português",
+                    //Pegar alternativa pelo index (ex: index 0 = A)
+                    ChosenAlternative = "A",
+                    RightAlternative = "A",
+                    Difficulty = "Médio"
+                },
+                new ExamReportAcertsAndErrorByQuestion(){
+                    QuestionNumber = 6,
+                    Subject = "Português",
+                    //Pegar alternativa pelo index (ex: index 0 = A)
+                    ChosenAlternative = "A",
+                    RightAlternative = "B",
+                    Difficulty = "Fácil"
+                },
+                  new ExamReportAcertsAndErrorByQuestion()
+                {
+                    QuestionNumber = 7,
+                    Subject = "Português",
+                    //Pegar alternativa pelo index (ex: index 0 = A)
+                    ChosenAlternative = "A",
+                    RightAlternative = "B",
+                    Difficulty = "Fácil"
+                },
+                    new ExamReportAcertsAndErrorByQuestion()
+                {
+                    QuestionNumber = 8,
+                    Subject = "Português",
+                    //Pegar alternativa pelo index (ex: index 0 = A)
+                    ChosenAlternative = "A",
+                    RightAlternative = "B",
+                    Difficulty = "Fácil"
+                },
+                      new ExamReportAcertsAndErrorByQuestion()
+                {
+                    QuestionNumber = 9,
+                    Subject = "Português",
+                    //Pegar alternativa pelo index (ex: index 0 = A)
+                    ChosenAlternative = "A",
+                    RightAlternative = "B",
+                    Difficulty = "Difícil"
+                },
+                        new ExamReportAcertsAndErrorByQuestion()
+                {
+                    QuestionNumber = 10,
+                    Subject = "Português",
+                    //Pegar alternativa pelo index (ex: index 0 = A)
+                    ChosenAlternative = "A",
+                    RightAlternative = "A",
+                    Difficulty = "Médio"
+                },
+                new ExamReportAcertsAndErrorByQuestion()
+                {
+                    QuestionNumber = 11,
+                    Subject = "Português",
+                    //Pegar alternativa pelo index (ex: index 0 = A)
+                    ChosenAlternative = "A",
+                    RightAlternative = "B",
+                    Difficulty = "Fácil"
+                },
+                  new ExamReportAcertsAndErrorByQuestion()
+                {
+                    QuestionNumber = 12,
+                    Subject = "Português",
+                    //Pegar alternativa pelo index (ex: index 0 = A)
+                    ChosenAlternative = "A",
+                    RightAlternative = "B",
+                    Difficulty = "Fácil"
+                },
+                    new ExamReportAcertsAndErrorByQuestion()
+                {
+                    QuestionNumber = 13,
+                    Subject = "Português",
+                    //Pegar alternativa pelo index (ex: index 0 = A)
+                    ChosenAlternative = "A",
+                    RightAlternative = "B",
+                    Difficulty = "Fácil"
+                },
+                      new ExamReportAcertsAndErrorByQuestion()
+                {
+                    QuestionNumber = 14,
+                    Subject = "Português",
+                    //Pegar alternativa pelo index (ex: index 0 = A)
+                    ChosenAlternative = "A",
+                    RightAlternative = "B",
+                    Difficulty = "Difícil"
+                },
+                        new ExamReportAcertsAndErrorByQuestion()
+                {
+                    QuestionNumber = 15,
+                    Subject = "Português",
+                    //Pegar alternativa pelo index (ex: index 0 = A)
+                    ChosenAlternative = "A",
+                    RightAlternative = "A",
+                    Difficulty = "Médio"
+                }
+            };
+
+            var userPerformances = new List<ExamReportPerformanceViewModel>()
+            {
+                new ExamReportPerformanceViewModel()
+                {
+                    Name = "Pontuação",
+                    Value = 500.00
+                },
+                new ExamReportPerformanceViewModel()
+                {
+                    Name = "Matemática",
+                    Value = 16
+                },
+                new ExamReportPerformanceViewModel()
+                {
+                    Name = "Português",
+                    Value = 430
+                }
+            };
+            return new ExamReportViewModel()
+            {
+                Performance = userPerformances,
+                SubjectsDifficulties = new ExamReportSubjectDifficultyViewModelCard() { SubjectDifficultyRanks = subjectsDifficulties },
+                SubjectsDistribution = new ExamReportSubjectDistributionViewModelCard() {subjectDistributionTopics = subjectsDistribution } ,
+                AcertsAndErrorsBySubject = new ExamReportAcertsAndErrorBySubjectCard() {ExamReportAcertsAndErrorBySubjectCardTopics = acertsAndErrorsBySubject } ,
+                AcertsAndErrorsByQuestion = new ExamReportAcertsAndErrorByQuestionCard() {ExamReportAcertsAndErrorByQuestionCardTopics = acertsAndErrorsByQuestion } 
+            };
         }
         private string GetFormatedExamName(Exam exam)
         {

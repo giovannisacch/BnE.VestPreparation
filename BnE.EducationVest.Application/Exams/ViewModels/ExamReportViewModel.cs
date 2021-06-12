@@ -8,11 +8,13 @@ namespace BnE.EducationVest.Application.Exams.ViewModels
 {
     public class ExamReportViewModel
     {
-        public IEnumerable<ExamReportPerformanceViewModel> MyPerformances { get; set; }
-        public IEnumerable<ExamReportSubjectDifficultyViewModel> SubjectsDifficulties { get; set; }
-        public IEnumerable<ExamReportSubjectDistributionViewModel> SubjectsDistribution { get; set; }
-        public IEnumerable<ExamReportAcertsAndErrorBySubject> AcertsAndErrorsBySubject { get; set; }
-        public IEnumerable<ExamReportAcertsAndErrorByQuestion> AcertsAndErrorsByQuestion { get; set; }
+        public string ExamName { get; set; } = "Simulado Insper 2";
+        public DateTime ExamDate { get; set; } = DateTime.Now;
+        public IEnumerable<ExamReportPerformanceViewModel> Performance { get; set; }
+        public ExamReportSubjectDifficultyViewModelCard SubjectsDifficulties { get; set; }
+        public ExamReportSubjectDistributionViewModelCard SubjectsDistribution { get; set; }
+        public ExamReportAcertsAndErrorBySubjectCard AcertsAndErrorsBySubject { get; set; }
+        public ExamReportAcertsAndErrorByQuestionCard AcertsAndErrorsByQuestion { get; set; }
     }
     public class ExamReportPerformanceViewModel
     {
@@ -21,21 +23,49 @@ namespace BnE.EducationVest.Application.Exams.ViewModels
     }
     public class ExamReportSubjectDifficultyViewModel
     {
+
         public string Name { get; set; }
         public string Easy { get; set; }
         public string Medium { get; set; }
         public string Hard { get; set; }
     }
+    public class ExamReportSubjectDifficultyViewModelCard
+    {
+        public string Title { get; set; } = "Titulo dp card";
+        public string IntroductionText { get; set; } = "Descrição do card aqui, para auxilio do usuario estou enchendo linguica";
+        public List<ExamReportSubjectDifficultyViewModel> SubjectDifficultyRanks { get; set; }
+    }
     public class ExamReportSubjectDistributionViewModel
     {
+
         public string Name { get; set; }
         public IEnumerable<int> QuestionNumbers { get; set; }
     }
+    public class ExamReportSubjectDistributionViewModelCard
+    {
+        public string Title { get; set; } = "Titulo dp card";
+        public string IntroductionText { get; set; } = "Descrição do card aqui, para auxilio do usuario estou enchendo linguica";
+        public List<ExamReportSubjectDistributionViewModel> subjectDistributionTopics { get; set; }
+    }
     public class ExamReportAcertsAndErrorBySubject
     {
+
         public string Subject { get; set; }
         public int QuestionCount { get; set; }
         public int CorrectCount { get; set; }
+    }
+    public class ExamReportAcertsAndErrorBySubjectCard
+    {
+        public string Title { get; set; } = "Titulo dp card";
+        public string IntroductionText { get; set; } = "Descrição do card aqui, para auxilio do usuario estou enchendo linguica";
+        public List<ExamReportAcertsAndErrorBySubject> ExamReportAcertsAndErrorBySubjectCardTopics { get; set; }
+    }
+    public class ExamReportAcertsAndErrorByQuestionCard
+    {
+        public string Title { get; set; } = "Titulo dp card";
+        public string IntroductionText { get; set; } = "Descrição do card aqui, para auxilio do usuario estou enchendo linguica";
+        public List<ExamReportAcertsAndErrorByQuestionExplanationTable> ExplanationTable { get; set; }
+        public List<ExamReportAcertsAndErrorByQuestion> ExamReportAcertsAndErrorByQuestionCardTopics { get; set; }
     }
     public class ExamReportAcertsAndErrorByQuestion
     {
@@ -44,5 +74,10 @@ namespace BnE.EducationVest.Application.Exams.ViewModels
         public string ChosenAlternative { get; set; }
         public string RightAlternative { get; set; }
         public string Difficulty { get; set; }
+    }
+    public class ExamReportAcertsAndErrorByQuestionExplanationTable
+    {
+        public string Name { get; set; }
+        public string Value { get; set; }
     }
 }
