@@ -495,7 +495,25 @@ namespace BnE.EducationVest.Application.Exams.Services
                 SubjectsDifficulties = new ExamReportSubjectDifficultyViewModelCard() { SubjectDifficultyRanks = subjectsDifficulties },
                 SubjectsDistribution = new ExamReportSubjectDistributionViewModelCard() {subjectDistributionTopics = subjectsDistribution } ,
                 AcertsAndErrorsBySubject = new ExamReportAcertsAndErrorBySubjectCard() {ExamReportAcertsAndErrorBySubjectCardTopics = acertsAndErrorsBySubject } ,
-                AcertsAndErrorsByQuestion = new ExamReportAcertsAndErrorByQuestionCard() {ExamReportAcertsAndErrorByQuestionCardTopics = acertsAndErrorsByQuestion } 
+                AcertsAndErrorsByQuestion = new ExamReportAcertsAndErrorByQuestionCard() {ExamReportAcertsAndErrorByQuestionCardTopics = acertsAndErrorsByQuestion, ExplanationTable = 
+                new List<ExamReportAcertsAndErrorByQuestionExplanationTable>() 
+                {
+                    new ExamReportAcertsAndErrorByQuestionExplanationTable()
+                    {
+                        Name = "Menor ou igual a 40%",
+                        Value = "Difícil"
+                    },
+                    new ExamReportAcertsAndErrorByQuestionExplanationTable()
+                    {
+                        Name = "Entre 40 % e 70%",
+                        Value = "Moderada"
+                    },
+                    new ExamReportAcertsAndErrorByQuestionExplanationTable()
+                    {
+                        Name = "Maior que 70 %",
+                        Value = "Fácil"
+                    },
+                } } 
             };
         }
         private string GetFormatedExamName(Exam exam)
