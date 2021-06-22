@@ -25,7 +25,6 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
                 .Include(x => x.Finalizeds.Where(x => x.UserId == userId))
                 .Where(exam => exam.Periods.Any(x => x.OpenDate <= actualDate && x.CloseDate > actualDate.AddMinutes(10)))
                 .ToListAsync();
-            exams.RemoveAll(x => x.Finalizeds.Any());
             return exams;
         }
 
@@ -106,6 +105,8 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
                             .Include(x => x.Questions)
                             .ThenInclude(x => x.Subject)
                             .ThenInclude(x => x.SubjectFather)
+                            .Include(x => x.Questions)
+                            .ThenInclude(x => x.Alternatives)
                             .AsNoTracking()
                             .FirstOrDefaultAsync();
         }
@@ -141,6 +142,15 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
                     .Include(x => x.Finalizeds)
                     .Where(x => x.Finalizeds.Any(x => x.UserId == userId))
                     .ToListAsync();
+        }
+        public async Task<Question> GetLastExamQuestionAnsweredByUserAsync(Guid examId, Guid userId)
+        {
+            return await
+                    _context.Questions
+                    .Include(x => x.QuestionAnswers)
+                    .Where(x => x.ExamId == examId && x.QuestionAnswers.FirstOrDefault(x => x.UserId == userId) != null)
+                    .OrderByDescending(x => x.Index)
+                    .FirstAsync();
         }
         //public async Task<List<Exam>> GetExamsFinalizedByUser(Guid userId)
         //{

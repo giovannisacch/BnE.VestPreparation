@@ -96,15 +96,24 @@ namespace BnE.EducationVest.Application.Exams.Services
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(token.CognitoId));
 
             var availableExams = await _examRepository.GetAvailableExamsByUser(userId);
-            var response = new AvailableExamsViewModel();
-            response.AvailableExams = availableExams.Select(x => new AvailableExamViewModel()
+            var response = new AvailableExamsViewModel() 
             {
-                ExamId = x.Id,
-                ExamName = GetFormatedExamName(x),
-                ExpirationDate = x.GetActualAvailablePeriod().CloseDate,
-                WasStarted = _examCacheService.VerifyIfUserStartedExam(userId, x.Id).Result,
-                QuestionsCount = x.ExamModel.GetQuestionAmount()
-            }).ToList();
+                AvailableExams = new List<AvailableExamViewModel>()
+            };
+            foreach (var exam in availableExams)
+            {
+                var userStartedExam = await _examCacheService.VerifyIfUserStartedExam(userId, exam.Id);
+                response.AvailableExams.Add(new AvailableExamViewModel()
+                {
+                    ExamId = exam.Id,
+                    ExamName = GetFormatedExamName(exam),
+                    ExpirationDate = exam.GetActualAvailablePeriod().CloseDate,
+                    WasStarted = userStartedExam,
+                    QuestionsCount = exam.ExamModel.GetQuestionAmount(),
+                    LastQuestionAnswered = (userStartedExam) ? _examRepository.GetLastExamQuestionAnsweredByUserAsync(exam.Id, userId).Result.Index : null,
+                    WasFinalized = exam.Finalizeds.Count > 0
+                });
+            }
 
             return new Either<ErrorResponseModel, AvailableExamsViewModel>(response, HttpStatusCode.OK);
         }
@@ -165,16 +174,7 @@ namespace BnE.EducationVest.Application.Exams.Services
         }
         
         public async Task<RealizedExamListViewModel> GetUserRealizedExamList()
-        {
-            return new RealizedExamListViewModel()
-            {
-                RealizedExams = new List<RealizedExamViewModel>() { new RealizedExamViewModel()
-                {
-                    ExamId = Guid.NewGuid(),
-                    Name = "Simulado insper 2",
-                    ImageUrl = "https://emc.acidadeon.com/dbimagens/pedreira__1024x576_11032021174053.jpg" } }
-            };
-                
+        {                
             var tokenData = _httpContextAccessor.GetTokenData();
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
             var exams = await _examRepository.GetUserFinalizedExams(userId);
@@ -192,74 +192,97 @@ namespace BnE.EducationVest.Application.Exams.Services
         public async Task<ExamReportViewModel> GetUserExamReport(Guid examId)
         {
             return GetMockExamReport();
-            //var tokenData = _httpContextAccessor.GetTokenData();
-            //var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
-            //var examWithQuestionAndAnswers = await _examRepository.GetExamWithQuestionsAndUserAnswers(examId, userId);
-            //var questionsWithAnswers = examWithQuestionAndAnswers.Questions;
-            //var questionsGroupsBySubject = questionsWithAnswers.GroupBy(x => x.Subject.Name);
-            ////TODO: Separa mappings em outros metodos
-            //var subjectsDifficulties = new List<ExamReportSubjectDifficultyViewModel>();
-            //var subjectsDistribution = new List<ExamReportSubjectDistributionViewModel>();
-            //var acertsAndErrorsBySubject = new List<ExamReportAcertsAndErrorBySubject>();
-            ////VERIFICAR COMO DEFINIREMOS DIFICULDADEEEEEEE
-            //foreach (var questionGroup in questionsGroupsBySubject)
-            //{
-            //    var groupQuestionCount = questionGroup.Count();
-            //    subjectsDifficulties.Add(new ExamReportSubjectDifficultyViewModel()
-            //    {
-            //        Name = questionGroup.Key,
-            //        Easy = $"{questionGroup.Count(x => x.QuestionDifficulty == EQuestionDifficulty.Easy) / groupQuestionCount}%",
-            //        Medium = $"{questionGroup.Count(x => x.QuestionDifficulty == EQuestionDifficulty.Medium) / groupQuestionCount}%",
-            //        Hard = $"{questionGroup.Count(x => x.QuestionDifficulty == EQuestionDifficulty.Hard) / groupQuestionCount}%"
-            //    });
-            //    subjectsDistribution.Add(new ExamReportSubjectDistributionViewModel()
-            //    {
-            //        Name = questionGroup.Key,
-            //        QuestionNumbers = questionGroup.Select(x => x.Index)
-            //    });
-            //    acertsAndErrorsBySubject.Add(new ExamReportAcertsAndErrorBySubject()
-            //    {
-            //        Subject = questionGroup.Key,
-            //        QuestionCount = groupQuestionCount,
-            //        CorrectCount = questionGroup.Count(x => x.GetUserAnswer(userId).IsCorrect())
-            //    });
-            //}
-            //var acertsAndErrorsByQuestion = questionsWithAnswers.Select(x => new ExamReportAcertsAndErrorByQuestion()
-            //{
-            //    QuestionNumber = x.Index,
-            //    Subject = x.Subject.Name,
-            //    //Pegar alternativa pelo index (ex: index 0 = A)
-            //    ChosenAlternative = x.GetUserAnswer(userId).ChosenAlternative.Index.ToString(),
-            //    RightAlternative = x.GetRightAlternative().Index.ToString(),
-            //    Difficulty = x.QuestionDifficulty.ToString()
-            //});
-            //var userPerformances = new List<ExamReportPerformanceViewModel>()
-            //{
-            //    new ExamReportPerformanceViewModel()
-            //    {
-            //        Name = "Pontuação",
-            //        Value = examWithQuestionAndAnswers.GetUserTotalScore(userId)
-            //    },
-            //    new ExamReportPerformanceViewModel()
-            //    {
-            //        Name = "Matemática",
-            //        Value = examWithQuestionAndAnswers.GetUserMathPerformance(userId)
-            //    },
-            //    new ExamReportPerformanceViewModel()
-            //    {
-            //        Name = "Português",
-            //        Value = examWithQuestionAndAnswers.GetUserPortuguesePerformance(userId)
-            //    }
-            //};
+            var tokenData = _httpContextAccessor.GetTokenData();
+            var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
+            var examWithQuestionAndAnswers = await _examRepository.GetExamWithQuestionsAndUserAnswers(examId, userId);
+            var questionsWithAnswers = examWithQuestionAndAnswers.Questions;
+            var questionsGroupsBySubject = questionsWithAnswers.GroupBy(x => x.Subject.Name);
+            //TODO: Separa mappings em outros metodos
+            var subjectsDifficulties = new List<ExamReportSubjectDifficultyViewModel>();
+            var subjectsDistribution = new List<ExamReportSubjectDistributionViewModel>();
+            var acertsAndErrorsBySubject = new List<ExamReportAcertsAndErrorBySubject>();
+            var teste = examWithQuestionAndAnswers.Questions.Where(x => !x.Alternatives.Exists(x => x.IsCorrect));
+            //VERIFICAR COMO DEFINIREMOS DIFICULDADEEEEEEE
+            foreach (var questionGroup in questionsGroupsBySubject)
+            {
+                var groupQuestionCount = questionGroup.Count();
+                subjectsDifficulties.Add(new ExamReportSubjectDifficultyViewModel()
+                {
+                    Name = questionGroup.Key,
+                    Easy = $"{questionGroup.Count(x => x.QuestionDifficulty == EQuestionDifficulty.Easy) / groupQuestionCount}%",
+                    Medium = $"{questionGroup.Count(x => x.QuestionDifficulty == EQuestionDifficulty.Medium) / groupQuestionCount}%",
+                    Hard = $"{questionGroup.Count(x => x.QuestionDifficulty == EQuestionDifficulty.Hard) / groupQuestionCount}%"
+                });
+                subjectsDistribution.Add(new ExamReportSubjectDistributionViewModel()
+                {
+                    Name = questionGroup.Key,
+                    QuestionNumbers = questionGroup.Select(x => x.Index)
+                });
+                acertsAndErrorsBySubject.Add(new ExamReportAcertsAndErrorBySubject()
+                {
+                    Subject = questionGroup.Key,
+                    QuestionCount = groupQuestionCount,
+                    CorrectCount = questionGroup.Count(x => (x.GetUserAnswer(userId) == null) ? false : x.GetUserAnswer(userId).IsCorrect())
+                });
+            }
+            var acertsAndErrorsByQuestion = questionsWithAnswers.Select(x => new ExamReportAcertsAndErrorByQuestion()
+            {
+                QuestionNumber = x.Index,
+                Subject = x.Subject.Name,
+                //Pegar alternativa pelo index (ex: index 0 = A)
+                ChosenAlternative = x.GetUserAnswer(userId)?.ChosenAlternative.Index.ToString(),
+                RightAlternative = x.GetRightAlternative().Index.ToString(),
+                Difficulty = x.QuestionDifficulty.ToString()
+            });
+            var userPerformances = new List<ExamReportPerformanceViewModel>()
+            {
+                new ExamReportPerformanceViewModel()
+                {
+                    Name = "Pontuação",
+                    Value = examWithQuestionAndAnswers.GetUserTotalScore(userId)
+                },
+                new ExamReportPerformanceViewModel()
+                {
+                    Name = "Matemática",
+                    Value = examWithQuestionAndAnswers.GetUserMathPerformance(userId)
+                },
+                new ExamReportPerformanceViewModel()
+                {
+                    Name = "Português",
+                    Value = examWithQuestionAndAnswers.GetUserPortuguesePerformance(userId)
+                }
+            };
 
-            //return new ExamReportViewModel()
-            //{
-            //    Performance = userPerformances,
-            //    SubjectsDifficulties = subjectsDifficulties,
-            //    SubjectsDistribution = subjectsDistribution,
-            //    AcertsAndErrorsBySubject = acertsAndErrorsBySubject,
-            //    AcertsAndErrorsByQuestion = acertsAndErrorsByQuestion
-            //};
+            return new ExamReportViewModel()
+            {
+                Performance = userPerformances,
+                SubjectsDifficulties = new ExamReportSubjectDifficultyViewModelCard() { SubjectDifficultyRanks = subjectsDifficulties },
+                SubjectsDistribution = new ExamReportSubjectDistributionViewModelCard() { subjectDistributionTopics = subjectsDistribution },
+                AcertsAndErrorsBySubject = new ExamReportAcertsAndErrorBySubjectCard() { ExamReportAcertsAndErrorBySubjectCardTopics = acertsAndErrorsBySubject },
+                AcertsAndErrorsByQuestion = new ExamReportAcertsAndErrorByQuestionCard()
+                {
+                    ExamReportAcertsAndErrorByQuestionCardTopics = acertsAndErrorsByQuestion.ToList(),
+                    ExplanationTable =
+                new List<ExamReportAcertsAndErrorByQuestionExplanationTable>()
+                {
+                    new ExamReportAcertsAndErrorByQuestionExplanationTable()
+                    {
+                        Name = "Menor ou igual a 40%",
+                        Value = "Difícil"
+                    },
+                    new ExamReportAcertsAndErrorByQuestionExplanationTable()
+                    {
+                        Name = "Entre 40 % e 70%",
+                        Value = "Moderada"
+                    },
+                    new ExamReportAcertsAndErrorByQuestionExplanationTable()
+                    {
+                        Name = "Maior que 70 %",
+                        Value = "Fácil"
+                    },
+                }
+                }
+            };
 
         }
 
@@ -490,12 +513,13 @@ namespace BnE.EducationVest.Application.Exams.Services
                 }
             };
             return new ExamReportViewModel()
-            {
+            {   
                 Performance = userPerformances,
                 SubjectsDifficulties = new ExamReportSubjectDifficultyViewModelCard() { SubjectDifficultyRanks = subjectsDifficulties },
                 SubjectsDistribution = new ExamReportSubjectDistributionViewModelCard() {subjectDistributionTopics = subjectsDistribution } ,
                 AcertsAndErrorsBySubject = new ExamReportAcertsAndErrorBySubjectCard() {ExamReportAcertsAndErrorBySubjectCardTopics = acertsAndErrorsBySubject } ,
-                AcertsAndErrorsByQuestion = new ExamReportAcertsAndErrorByQuestionCard() {ExamReportAcertsAndErrorByQuestionCardTopics = acertsAndErrorsByQuestion, ExplanationTable = 
+                AcertsAndErrorsByQuestion = new ExamReportAcertsAndErrorByQuestionCard() 
+                {ExamReportAcertsAndErrorByQuestionCardTopics = acertsAndErrorsByQuestion, ExplanationTable = 
                 new List<ExamReportAcertsAndErrorByQuestionExplanationTable>() 
                 {
                     new ExamReportAcertsAndErrorByQuestionExplanationTable()
@@ -513,7 +537,8 @@ namespace BnE.EducationVest.Application.Exams.Services
                         Name = "Maior que 70 %",
                         Value = "Fácil"
                     },
-                } } 
+                } 
+                } 
             };
         }
         private string GetFormatedExamName(Exam exam)

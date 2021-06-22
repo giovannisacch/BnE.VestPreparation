@@ -314,6 +314,7 @@ namespace BnE.EducationVest.API.Utilities
         private static List<byte[]> GetAllImagesStream(this WordprocessingDocument document)
         {
             var images = document.MainDocumentPart.ImageParts;
+            var a = images.OrderBy(x => x.Uri.OriginalString.Substring(0, 5) == "/word" ? x.Uri.OriginalString.Remove(0, 5) : x.Uri.OriginalString);
             var streamList = new List<byte[]>();
             for (int index = 0; index < images.Count(); index++)
             {

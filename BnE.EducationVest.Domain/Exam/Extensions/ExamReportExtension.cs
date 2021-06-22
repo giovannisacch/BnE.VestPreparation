@@ -24,12 +24,12 @@ namespace BnE.EducationVest.Domain.Exam.Extensions
         public static double GetUserMathPerformance(this Entities.Exam exam, Guid userId)
         {
             return exam.Questions.Where(x => x.Subject.IsMathTopic())
-                .Count(x => x.GetUserAnswer(userId).IsCorrect());
+                .Count(x => x.GetUserAnswer(userId) == null ? false : x.GetUserAnswer(userId).IsCorrect());
         }
         public static double GetUserPortuguesePerformance(this Entities.Exam exam, Guid userId)
         {
             return exam.Questions.Where(x => x.Subject.IsPortugueseTopic())
-                .Count(x => x.GetUserAnswer(userId).IsCorrect());
+                .Count(x => x.GetUserAnswer(userId) == null ? false : x.GetUserAnswer(userId).IsCorrect());
         }
         private static double GetUserInsperTotalPerformance(this Entities.Exam exam, Guid userId)
         {

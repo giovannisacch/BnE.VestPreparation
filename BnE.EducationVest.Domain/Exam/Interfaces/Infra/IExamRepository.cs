@@ -21,5 +21,6 @@ namespace BnE.EducationVest.Domain.Exam.Interfaces.Infra
         Task FinalizeExam(FinalizedExam finalizedExam);
         Task<List<Subject>> GetSubjects();
         Task<List<Entities.Exam>> GetUserFinalizedExams(Guid userId);
+        Task<Question> GetLastExamQuestionAnsweredByUserAsync(Guid examId, Guid userId);
     }
 }

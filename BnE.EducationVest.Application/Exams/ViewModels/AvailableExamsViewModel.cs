@@ -17,5 +17,7 @@ namespace BnE.EducationVest.Application.Exams.ViewModels
         public DateTime ExpirationDate { get; set; }
         public bool WasStarted { get; set; }
         public int QuestionsCount { get; set; }
+        public int? LastQuestionAnswered { get; set; }
+        public bool WasFinalized { get; set; }
     }
 }
