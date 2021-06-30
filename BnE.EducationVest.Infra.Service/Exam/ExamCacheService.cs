@@ -93,6 +93,12 @@ namespace BnE.EducationVest.Infra.Service.Exam
             var subjectsSerialized = await _cache.GetStringAsync(key);
             return JsonConvert.DeserializeObject<List<Guid>>(subjectsSerialized, _jsonSerializerSettings);
         }
+        //TODO: EXCLUIR, METODO DE DELETAR RESPOSTAS SO DEVE EXISTIR DURANTE DESENVOLVIMENTO
+        public async Task DeleteUserStartedExam(Guid userId, Guid examId)
+        {
+            var cacheKey = string.Format(_examPrefix, examId) + userId;
+            await _cache.RemoveAsync(cacheKey);
+        }
     }
     public class PrivateResolver : DefaultContractResolver
     {

@@ -27,7 +27,12 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
                 .ToListAsync();
             return exams;
         }
-
+        public async Task DeleteAllUserAnswersInExam(Guid userId, Guid examId)
+        {
+            var answers = _context.QuestionsAnswers.Where(x => x.UserId == userId && x.Question.ExamId == examId).ToList();
+            _context.RemoveRange(answers);
+            await _context.Commit();
+        }
         public async Task<Exam> GetByIdWithAllIncludes(Guid id)
         {
            return await _db
@@ -141,6 +146,19 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
                     _db
                     .Include(x => x.Finalizeds)
                     .Where(x => x.Finalizeds.Any(x => x.UserId == userId))
+                    .ToListAsync();
+        }
+        public async Task<List<Exam>> GetUserFinalizedExamsWithAnswers(Guid userId)
+        {
+            return await
+                    _db
+                    .Include(x => x.Finalizeds)
+                    .Where(x => x.Finalizeds.Any(x => x.UserId == userId))
+                    .Include(x => x.Questions)
+                    .ThenInclude(x => x.QuestionAnswers)
+                    .Include(x => x.Questions)
+                    .ThenInclude(x => x.Subject)
+                    .ThenInclude(x => x.SubjectChilds)
                     .ToListAsync();
         }
         public async Task<Question> GetLastExamQuestionAnsweredByUserAsync(Guid examId, Guid userId)

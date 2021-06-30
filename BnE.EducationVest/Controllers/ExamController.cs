@@ -187,5 +187,16 @@ namespace BnE.EducationVest.API.Controllers
 
             return Ok(response);
         }
+        /// <summary>
+        /// Usado para remover as respostas de um usuario num exame especifico, usado apenas em dev, deve ser excluido em prd
+        /// </summary>
+        /// <param name="examId"></param>
+        /// <returns></returns>
+        [HttpDelete("answers/{examId}")]
+        public async Task<IActionResult> DeleteUserAnswers(Guid examId)
+        {
+            await _examApplicationService.DeleteUserAnswers(examId);
+            return Ok();
+        }
     }
 }

@@ -12,7 +12,7 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         public string Name { get; private set; }
         public Guid? SubjectFatherId { get; private set; }
         public Subject SubjectFather { get; private set; }
-        public List<Subject> SubjectChild { get; private set; }
+        public List<Subject> SubjectChilds { get; private set; }
         public List<Question> Questions { get; private set; }
         public Subject(string name)
         {

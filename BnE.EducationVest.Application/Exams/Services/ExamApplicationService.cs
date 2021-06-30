@@ -285,7 +285,18 @@ namespace BnE.EducationVest.Application.Exams.Services
             };
 
         }
-
+        public async Task DeleteUserAnswers(Guid examId)
+        {
+            var tokenData = _httpContextAccessor.GetTokenData();
+            var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
+            await _examRepository.DeleteAllUserAnswersInExam(userId, examId);
+            await _examCacheService.DeleteUserStartedExam(userId, examId);
+        }
+        public async Task<SubjectEvolutionsResponseViewModel> GetEvolutional(Guid userId) 
+        {
+            var finalized = await _examRepository.GetUserFinalizedExamsWithAnswers(userId);
+            return null;
+        }
         private ExamReportViewModel GetMockExamReport()
         {
             var subjectsDifficulties = new List<ExamReportSubjectDifficultyViewModel>() 

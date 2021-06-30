@@ -25,5 +25,6 @@ namespace BnE.EducationVest.Application.Exams.Interfaces
         Task<IEnumerable<SubjectResponseViewModel>> GetSubjects();
         Task<RealizedExamListViewModel> GetUserRealizedExamList();
         Task<ExamReportViewModel> GetUserExamReport(Guid examId);
+        Task DeleteUserAnswers(Guid examId);
     }
 }

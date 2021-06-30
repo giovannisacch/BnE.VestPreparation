@@ -87,5 +87,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:BnE.EducationVest.API.Controllers.ExamController.DeleteUserAnswers(System.Guid)">
+            <summary>
+            Usado para remover as respostas de um usuario num exame especifico, usado apenas em dev, deve ser excluido em prd
+            </summary>
+            <param name="examId"></param>
+            <returns></returns>
+        </member>
     </members>
 </doc>

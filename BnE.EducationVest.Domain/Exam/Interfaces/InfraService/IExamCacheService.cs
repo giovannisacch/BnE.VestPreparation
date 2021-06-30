@@ -13,6 +13,7 @@ namespace BnE.EducationVest.Domain.Exam.Interfaces.InfraService
     {
         Task SaveUserStartedExam(Guid userId, Entities.Exam exam);
         Task<bool> VerifyIfUserStartedExam(Guid userId, Guid examId);
+        Task DeleteUserStartedExam(Guid userId, Guid examId);
         Task<List<Question>> GetQuestionsByPageAsync(Guid examId, int page);
         Task SaveQuestionListByPage(Entities.Exam exam, List<Question> questionList, int page);
         Task SaveExamPeriodsAndSubjects(EExamModel examModel,EExamType examType, int number, List<ExamPeriodVO> periods, List<Guid> subjectIdList);

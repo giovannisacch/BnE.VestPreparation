@@ -20,7 +20,7 @@ namespace BnE.EducationVest.Infra.Data.Exams.Mappings
                 .HasColumnType("varchar(250)");
             builder
                 .HasOne(x => x.SubjectFather)
-                .WithMany(x => x.SubjectChild)
+                .WithMany(x => x.SubjectChilds)
                 .HasForeignKey(x => x.SubjectFatherId);
 
             builder
