@@ -294,7 +294,9 @@ namespace BnE.EducationVest.Application.Exams.Services
         }
         public async Task<SubjectEvolutionsResponseViewModel> GetEvolutional(Guid userId) 
         {
+            //TODO: ATUALIZAR QUANDO DEFINIR QUANDO UM RELATORIO VAI APARECER, EX: FINALIZOU MAS EXAME AINDA ESTÁ DISPONIVEL
             var finalized = await _examRepository.GetUserFinalizedExamsWithAnswers(userId);
+            var
             return null;
         }
         private ExamReportViewModel GetMockExamReport()

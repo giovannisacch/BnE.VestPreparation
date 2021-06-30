@@ -123,7 +123,7 @@ namespace BnE.EducationVest.API.Controllers
 
             return StatusCode((int)response.StatusCode,
               response.IsSuccess
-              ? response.SuccessResponseModel
+              ? new {answerId = response.SuccessResponseModel }
               : response.ErrorResponseModel);
         }
         /// <summary>
