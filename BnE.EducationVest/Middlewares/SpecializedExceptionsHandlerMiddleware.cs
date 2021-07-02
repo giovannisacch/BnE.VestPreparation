@@ -29,6 +29,11 @@ namespace BnE.EducationVest.API.Middlewares
                 context.Response.StatusCode = 400;
                 await context.Response.WriteAsJsonAsync(new ErrorResponseModel(ErrorConstants.WRONG_PASSWORD));
             }
+            catch(UsernameExistsException ex)
+            {
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsJsonAsync(new ErrorResponseModel(ErrorConstants.USER_ALREADY_EXISTS));
+            }
         }
     }
 }
