@@ -85,7 +85,7 @@ namespace BnE.EducationVest.Application.Users.Services
             var tokenData = _httpContextAccessor.GetTokenData();
             var groups = tokenData.CognitoGroups.ToList();
             //TODO: Refatorar forma de verificar grupos, está altamente acoplado com a nomenclatura do cognito
-            var menus = await _userRepository.GetAvailableMenusByUserGroup(groups.Contains("Teachers"), groups.Contains("Students"));
+            var menus = await _userRepository.GetAvailableMenusByUserGroup(groups.Contains("Teachers"), (groups.Contains("Students") || groups.Contains("ExternalStudents")) );
             var user = await _userRepository.GetUserByCognitoId(Guid.Parse(tokenData.CognitoId));
 
             return new Either<ErrorResponseModel, UserMenusViewModel>(new UserMenusViewModel() { 
