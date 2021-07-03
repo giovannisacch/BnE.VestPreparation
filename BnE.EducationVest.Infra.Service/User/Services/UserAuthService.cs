@@ -54,7 +54,7 @@ namespace BnE.EducationVest.Infra.Service.User.Services
                 return new Either<ErrorResponseModel, object>(new ErrorResponseModel(ErrorConstants.USER_NOT_FOUND),
                                                                System.Net.HttpStatusCode.BadRequest);
             //Verificcar se usuario existe
-            var recoverCode = GenerateRandomAlphanumeric(5);
+            var recoverCode = GenerateRandomAlphanumeric(6);
             await SaveUserRecoverTokenOnCache(user.UserID, recoverCode);
             await _mailSender.SendEmailAsync(username, "Recuperar senha", "TESTE: SEU CODIGO DE RECUPERACAO É: "+ recoverCode);
             //Enviar email
@@ -233,10 +233,9 @@ namespace BnE.EducationVest.Infra.Service.User.Services
             return userAttributes;
         }
 
-        private string GenerateRandomAlphanumeric(int length)
+        private string GenerateRandomAlphanumeric(int length, bool allCharKindIsNecessary = false)
         {
 
-            var nonAlphanumeric = true;
             var digit = true;
             var lowercase = true;
             var uppercase = true;
@@ -248,8 +247,6 @@ namespace BnE.EducationVest.Infra.Service.User.Services
             {
                 char c = (char)random.Next(32, 126);
 
-                password.Append(c);
-
                 if (char.IsDigit(c))
                     digit = false;
                 else if (char.IsLower(c))
@@ -257,17 +254,19 @@ namespace BnE.EducationVest.Infra.Service.User.Services
                 else if (char.IsUpper(c))
                     uppercase = false;
                 else if (!char.IsLetterOrDigit(c))
-                    nonAlphanumeric = false;
-            }
-            if (nonAlphanumeric)
-                password.Append((char)random.Next(33, 48));
-            if (digit)
-                password.Append((char)random.Next(48, 58));
-            if (lowercase)
-                password.Append((char)random.Next(97, 123));
-            if (uppercase)
-                password.Append((char)random.Next(65, 91));
+                    continue;
 
+                password.Append(c);
+            }
+            if(allCharKindIsNecessary)
+            {
+                if (digit)
+                    password.Append((char)random.Next(48, 58));
+                if (lowercase)
+                    password.Append((char)random.Next(97, 123));
+                if (uppercase)
+                    password.Append((char)random.Next(65, 91));
+            }
             return password.ToString();
         }
     }
