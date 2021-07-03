@@ -191,17 +191,15 @@ namespace BnE.EducationVest.Application.Exams.Services
         }
         public async Task<ExamReportViewModel> GetUserExamReport(Guid examId)
         {
-            return GetMockExamReport();
             var tokenData = _httpContextAccessor.GetTokenData();
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
             var examWithQuestionAndAnswers = await _examRepository.GetExamWithQuestionsAndUserAnswers(examId, userId);
-            var questionsWithAnswers = examWithQuestionAndAnswers.Questions;
+            var questionsWithAnswers = examWithQuestionAndAnswers.Questions.OrderBy(x => x.Index);
             var questionsGroupsBySubject = questionsWithAnswers.GroupBy(x => x.Subject.Name);
             //TODO: Separa mappings em outros metodos
             var subjectsDifficulties = new List<ExamReportSubjectDifficultyViewModel>();
             var subjectsDistribution = new List<ExamReportSubjectDistributionViewModel>();
             var acertsAndErrorsBySubject = new List<ExamReportAcertsAndErrorBySubject>();
-            var teste = examWithQuestionAndAnswers.Questions.Where(x => !x.Alternatives.Exists(x => x.IsCorrect));
             //VERIFICAR COMO DEFINIREMOS DIFICULDADEEEEEEE
             foreach (var questionGroup in questionsGroupsBySubject)
             {
@@ -209,9 +207,9 @@ namespace BnE.EducationVest.Application.Exams.Services
                 subjectsDifficulties.Add(new ExamReportSubjectDifficultyViewModel()
                 {
                     Name = questionGroup.Key,
-                    Easy = $"{questionGroup.Count(x => x.QuestionDifficulty == EQuestionDifficulty.Easy) / groupQuestionCount}%",
-                    Medium = $"{questionGroup.Count(x => x.QuestionDifficulty == EQuestionDifficulty.Medium) / groupQuestionCount}%",
-                    Hard = $"{questionGroup.Count(x => x.QuestionDifficulty == EQuestionDifficulty.Hard) / groupQuestionCount}%"
+                    Easy = $"{questionGroup.Count(x => x.QuestionDifficulty == EQuestionDifficulty.Easy) / groupQuestionCount * 100}%",
+                    Medium = $"{questionGroup.Count(x => x.QuestionDifficulty == EQuestionDifficulty.Medium) / groupQuestionCount * 100}%",
+                    Hard = $"{questionGroup.Count(x => x.QuestionDifficulty == EQuestionDifficulty.Hard) / groupQuestionCount * 100}%"
                 });
                 subjectsDistribution.Add(new ExamReportSubjectDistributionViewModel()
                 {
@@ -230,8 +228,8 @@ namespace BnE.EducationVest.Application.Exams.Services
                 QuestionNumber = x.Index,
                 Subject = x.Subject.Name,
                 //Pegar alternativa pelo index (ex: index 0 = A)
-                ChosenAlternative = x.GetUserAnswer(userId)?.ChosenAlternative.Index.ToString(),
-                RightAlternative = x.GetRightAlternative().Index.ToString(),
+                ChosenAlternative = x.GetUserAnswer(userId)?.ChosenAlternative.GetRespectiveIndexCharacter().ToString(),
+                RightAlternative = x.GetRightAlternative().GetRespectiveIndexCharacter().ToString(),
                 Difficulty = x.QuestionDifficulty.ToString()
             });
             var userPerformances = new List<ExamReportPerformanceViewModel>()
@@ -239,17 +237,17 @@ namespace BnE.EducationVest.Application.Exams.Services
                 new ExamReportPerformanceViewModel()
                 {
                     Name = "Pontuação",
-                    Value = examWithQuestionAndAnswers.GetUserTotalScore(userId)
+                    Value = Math.Round(examWithQuestionAndAnswers.GetUserTotalScore(userId), 2)
                 },
                 new ExamReportPerformanceViewModel()
                 {
                     Name = "Matemática",
-                    Value = examWithQuestionAndAnswers.GetUserMathPerformance(userId)
+                    Value = Math.Round(examWithQuestionAndAnswers.GetUserMathPerformance(userId), 2)
                 },
                 new ExamReportPerformanceViewModel()
                 {
                     Name = "Português",
-                    Value = examWithQuestionAndAnswers.GetUserPortuguesePerformance(userId)
+                    Value = Math.Round(examWithQuestionAndAnswers.GetUserPortuguesePerformance(userId), 2)
                 }
             };
 
