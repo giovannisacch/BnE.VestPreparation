@@ -83,7 +83,7 @@
         </member>
         <member name="M:BnE.EducationVest.API.Controllers.ExamController.GetUserReports(System.Guid)">
             <summary>
-            Busca todos os exames realizados pelo usuario logado
+            Busca todos os dados para a tela de relatorio de um exame especifico
             </summary>
             <returns></returns>
         </member>
@@ -92,6 +92,12 @@
             Usado para remover as respostas de um usuario num exame especifico, usado apenas em dev, deve ser excluido em prd
             </summary>
             <param name="examId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BnE.EducationVest.API.Controllers.ExamController.GetEvolutional">
+            <summary>
+            Busca o evolucional de todos exames realizados pelo usuario logado
+            </summary>
             <returns></returns>
         </member>
     </members>

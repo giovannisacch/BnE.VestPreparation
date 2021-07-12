@@ -31,8 +31,8 @@ namespace BnE.EducationVest.Application.Exams.ViewModels
     }
     public class ExamReportSubjectDifficultyViewModelCard
     {
-        public string Title { get; set; } = "Titulo dp card";
-        public string IntroductionText { get; set; } = "Descrição do card aqui, para auxilio do usuario estou enchendo linguica";
+        public string Title { get; set; } = "Dificuldade das Matérias";
+        public string IntroductionText { get; set; } = @"O objetivo deste tópico é apresentar uma visão qual do simulado, informando quais matérias caíram, quantas questões de cada assunto, o assunto específico e sua representatividade no simulado.";
         public List<ExamReportSubjectDifficultyViewModel> SubjectDifficultyRanks { get; set; }
     }
     public class ExamReportSubjectDistributionViewModel
@@ -43,8 +43,8 @@ namespace BnE.EducationVest.Application.Exams.ViewModels
     }
     public class ExamReportSubjectDistributionViewModelCard
     {
-        public string Title { get; set; } = "Titulo dp card";
-        public string IntroductionText { get; set; } = "Descrição do card aqui, para auxilio do usuario estou enchendo linguica";
+        public string Title { get; set; } = "Distribuição de matérias";
+        public string IntroductionText { get; set; } = @"O objetivo deste tópico é apresentar uma visão qual do simulado, informando quais matérias caíram, quantas questões de cada assunto, o assunto específico e sua representividade no simulado.";
         public List<ExamReportSubjectDistributionViewModel> subjectDistributionTopics { get; set; }
     }
     public class ExamReportAcertsAndErrorBySubject
@@ -56,14 +56,14 @@ namespace BnE.EducationVest.Application.Exams.ViewModels
     }
     public class ExamReportAcertsAndErrorBySubjectCard
     {
-        public string Title { get; set; } = "Titulo dp card";
-        public string IntroductionText { get; set; } = "Descrição do card aqui, para auxilio do usuario estou enchendo linguica";
+        public string Title { get; set; } = "Erros e acertos por matéria";
+        public string IntroductionText { get; set; } = "Nesse tópico, o objetivo é deixar claro para você como foi seu desempenho em cada matéria específica, com o objetivo de você conseguir analisar suas facilidades e dificuldadades, além do proveito de aprendizado específico.";
         public List<ExamReportAcertsAndErrorBySubject> ExamReportAcertsAndErrorBySubjectCardTopics { get; set; }
     }
     public class ExamReportAcertsAndErrorByQuestionCard
     {
-        public string Title { get; set; } = "Titulo dp card";
-        public string IntroductionText { get; set; } = "Descrição do card aqui, para auxilio do usuario estou enchendo linguica";
+        public string Title { get; set; } = "Erros e acertos por questão";
+        public string IntroductionText { get; set; } = "Nesse tópico vamos trazer uma analise de questão por questão. Cada uma delas foi classificada em facil, moderada e difícil de acordo com o percentual de acertos de todos os candidatos.";
         public List<ExamReportAcertsAndErrorByQuestionExplanationTable> ExplanationTable { get; set; }
         public List<ExamReportAcertsAndErrorByQuestion> ExamReportAcertsAndErrorByQuestionCardTopics { get; set; }
     }

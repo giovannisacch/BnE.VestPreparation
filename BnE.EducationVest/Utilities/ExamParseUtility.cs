@@ -29,7 +29,6 @@ namespace BnE.EducationVest.API.Utilities
             var exam = new ExamViewModel() {ExamModel = examModel, ExamType = examType, ExamNumber = number, Periods = periods, QuestionList = new List<QuestionExamViewModel>() };
             using (WordprocessingDocument myDocument = WordprocessingDocument.Open(examWordFile.OpenReadStream(), false))
             {
-                var imagesStreamList = myDocument.GetAllImagesStream();
                 var paragraphsWithContent = myDocument.MainDocumentPart.Document.Body
                                             .OfType<Paragraph>()
                                             .Where(paragraph => !string.IsNullOrEmpty(paragraph.InnerText) || paragraph.Count() > 1);
@@ -37,11 +36,9 @@ namespace BnE.EducationVest.API.Utilities
                 QuestionExamViewModel actualQuestion = new QuestionExamViewModel();
                 var supportingTexts = new List<QuestionSupportingTextRequestViewModel>();
                 bool isInAlternatives = false;
-                var imagesParagraphsCount = 0;
                 var alternativeIndex = 0;
                 var isInSupportingText = false;
                 var isInAnswerKey = false;
-                var answerIndex = 0;
                 var actualSupportingText = new QuestionSupportingTextRequestViewModel();
                 foreach (var paragraph in paragraphsWithContent)
                 {
@@ -49,6 +46,21 @@ namespace BnE.EducationVest.API.Utilities
                                                             child.LastChild?.GetType() ==
                                                             typeof(DocumentFormat.OpenXml.Wordprocessing.Drawing)
                                                             );
+                    byte[] actualImageByteArray = null;
+                    if (isImageParagraph)
+                    {
+                        var drawing = (Drawing)paragraph.First(child => child.LastChild.GetType() == typeof(DocumentFormat.OpenXml.Wordprocessing.Drawing)).LastChild;
+                        var inline = drawing.Inline;
+                        var pic = inline.Graphic.GraphicData.GetFirstChild<DocumentFormat.OpenXml.Drawing.Pictures.Picture>();
+                        var embed = pic.BlipFill.Blip.Embed.Value;
+
+                        // Get image flow
+                        var part = myDocument.MainDocumentPart.GetPartById(embed);
+                        
+                        var stream = part.OpenXmlPackage.Package.GetPart(part.Uri).GetStream();
+
+                        actualImageByteArray = ConvertStreamToByteArray(stream);
+                    }
                     var paragraphContent = paragraph.InnerText;
                     var contentWithoutWhiteSpaces = _regexRemoveWhitespace.Replace(paragraphContent, "");
                     if (contentWithoutWhiteSpaces == "-{TextoApoio}")
@@ -117,9 +129,7 @@ namespace BnE.EducationVest.API.Utilities
                     }
                     else if (isInAlternatives)
                     {
-                        var textContent = GetQuestionTextByParagraph(paragraph,
-                                                                                      imagesStreamList,
-                                                                                      imagesParagraphsCount);
+                        var textContent = GetQuestionTextByParagraph(paragraph,actualImageByteArray);
                         var textLastCharIndex = textContent.Content.Length - 1;
                         if (string.IsNullOrEmpty(textContent.Content))
                             continue;
@@ -144,23 +154,21 @@ namespace BnE.EducationVest.API.Utilities
                         {
                             if (actualSupportingText.Text == null)
                                 SetSupportingTextContent(actualSupportingText, paragraph,
-                                                    imagesStreamList, imagesParagraphsCount);
+                                                    actualImageByteArray);
                             else
                                 UpdateSupportingTextContent(actualSupportingText, paragraph,
-                                                    imagesStreamList, imagesParagraphsCount);
+                                                    actualImageByteArray);
                         }
                     }
                     else
                             {
                         if (actualQuestion.Enunciated == null)
                             AddEnunciatedToQuestion(actualQuestion, paragraph,
-                                                imagesStreamList, imagesParagraphsCount);
+                                                actualImageByteArray);
                         else
                             IncrementActualEnunciated(actualQuestion, paragraph,
-                                                imagesStreamList, imagesParagraphsCount);
+                                                actualImageByteArray);
                     }
-                    if (isImageParagraph)
-                        imagesParagraphsCount++;
                 }
                 if(actualSupportingText != null)
                     supportingTexts.Add(actualSupportingText);
@@ -174,18 +182,16 @@ namespace BnE.EducationVest.API.Utilities
             return exam;
         }
         private static void AddEnunciatedToQuestion(QuestionExamViewModel actualQuestion,
-                                                    Paragraph paragraph, List<byte[]> imagesStreamList, int imagesParagraphsCount)
+                                                    Paragraph paragraph, byte[] imageByteArray)
         {
             actualQuestion.Enunciated = GetQuestionTextByParagraph(paragraph,
-                                                                   imagesStreamList,
-                                                                   imagesParagraphsCount);
+                                                                   imageByteArray);
         }
         private static void IncrementActualEnunciated(QuestionExamViewModel actualQuestion,
-                                                    Paragraph paragraph, List<byte[]> imagesStreamList, int imagesParagraphsCount)
+                                                    Paragraph paragraph, byte[] imageByteArray)
         {
             var paragraphAsQuestionText = GetQuestionTextByParagraph(paragraph,
-                                                         imagesStreamList,
-                                                         imagesParagraphsCount,
+                                                         imageByteArray,
                                                       actualQuestion.Enunciated.Increments == null
                                                       ? 0 : actualQuestion.Enunciated.Increments.Last().Index + 1);
             actualQuestion.Enunciated.Content += Environment.NewLine;
@@ -200,18 +206,16 @@ namespace BnE.EducationVest.API.Utilities
         }
 
         private static void SetSupportingTextContent(QuestionSupportingTextRequestViewModel actualSupportingText,
-                                            Paragraph paragraph, List<byte[]> imagesStreamList, int imagesParagraphsCount)
+                                            Paragraph paragraph, byte[] imageByteArray)
         {
             actualSupportingText.Text = GetQuestionTextByParagraph(paragraph,
-                                                                   imagesStreamList,
-                                                                   imagesParagraphsCount);
+                                                                   imageByteArray);
         }
         private static void UpdateSupportingTextContent(QuestionSupportingTextRequestViewModel actualSupportingText,
-                                                    Paragraph paragraph, List<byte[]> imagesStreamList, int imagesParagraphsCount)
+                                                    Paragraph paragraph, byte[] imageByteArray)
         {
             var paragraphAsQuestionText = GetQuestionTextByParagraph(paragraph,
-                                                         imagesStreamList,
-                                                         imagesParagraphsCount,
+                                                         imageByteArray,
                                                       actualSupportingText.Text.Increments == null
                                                       ? 0 : actualSupportingText.Text.Increments.Last().Index + 1);
             actualSupportingText.Text.Content += Environment.NewLine;
@@ -225,8 +229,7 @@ namespace BnE.EducationVest.API.Utilities
             }
         }
 
-        private static QuestionTextViewModel GetQuestionTextByParagraph(Paragraph paragraph, List<byte[]> imageStreamList,
-                                                       int actualImageIndex, int initialIncrementIndex = 0)
+        private static QuestionTextViewModel GetQuestionTextByParagraph(Paragraph paragraph, byte[] image, int initialIncrementIndex = 0)
         {
             var paragraphContent = new QuestionTextViewModel();
             var content = new StringBuilder();
@@ -252,7 +255,7 @@ namespace BnE.EducationVest.API.Utilities
                             {
                                 Index = incrementIndex,
                                 Value = isMath ? GetTexFromMathML(GetMathMLFormat(item.OuterXml)) : null,
-                                ImageStream = isMath ? null : imageStreamList[actualImageIndex],
+                                ImageStream = isMath ? null : image,
                                 Type = isMath ? ECompleteTextIncrementType.Equation : ECompleteTextIncrementType.Image
                             });
                     incrementIndex++;
@@ -310,19 +313,6 @@ namespace BnE.EducationVest.API.Utilities
                     return MathML;
                 }
             }
-        }
-        private static List<byte[]> GetAllImagesStream(this WordprocessingDocument document)
-        {
-            var images = document.MainDocumentPart.ImageParts;
-            var a = images.OrderBy(x => x.Uri.OriginalString.Substring(0, 5) == "/word" ? x.Uri.OriginalString.Remove(0, 5) : x.Uri.OriginalString);
-            var streamList = new List<byte[]>();
-            for (int index = 0; index < images.Count(); index++)
-            {
-                var image = images.ElementAt(index);
-                var imageDocumentPart = image.OpenXmlPackage.Package.GetPart(image.Uri);
-                streamList.Add(ConvertStreamToByteArray(imageDocumentPart.GetStream()));
-            }
-            return streamList;
         }
         public static byte[] ConvertStreamToByteArray(Stream stream)
         {

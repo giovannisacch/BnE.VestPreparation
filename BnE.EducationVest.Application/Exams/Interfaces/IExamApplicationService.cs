@@ -26,5 +26,6 @@ namespace BnE.EducationVest.Application.Exams.Interfaces
         Task<RealizedExamListViewModel> GetUserRealizedExamList();
         Task<ExamReportViewModel> GetUserExamReport(Guid examId);
         Task DeleteUserAnswers(Guid examId);
+        Task<SubjectEvolutionsResponseViewModel> GetEvolutional();
     }
 }

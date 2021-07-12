@@ -109,7 +109,9 @@ namespace BnE.EducationVest.Application.Exams.Services
                     ExamName = GetFormatedExamName(exam),
                     ExpirationDate = exam.GetActualAvailablePeriod().CloseDate,
                     WasStarted = userStartedExam,
-                    QuestionsCount = (exam.Id == Guid.Parse("1388bedf-5bc5-4bfd-ab29-769a4497bde3")) ? 15 : exam.ExamModel.GetQuestionAmount(),
+                    QuestionsCount = (exam.Id == Guid.Parse("1388bedf-5bc5-4bfd-ab29-769a4497bde3") || 
+                                      exam.Id ==  Guid.Parse("e3382fe8-bfdf-42d6-a411-4d30725a368a") || 
+                                      exam.Id == Guid.Parse("22329c3b-0515-4658-bee9-8095d72160d5")) ? 15 : exam.ExamModel.GetQuestionAmount(),
                     LastQuestionAnswered = (userStartedExam) ? _examRepository.GetLastExamQuestionAnsweredByUserAsync(exam.Id, userId).Result.Index : null,
                     WasFinalized = exam.Finalizeds.Count > 0
                 });
@@ -227,7 +229,6 @@ namespace BnE.EducationVest.Application.Exams.Services
             {
                 QuestionNumber = x.Index,
                 Subject = x.Subject.Name,
-                //Pegar alternativa pelo index (ex: index 0 = A)
                 ChosenAlternative = x.GetUserAnswer(userId)?.ChosenAlternative.GetRespectiveIndexCharacter().ToString(),
                 RightAlternative = x.GetRightAlternative().GetRespectiveIndexCharacter().ToString(),
                 Difficulty = x.QuestionDifficulty.ToString()
@@ -290,11 +291,101 @@ namespace BnE.EducationVest.Application.Exams.Services
             await _examRepository.DeleteAllUserAnswersInExam(userId, examId);
             await _examCacheService.DeleteUserStartedExam(userId, examId);
         }
-        public async Task<SubjectEvolutionsResponseViewModel> GetEvolutional(Guid userId) 
+        public async Task<SubjectEvolutionsResponseViewModel> GetEvolutional() 
         {
+            var tokenData = _httpContextAccessor.GetTokenData();
+            var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
             //TODO: ATUALIZAR QUANDO DEFINIR QUANDO UM RELATORIO VAI APARECER, EX: FINALIZOU MAS EXAME AINDA ESTÁ DISPONIVEL
-            var finalized = await _examRepository.GetUserFinalizedExamsWithAnswers(userId);
-            return null;
+            var finalizedsExams = await _examRepository.GetUserFinalizedExamsWithAnswers(userId);
+            var mathPrincipalSubjectEvolution = new SubjectEvolution()
+            {
+                Name = "Matemática",
+                Evolution = new List<Evolution>(),
+                SubTopics = new List<SubTopic>()
+            };
+            var portuguesePrincipalSubjectEvolution = new SubjectEvolution()
+            {
+                Name = "Português",
+                Evolution = new List<Evolution>(),
+                SubTopics = new List<SubTopic>()
+            };
+            var totalScorePrincipalSubjectEvolution = new SubjectEvolution()
+            {
+                Name = "Pontuação Total",
+                Evolution = new List<Evolution>(),
+                SubTopics = new List<SubTopic>()
+            };
+            foreach (var finalizedExam in finalizedsExams)
+            {
+                var finalizedExamQuestionsGroupBySubject =
+                    finalizedExam.Questions.GroupBy(x => x.Subject);
+                var mathSubTopicsQuestions = finalizedExamQuestionsGroupBySubject
+                                        .Where(x => x.Key.SubjectFather != null && x.Key.IsMathTopic())
+                                        .ToList();
+                var portugueseSubTopicsQuestions = finalizedExamQuestionsGroupBySubject
+                                            .Where(x => x.Key.SubjectFather != null && x.Key.IsPortugueseTopic())
+                                            .ToList();
+
+
+                mathPrincipalSubjectEvolution.Evolution.Add(
+                    new Evolution() 
+                    { 
+                        Value = finalizedExam.GetUserMathPerformance(userId),
+                        Date = finalizedExam.CreatedDate
+                    });
+                portuguesePrincipalSubjectEvolution.Evolution.Add(
+                    new Evolution()
+                    {
+                        Value = finalizedExam.GetUserPortuguesePerformance(userId),
+                        Date = finalizedExam.CreatedDate
+                    });
+                totalScorePrincipalSubjectEvolution.Evolution.Add(
+                    new Evolution()
+                    {
+                        Value = finalizedExam.GetUserTotalScore(userId),
+                        Date = finalizedExam.CreatedDate
+                    });
+                AddOrUpdateSubtopicValue(mathPrincipalSubjectEvolution, mathSubTopicsQuestions, finalizedExam.CreatedDate, userId);
+                AddOrUpdateSubtopicValue(portuguesePrincipalSubjectEvolution, portugueseSubTopicsQuestions, finalizedExam.CreatedDate, userId);
+            }
+
+            return new SubjectEvolutionsResponseViewModel()
+            {
+                ChartExplanation = new ChartExplanation(),
+                SubjectsEvolution = new List<SubjectEvolution>() {mathPrincipalSubjectEvolution, portuguesePrincipalSubjectEvolution }
+            };
+        }
+        private void AddOrUpdateSubtopicValue(SubjectEvolution principalSubjectEvolution, List<IGrouping<Subject, Question>> questionGroupBySubjectsList, DateTime examDate, Guid userId) 
+        {
+            foreach (var questionGroupBySubjects in questionGroupBySubjectsList)
+            {
+                if (principalSubjectEvolution.SubTopics.FirstOrDefault(x => x.Name == questionGroupBySubjects.Key.Name) == null)
+                    principalSubjectEvolution.SubTopics.Add(
+                    new SubTopic()
+                    {
+                        Name = questionGroupBySubjects.Key.Name,
+                        Evolution = new List<Evolution>()
+                        {
+                            new Evolution()
+                            {
+                                Value = questionGroupBySubjects.Count(x => x.GetUserAnswer(userId).IsCorrect()),
+                                Date = examDate
+                            }
+                        }
+                    });
+                else
+                    principalSubjectEvolution.SubTopics.First(x => x.Name == questionGroupBySubjects.Key.Name).Evolution
+                        .Add
+                        (
+                            new Evolution()
+                            {
+                                Value = questionGroupBySubjects.Count(x => x.GetUserAnswer(userId).IsCorrect()),
+                                Date = examDate
+                            }
+                        );
+
+            }
+            
         }
         private ExamReportViewModel GetMockExamReport()
         {

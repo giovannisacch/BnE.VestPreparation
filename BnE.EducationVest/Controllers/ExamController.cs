@@ -177,7 +177,7 @@ namespace BnE.EducationVest.API.Controllers
             return Ok(response);
         }
         /// <summary>
-        /// Busca todos os exames realizados pelo usuario logado
+        /// Busca todos os dados para a tela de relatorio de um exame especifico
         /// </summary>
         /// <returns></returns>
         [HttpGet("report/{id}")]
@@ -197,6 +197,16 @@ namespace BnE.EducationVest.API.Controllers
         {
             await _examApplicationService.DeleteUserAnswers(examId);
             return Ok();
+        }
+
+        /// <summary>
+        /// Busca o evolucional de todos exames realizados pelo usuario logado
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("evolutional")]
+        public async Task<IActionResult> GetEvolutional()
+        {
+            return Ok(await _examApplicationService.GetEvolutional());
         }
     }
 }

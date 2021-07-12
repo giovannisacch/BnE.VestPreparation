@@ -93,7 +93,7 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
                 .Include(x => x.QuestionAnswers.Where(qa => qa.UserId == userId))
                 .ThenInclude(x => x.ChosenAlternative)
                 .Include(x => x.Enunciated)
-                .Include(x => x.Alternatives)
+                .Include(x => x.Alternatives.OrderBy(x => x.Index))
                 .ThenInclude(x => x.TextContent)
                 .Include(x => x.SupportingText)
                 .ThenInclude(x => x.Content)
@@ -156,9 +156,10 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
                     .Where(x => x.Finalizeds.Any(x => x.UserId == userId))
                     .Include(x => x.Questions)
                     .ThenInclude(x => x.QuestionAnswers)
+                    .ThenInclude(x => x.ChosenAlternative)
                     .Include(x => x.Questions)
                     .ThenInclude(x => x.Subject)
-                    .ThenInclude(x => x.SubjectChilds)
+                    .ThenInclude(x => x.SubjectFather)
                     .ToListAsync();
         }
         public async Task<Question> GetLastExamQuestionAnsweredByUserAsync(Guid examId, Guid userId)

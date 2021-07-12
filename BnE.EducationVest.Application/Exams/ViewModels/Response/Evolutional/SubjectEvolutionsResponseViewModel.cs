@@ -9,12 +9,16 @@ namespace BnE.EducationVest.Application.Exams.ViewModels
     public class SubjectEvolutionsResponseViewModel
     {
         public ChartExplanation ChartExplanation { get; set; }
-        public List<SubjectsEvolution> SubjectsEvolution { get; set; }
+        public List<SubjectEvolution> SubjectsEvolution { get; set; }
     }
     public class ChartExplanation
     {
-        public string ExplanationTitle { get; set; }
-        public string ExplanationDescription { get; set; }
+        public string ExplanationTitle { get; set; } = "Titulo de explicação de evolução";
+        public string ExplanationDescription { get; set; } =
+            @"
+                Mussum Ipsum, cacilds vidis litro abertis. Em pé sem cair, deitado sem dormir, sentado sem cochilar e fazendo pose. Leite de capivaris, leite de mula manquis sem cabeça. 
+               Mais vale um bebadis conhecidiss, que um alcoolatra anonimis. Diuretics paradis num copo é motivis de denguis.
+             ";
     }
 
     public class Evolution
@@ -29,7 +33,7 @@ namespace BnE.EducationVest.Application.Exams.ViewModels
         public List<Evolution> Evolution { get; set; }
     }
 
-    public class SubjectsEvolution
+    public class SubjectEvolution
     {
         public string Name { get; set; }
         public List<Evolution> Evolution { get; set; }
