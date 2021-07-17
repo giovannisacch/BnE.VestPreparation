@@ -30,7 +30,7 @@ namespace BnE.EducationVest.Domain.Users.Entities
         public User(string name, string cpf, string phoneNumber, string gender, string email, 
             DateTime birthDate, AddressVO address, EUserType userType)
         {
-            Name = name;
+            SetUserName(name);
             CPF = userType == EUserType.InternalStudent ? cpf : null;
             PhoneNumber = phoneNumber;
             Gender = gender;
@@ -38,6 +38,12 @@ namespace BnE.EducationVest.Domain.Users.Entities
             BirthDate = birthDate;
             Address = address;
             UserType = userType;
+        }
+        public void SetUserName(string name)
+        {
+            if (name.Split(' ').Length <= 1)
+                throw new DomainErrorException(ErrorConstants.USER_SHOULD_HAVE_LAST_NAME);
+            this.Name = name;
         }
         public void SetCognitoUserId(Guid cognitoUserId)
         {

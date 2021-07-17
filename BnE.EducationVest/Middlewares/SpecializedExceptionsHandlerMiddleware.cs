@@ -24,6 +24,11 @@ namespace BnE.EducationVest.API.Middlewares
             {
                 await _next(context);
             }
+            catch(DomainErrorException domainException)
+            {
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsJsonAsync(new ErrorResponseModel(domainException.Message));
+            }
             catch (NotAuthorizedException ex)
             {
                 context.Response.StatusCode = 400;
