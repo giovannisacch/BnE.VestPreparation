@@ -105,7 +105,8 @@ namespace BnE.EducationVest.Infra.Service.Exam
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
             var prop = base.CreateProperty(member, memberSerialization);
-
+            if (member.Name == nameof(Question.QuestionAnswers))
+                prop.Writable = false;
             if (!prop.Writable)
             {
                 var property = member as PropertyInfo;

@@ -94,6 +94,14 @@
             <param name="examId"></param>
             <returns></returns>
         </member>
+        <member name="M:BnE.EducationVest.API.Controllers.ExamController.UpdateGeneralExamReport(System.String)">
+            <summary>
+            API utilizada para atualizar as métricas de comparação num exam
+            Chamada pela função Lambd(AWS) call-updateReportMetrics
+            </summary>
+            <param name="examId"></param>
+            <returns></returns>
+        </member>
         <member name="M:BnE.EducationVest.API.Controllers.ExamController.GetEvolutional">
             <summary>
             Busca o evolucional de todos exames realizados pelo usuario logado

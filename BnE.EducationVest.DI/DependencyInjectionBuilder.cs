@@ -24,6 +24,7 @@ using BnE.EducationVest.Domain.Exam.Interfaces;
 using BnE.EducationVest.Domain.Exam.Services;
 using BnE.EducationVest.Domain.Users.Interfaces;
 using BnE.EducationVest.Domain.Users.Services;
+using Amazon.CloudWatchEvents;
 
 namespace BnE.EducationVest.DI
 {
@@ -61,10 +62,16 @@ namespace BnE.EducationVest.DI
         {
             services.Configure<AwsAuthSettings>(configuration.GetSection("AwsAuth"));
             var awsCognitoSection = configuration.GetSection("AwsAuth");
+
             var cognitoIdentityProvider = new AmazonCognitoIdentityProviderClient(awsCognitoSection["AcessKey"], awsCognitoSection["SecretKey"], RegionEndpoint.SAEast1);
-            var cognitoUserPool = new CognitoUserPool(awsCognitoSection["UserPoolId"], awsCognitoSection["UserPoolClientId"], cognitoIdentityProvider);
             services.AddSingleton<IAmazonCognitoIdentityProvider>(cognitoIdentityProvider);
+
+            var cloudWatchEventsClient = new AmazonCloudWatchEventsClient(awsCognitoSection["AcessKey"], awsCognitoSection["SecretKey"], RegionEndpoint.SAEast1);
+            services.AddSingleton<IAmazonCloudWatchEvents>(cloudWatchEventsClient);
+
+            var cognitoUserPool = new CognitoUserPool(awsCognitoSection["UserPoolId"], awsCognitoSection["UserPoolClientId"], cognitoIdentityProvider);
             services.AddSingleton(cognitoUserPool);
+
             services.AddScoped<IUserAuthService, UserAuthService>();
 
             services.AddStackExchangeRedisCache(options =>
@@ -77,6 +84,7 @@ namespace BnE.EducationVest.DI
             services.AddScoped<IUserCacheService, UserCacheService>();
             services.AddScoped<IExamCacheService, ExamCacheService>();
             services.AddScoped<IExamFileStorageService, ExamFileStorageService>();
+            services.AddScoped<IExamReportService, ExamReportService>();
         }
     }
 }

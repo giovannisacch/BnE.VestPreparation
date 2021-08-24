@@ -4,6 +4,7 @@ using BnE.EducationVest.Application.Exams.ViewModels;
 using BnE.EducationVest.Application.Exams.ViewModels.Request;
 using BnE.EducationVest.Application.Exams.ViewModels.Response;
 using BnE.EducationVest.Domain.Exam.Enums;
+using BnE.EducationVest.Domain.Exam.Interfaces.InfraService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,9 +21,11 @@ namespace BnE.EducationVest.API.Controllers
     public class ExamController : ControllerBase
     {
         private readonly IExamApplicationService _examApplicationService;
-        public ExamController(IExamApplicationService examApplicationService)
+        private readonly IExamReportService _examReportService;
+        public ExamController(IExamApplicationService examApplicationService, IExamReportService examReportService)
         {
             _examApplicationService = examApplicationService;
+            _examReportService = examReportService;
         }
         /// <summary>
         /// API Utilizada para definir os periodos do exame antes de fazer upload do arquivo da prova
@@ -198,7 +201,24 @@ namespace BnE.EducationVest.API.Controllers
             await _examApplicationService.DeleteUserAnswers(examId);
             return Ok();
         }
-
+        [AllowAnonymous]
+        [HttpPost("teste")]
+        public async Task<IActionResult> Teste(string teste)
+        {
+            await _examReportService.ScheduleExamReport(teste);
+            return Ok();
+        }
+        /// <summary>
+        /// API utilizada para atualizar as métricas de comparação num exam
+        /// Chamada pela função Lambd(AWS) call-updateReportMetrics
+        /// </summary>
+        /// <param name="examId"></param>
+        /// <returns></returns>
+        [HttpPut("examReport")]
+        public async Task<IActionResult> UpdateGeneralExamReport(string examId)
+        {
+            return Ok();
+        }
         /// <summary>
         /// Busca o evolucional de todos exames realizados pelo usuario logado
         /// </summary>

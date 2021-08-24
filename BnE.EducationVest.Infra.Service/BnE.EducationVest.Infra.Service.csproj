@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Amazon.AspNetCore.Identity.Cognito" Version="2.2.0" />
+    <PackageReference Include="AWSSDK.CloudWatchEvents" Version="3.7.3.18" />
     <PackageReference Include="AWSSDK.S3" Version="3.7.0.29" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
