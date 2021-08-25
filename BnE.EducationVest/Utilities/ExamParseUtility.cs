@@ -249,31 +249,15 @@ namespace BnE.EducationVest.API.Utilities
                 var isTextContent = typeof(Run) == item.GetType();
                 if (isMath || isImage)
                 {
-                    var contentPrefix = string.Empty;
-                    if (paragraphContent.Increments == null)
-                    {
-                        if (isMath && content.Length > 0)
-                        {
-                            contentPrefix = content.ToString();
-                            content.Clear();
-                        }
+                    if (paragraphContent.Increments == null)    
                         paragraphContent.Increments = new List<IncrementViewModel>();
-                    }
-                    else
-                    {
-                        if(paragraphContent.Increments.Last().Type == ECompleteTextIncrementType.Equation)
-                        {
-                            paragraphContent.Increments.Last().Value += GetTexFromMathML(GetMathMLFormat(item.OuterXml));
-                            continue;
-                        }
-                    }
                     content.Append("{" + incrementIndex + "}");
                     paragraphContent.Increments.
                     Add(
                             new IncrementViewModel()
                             {
                                 Index = incrementIndex,
-                                Value = isMath ? contentPrefix + GetTexFromMathML(GetMathMLFormat(item.OuterXml)) : null,
+                                Value = isMath ? GetTexFromMathML(GetMathMLFormat(item.OuterXml)) : null,
                                 ImageStream = isMath ? null : image,
                                 Type = isMath ? ECompleteTextIncrementType.Equation : ECompleteTextIncrementType.Image
                             }
@@ -283,11 +267,6 @@ namespace BnE.EducationVest.API.Utilities
                 }
                 else
                 {
-                    if (paragraphContent.Increments?.Last().Type == ECompleteTextIncrementType.Equation)
-                    {
-                        paragraphContent.Increments.Last().Value += item.InnerText;
-                        continue;
-                    }
                     content.Append(item.InnerText);
                 }
                     

@@ -109,7 +109,7 @@ namespace BnE.EducationVest.Application.Exams.Services
                     ExamName = GetFormatedExamName(exam),
                     ExpirationDate = exam.GetActualAvailablePeriod().CloseDate,
                     WasStarted = userStartedExam,
-                    QuestionsCount = (exam.Id == Guid.Parse("808196e3-7533-4fa8-ab6c-9f8bc1e560f1"))  ? 15 : exam.Id == Guid.Parse("265d190a-8199-49c6-85e0-141448c7c47a") ? 30
+                    QuestionsCount = (exam.Id == Guid.Parse("808196e3-7533-4fa8-ab6c-9f8bc1e560f1") || exam.Id == Guid.Parse("47415a56-b108-4001-87f5-bdb3d5095c1b"))  ? 15 : exam.Id == Guid.Parse("265d190a-8199-49c6-85e0-141448c7c47a") ? 30
                                       : exam.ExamModel.GetQuestionAmount(),
                     LastQuestionAnswered = (userStartedExam) ? _examRepository.GetLastExamQuestionAnsweredByUserAsync(exam.Id, userId).Result.Index : null,
                     WasFinalized = exam.Finalizeds.Count > 0
