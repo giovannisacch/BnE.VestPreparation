@@ -13,6 +13,7 @@ using BnE.EducationVest.Domain.Exam.Interfaces;
 using BnE.EducationVest.Domain.Exam.Interfaces.Infra;
 using BnE.EducationVest.Domain.Exam.Interfaces.InfraService;
 using BnE.EducationVest.Domain.Exam.RelationEntities;
+using BnE.EducationVest.Domain.Exam.ValueObjects;
 using BnE.EducationVest.Domain.Users.Interfaces;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -78,12 +79,11 @@ namespace BnE.EducationVest.Application.Exams.Services
             return new Either<ErrorResponseModel, object>(null, HttpStatusCode.OK);
         }
 
-        public async Task<Either<ErrorResponseModel, Guid>> CreateExam(ExamViewModel examViewModel)
+        public async Task<Either<ErrorResponseModel, Guid>> CreateExam(ExamViewModel examViewModel, PreExamVO preExamVO)
         {
             //Colocar na leitura de documento
-            var subjectIdList = await _examCacheService.GetExamSubjects(examViewModel.ExamModel, examViewModel.ExamType, examViewModel.ExamNumber);
-            for (int i = 0; i < subjectIdList.Count; i++)
-                examViewModel.QuestionList[i].SubjectId = subjectIdList[i];
+            for (int i = 0; i < preExamVO.SubjectIdList.Count; i++)
+                examViewModel.QuestionList[i].SubjectId = preExamVO.SubjectIdList[i];
             
             var exam = examViewModel.MapToDomain();
             await _examDomainService.CreateExam(exam);
@@ -109,10 +109,7 @@ namespace BnE.EducationVest.Application.Exams.Services
                     ExamName = GetFormatedExamName(exam),
                     ExpirationDate = exam.GetActualAvailablePeriod().CloseDate,
                     WasStarted = userStartedExam,
-                    QuestionsCount = (exam.Id == Guid.Parse("1388bedf-5bc5-4bfd-ab29-769a4497bde3") || 
-                                      exam.Id ==  Guid.Parse("e3382fe8-bfdf-42d6-a411-4d30725a368a") || 
-                                      exam.Id == Guid.Parse("22329c3b-0515-4658-bee9-8095d72160d5") ||
-                                      exam.Id == Guid.Parse("f1f828eb-b690-4028-983f-68c52821c871"))  ? 15 : exam.Id == Guid.Parse("265d190a-8199-49c6-85e0-141448c7c47a") ? 30
+                    QuestionsCount = (exam.Id == Guid.Parse("808196e3-7533-4fa8-ab6c-9f8bc1e560f1"))  ? 15 : exam.Id == Guid.Parse("265d190a-8199-49c6-85e0-141448c7c47a") ? 30
                                       : exam.ExamModel.GetQuestionAmount(),
                     LastQuestionAnswered = (userStartedExam) ? _examRepository.GetLastExamQuestionAnsweredByUserAsync(exam.Id, userId).Result.Index : null,
                     WasFinalized = exam.Finalizeds.Count > 0
@@ -149,18 +146,20 @@ namespace BnE.EducationVest.Application.Exams.Services
             }, HttpStatusCode.OK);
         }
 
-        public async Task UploadExamPeriodsAndSubjects(UploadExamPeriodsRequestViewModel uploadExamPeriodsRequestViewModel)
+        public async Task UploadPreExam(UploadExamPeriodsRequestViewModel uploadExamPeriodsRequestViewModel)
         {
-            await _examCacheService.SaveExamPeriodsAndSubjects(uploadExamPeriodsRequestViewModel.ExamModel,
+            await _examCacheService.SavePreExam(new PreExamVO(uploadExamPeriodsRequestViewModel.ExamModel,
                                               uploadExamPeriodsRequestViewModel.ExamType, 
                                               uploadExamPeriodsRequestViewModel.ExamNumber,
                                               uploadExamPeriodsRequestViewModel.ExamPeriods.Select(x => x.MapToVO()).ToList(),
-                                              uploadExamPeriodsRequestViewModel.Subjects);
+                                              uploadExamPeriodsRequestViewModel.Subjects, 
+                                              uploadExamPeriodsRequestViewModel.ExamTopic, 
+                                              uploadExamPeriodsRequestViewModel.ExamFatherId));
         }
-        public async Task<List<ExamPeriodViewModel>> GetExamPeriods(EExamModel examModel, EExamType examType, int number)
+        public async Task<PreExamVO> GetPreExamVO(EExamModel examModel, EExamType examType, int number, EExamTopic examTopic)
         {
-            var examPeriodVOList = await _examCacheService.GetExamPeriods(examModel, examType, number);
-            return examPeriodVOList.Select(x => x.MapToViewModel()).ToList();
+            var examPeriodVO = await _examCacheService.GetPreExam(examModel, examType, number, examTopic);
+            return examPeriodVO;
         }
 
         public async Task FinalizeExam(Guid ExamId)

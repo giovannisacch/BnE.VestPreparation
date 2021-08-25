@@ -11,20 +11,29 @@ namespace BnE.EducationVest.Domain.Exam.Entities
     public class Exam : EntityBase
     {
         public int ExamNumber { get; set; }
+        public Guid? FatherExamModuleId { get; private set; }
         public EExamModel ExamModel { get; private set; }
         public EExamType ExamType { get; private set; }
+        public EExamTopic ExamTopic { get; private set; }
         public List<ExamPeriodVO> Periods { get; private set; }
         public List<Question> Questions { get; private set; }
         public List<FinalizedExam> Finalizeds { get; private set; }
+        public Exam ChildExamModule { get; private set; }
+        public Exam FatherExamModule { get; private set; }
 
         internal Exam() { }
-        public Exam(int examNumber, EExamModel examModel, List<ExamPeriodVO> periods, List<Question> questions, EExamType examType)
+        public Exam(int examNumber, EExamModel examModel, List<ExamPeriodVO> periods, List<Question> questions, EExamType examType, EExamTopic examTopic)
         {
             ExamNumber = examNumber;
             ExamModel = examModel;
             SetExamPeriods(periods);
             SetQuestionsList(questions);
             ExamType = examType;
+            ExamTopic = examTopic;
+        }
+        public void SetFatherExamModule(Guid fatherExamModuleId)
+        {
+            FatherExamModuleId = fatherExamModuleId;
         }
         public int GetPortugueseQuestionCount()
         {

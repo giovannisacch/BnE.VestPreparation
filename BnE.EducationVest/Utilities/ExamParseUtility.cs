@@ -24,9 +24,12 @@ namespace BnE.EducationVest.API.Utilities
         private static XslCompiledTransform xslTransform = new XslCompiledTransform();
 
         public static ExamViewModel TransformExamWordFileInViewModel(this IFormFile examWordFile, List<ExamPeriodViewModel> periods, 
-                                                                    EExamModel examModel, EExamType examType, int number) 
+                                                                    EExamModel examModel, EExamType examType, int number, 
+                                                                    EExamTopic examTopic,
+                                                                    Guid? examFatherId) 
         {
-            var exam = new ExamViewModel() {ExamModel = examModel, ExamType = examType, ExamNumber = number, Periods = periods, QuestionList = new List<QuestionExamViewModel>() };
+            var exam = new ExamViewModel() {ExamModel = examModel, ExamType = examType, ExamNumber = number, Periods = periods, 
+                                            QuestionList = new List<QuestionExamViewModel>(), ExamTopic = examTopic, ExamFatherId = examFatherId};
             using (WordprocessingDocument myDocument = WordprocessingDocument.Open(examWordFile.OpenReadStream(), false))
             {
                 var paragraphsWithContent = myDocument.MainDocumentPart.Document.Body

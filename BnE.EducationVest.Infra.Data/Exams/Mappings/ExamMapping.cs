@@ -38,6 +38,14 @@ namespace BnE.EducationVest.Infra.Data.Exams.Mappings
                 .HasConversion(toDB => (int)toDB,
                                 fromDB => (EExamType)fromDB);
 
+            builder.Property(x => x.ExamTopic)
+              .HasConversion(toDB => (int)toDB,
+                              fromDB => (EExamTopic)fromDB);
+
+            builder.HasOne(x => x.FatherExamModule)
+                .WithOne()
+                .HasForeignKey<Exam>(x => x.FatherExamModuleId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder
                 .HasMany(x => x.Periods)

@@ -1,5 +1,6 @@
 ﻿using BnE.EducationVest.API.Utilities;
 using BnE.EducationVest.Application.Exams.Interfaces;
+using BnE.EducationVest.Application.Exams.Mappings;
 using BnE.EducationVest.Application.Exams.ViewModels;
 using BnE.EducationVest.Application.Exams.ViewModels.Request;
 using BnE.EducationVest.Application.Exams.ViewModels.Response;
@@ -35,7 +36,7 @@ namespace BnE.EducationVest.API.Controllers
         [HttpPost("periods")]
         public async Task<IActionResult> UploadExamPeriods(UploadExamPeriodsRequestViewModel uploadExamPeriodsRequestViewModel)
         {
-            await _examApplicationService.UploadExamPeriodsAndSubjects(uploadExamPeriodsRequestViewModel);
+            await _examApplicationService.UploadPreExam(uploadExamPeriodsRequestViewModel);
             return Ok();
         }
         /// <summary>
@@ -47,11 +48,11 @@ namespace BnE.EducationVest.API.Controllers
         /// <param name="number"></param>
         /// <returns></returns>
         [HttpPost("upload")]
-        public async Task<IActionResult> UploadExamFile(IFormFile examFile, [FromQuery]EExamModel examModel, EExamType examType, int number)
+        public async Task<IActionResult> UploadExamFile(IFormFile examFile, [FromQuery]EExamModel examModel, EExamType examType, int number, EExamTopic examTopic)
         {
-            var examPeriods = await _examApplicationService.GetExamPeriods(examModel, examType, number);
-            var viewModel = examFile.TransformExamWordFileInViewModel(examPeriods, examModel, examType, number);
-            var response = await _examApplicationService.CreateExam(viewModel);
+            var preExam = await _examApplicationService.GetPreExamVO(examModel, examType, number, examTopic);
+            var viewModel = examFile.TransformExamWordFileInViewModel(preExam.Periods.Select(x => x.MapToViewModel()).ToList(), examModel, examType, number, examTopic, preExam.FatherExamModuleId);
+            var response = await _examApplicationService.CreateExam(viewModel, preExam);
             return StatusCode((int)response.StatusCode,
                            response.IsSuccess
                            ? response.SuccessResponseModel

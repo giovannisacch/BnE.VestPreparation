@@ -11,7 +11,7 @@
             <param name="uploadExamPeriodsRequestViewModel"></param>
             <returns></returns>
         </member>
-        <member name="M:BnE.EducationVest.API.Controllers.ExamController.UploadExamFile(Microsoft.AspNetCore.Http.IFormFile,BnE.EducationVest.Domain.Exam.Enums.EExamModel,BnE.EducationVest.Domain.Exam.Enums.EExamType,System.Int32)">
+        <member name="M:BnE.EducationVest.API.Controllers.ExamController.UploadExamFile(Microsoft.AspNetCore.Http.IFormFile,BnE.EducationVest.Domain.Exam.Enums.EExamModel,BnE.EducationVest.Domain.Exam.Enums.EExamType,System.Int32,BnE.EducationVest.Domain.Exam.Enums.EExamTopic)">
             <summary>
             API Utilizada para subir o arquivo da prova
             </summary>

@@ -13,6 +13,8 @@ namespace BnE.EducationVest.Application.Exams.ViewModels.Request
         public List<Guid> Subjects { get; set; }
         public EExamModel ExamModel { get; set; }
         public EExamType ExamType { get; set; }
+        public EExamTopic ExamTopic { get; set; }
         public int ExamNumber { get; set; }
+        public Guid? ExamFatherId { get; set; }
     }
 }

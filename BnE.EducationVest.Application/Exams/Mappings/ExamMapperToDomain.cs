@@ -18,8 +18,10 @@ namespace BnE.EducationVest.Application.Exams.Mappings
             var exam = new Exam(examViewModel.ExamNumber, examViewModel.ExamModel,
                              examViewModel.Periods.Select(x => x.MapToVO()).ToList(),
                              examViewModel.QuestionList.Select(x => x.MapToDomain()).ToList(),
-                             examViewModel.ExamType
+                             examViewModel.ExamType, examViewModel.ExamTopic
                              );
+            if(examViewModel.ExamFatherId != null)
+                exam.SetFatherExamModule(examViewModel.ExamFatherId.Value);
             return exam;
         }
 

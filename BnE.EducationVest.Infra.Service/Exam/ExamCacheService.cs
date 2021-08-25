@@ -17,7 +17,7 @@ namespace BnE.EducationVest.Infra.Service.Exam
         private readonly IDistributedCache _cache;
         private readonly string _examPrefix = "exam:{0}:";
         private readonly string _examQuestionsByPagePrefix = "exam:{0}:questionList:{1}";
-        private readonly string _examPeriodPrefix = "periods:{0}:{1}:{2}";
+        private readonly string _preExamPrefix = "preExam:{0}:{1}:{2}:{3}";
         private readonly string _examSubjectsPrefix = "subjects:{0}:{1}:{2}";
         private readonly JsonSerializerSettings _jsonSerializerSettings;
         public ExamCacheService(IDistributedCache cache)
@@ -67,31 +67,24 @@ namespace BnE.EducationVest.Infra.Service.Exam
             await _cache.SetStringAsync(string.Format(_examQuestionsByPagePrefix, exam.Id, page), questionListSerialized, options);
         }
 
-        public async Task SaveExamPeriodsAndSubjects(EExamModel examModel, EExamType examType, int number, List<ExamPeriodVO> periods, List<Guid> subjectIdList)
+        public async Task SavePreExam(PreExamVO preExamVO)
         {
             var options = new DistributedCacheEntryOptions()
             {
-                SlidingExpiration = TimeSpan.FromMinutes(2)
+                SlidingExpiration = TimeSpan.FromMinutes(20)
             };
-            var keyPeriods = string.Format(_examPeriodPrefix, Enum.GetName(typeof(EExamModel), examModel), Enum.GetName(typeof(EExamType), examType), number);
-            var keySubjects= string.Format(_examSubjectsPrefix, Enum.GetName(typeof(EExamModel), examModel), Enum.GetName(typeof(EExamType), examType), number);
-            var periodsSerialized = JsonConvert.SerializeObject(periods, _jsonSerializerSettings);
-            var subjectIdListSerialized = JsonConvert.SerializeObject(subjectIdList, _jsonSerializerSettings);
-            await _cache.SetStringAsync(keyPeriods, periodsSerialized, options);
-            await _cache.SetStringAsync(keySubjects, subjectIdListSerialized, options);
+            var keyPreExam = string.Format(_preExamPrefix, Enum.GetName(typeof(EExamModel), preExamVO.ExamModel), Enum.GetName(typeof(EExamType), preExamVO.ExamModel), 
+                                            preExamVO.Number, Enum.GetName(typeof(EExamTopic), preExamVO.ExamTopic));
+            var preExamVOSerialized = JsonConvert.SerializeObject(preExamVO, _jsonSerializerSettings);
+            await _cache.SetStringAsync(keyPreExam, preExamVOSerialized, options);
         }
 
-        public async Task<List<ExamPeriodVO>> GetExamPeriods(EExamModel examModel, EExamType examType, int number)
+        public async Task<PreExamVO> GetPreExam(EExamModel examModel, EExamType examType, int number, EExamTopic examTopic)
         {
-            var key = string.Format(_examPeriodPrefix, Enum.GetName(typeof(EExamModel), examModel), Enum.GetName(typeof(EExamType), examType), number);
+            var key = string.Format(_preExamPrefix, Enum.GetName(typeof(EExamModel), examModel), Enum.GetName(typeof(EExamType), examModel),
+                                            number, Enum.GetName(typeof(EExamTopic), examTopic));
             var periodsSerialized = await _cache.GetStringAsync(key);
-            return JsonConvert.DeserializeObject<List<ExamPeriodVO>>(periodsSerialized, _jsonSerializerSettings);
-        }
-        public async Task<List<Guid>> GetExamSubjects(EExamModel examModel, EExamType examType, int number)
-        {
-            var key = string.Format(_examSubjectsPrefix, Enum.GetName(typeof(EExamModel), examModel), Enum.GetName(typeof(EExamType), examType), number);
-            var subjectsSerialized = await _cache.GetStringAsync(key);
-            return JsonConvert.DeserializeObject<List<Guid>>(subjectsSerialized, _jsonSerializerSettings);
+            return JsonConvert.DeserializeObject<PreExamVO>(periodsSerialized, _jsonSerializerSettings);
         }
         //TODO: EXCLUIR, METODO DE DELETAR RESPOSTAS SO DEVE EXISTIR DURANTE DESENVOLVIMENTO
         public async Task DeleteUserStartedExam(Guid userId, Guid examId)

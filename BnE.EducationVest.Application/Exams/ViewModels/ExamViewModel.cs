@@ -15,5 +15,7 @@ namespace BnE.EducationVest.Application.Exams.ViewModels
         public List<QuestionExamViewModel> QuestionList { get; set; }
         public List<ExamPeriodViewModel> Periods { get; set; }
         public EExamType ExamType { get; set; }
+        public EExamTopic ExamTopic { get; set; }
+        public Guid? ExamFatherId { get; set; }
     }
 }

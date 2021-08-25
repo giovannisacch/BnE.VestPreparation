@@ -3,6 +3,7 @@ using BnE.EducationVest.Application.Exams.ViewModels.Request;
 using BnE.EducationVest.Application.Exams.ViewModels.Response;
 using BnE.EducationVest.Domain.Common;
 using BnE.EducationVest.Domain.Exam.Enums;
+using BnE.EducationVest.Domain.Exam.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace BnE.EducationVest.Application.Exams.Interfaces
 {
     public interface IExamApplicationService
     {
-        Task<Either<ErrorResponseModel, Guid>> CreateExam(ExamViewModel examViewModel);
+        Task<Either<ErrorResponseModel, Guid>> CreateExam(ExamViewModel examViewModel, PreExamVO preExamVO);
         Task<Either<ErrorResponseModel, AvailableExamsViewModel>> GetAvailableExamsByUser();
         Task<Either<ErrorResponseModel, ExamViewModel>> GetExam(Guid examId);
         Task<Either<ErrorResponseModel, IEnumerable<ExamViewModel>>> GetAllExams();
@@ -19,13 +20,13 @@ namespace BnE.EducationVest.Application.Exams.Interfaces
         Task<Either<ErrorResponseModel, Guid>> AddExamQuestionAnswer(AnswerQuestionRequestViewModel answerQuestionResponse);
         Task<Either<ErrorResponseModel, object>> UpdateExamQuestionAnswer(UpdateAnswerQuestionRequestViewModel updateAnswerQuestionResponse);
         Task<Either<ErrorResponseModel, GetExamQuestionListViewModel>> GetQuestions(GetQuestionListPaginatedRequestViewModel getQuestionListPaginatedRequest);
-        Task UploadExamPeriodsAndSubjects(UploadExamPeriodsRequestViewModel uploadExamPeriodsRequestViewModel);
-        Task<List<ExamPeriodViewModel>> GetExamPeriods(EExamModel examModel, EExamType examType, int number);
+        Task UploadPreExam(UploadExamPeriodsRequestViewModel uploadExamPeriodsRequestViewModel);
         Task FinalizeExam(Guid ExamId);
         Task<IEnumerable<SubjectResponseViewModel>> GetSubjects();
         Task<RealizedExamListViewModel> GetUserRealizedExamList();
         Task<ExamReportViewModel> GetUserExamReport(Guid examId);
         Task DeleteUserAnswers(Guid examId);
         Task<SubjectEvolutionsResponseViewModel> GetEvolutional();
+        Task<PreExamVO> GetPreExamVO(EExamModel examModel, EExamType examType, int number, EExamTopic examTopic);
     }
 }
