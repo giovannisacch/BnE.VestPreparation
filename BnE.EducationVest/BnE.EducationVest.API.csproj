@@ -30,4 +30,10 @@
     <ProjectReference Include="..\BnE.EducationVest.DI\BnE.EducationVest.DI.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="BnE.EducationVest.API.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

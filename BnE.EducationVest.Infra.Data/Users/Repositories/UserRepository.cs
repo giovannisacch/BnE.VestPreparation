@@ -47,5 +47,9 @@ namespace BnE.EducationVest.Infra.Data.Users.Repositories
                             .ToListAsync();
         }
 
+        public async Task<User> GetUserByEmail(string email)
+        {
+            return await _db.FirstOrDefaultAsync(x => x.Email == email);
+        }
     }
 }

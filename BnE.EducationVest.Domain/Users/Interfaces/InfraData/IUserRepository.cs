@@ -15,5 +15,6 @@ namespace BnE.EducationVest.Domain.Users.Interfaces.InfraData
         Task AddExternalUserProfile(ExternalUserProfile externalUserProfile);
         Task<User> GetUserWithOptinsByIdAsync(Guid userId);
         Task<List<Optin>> GetOptinsAndUserAccepts(Guid userId);
+        Task<User> GetUserByEmail(string email);
     }
 }

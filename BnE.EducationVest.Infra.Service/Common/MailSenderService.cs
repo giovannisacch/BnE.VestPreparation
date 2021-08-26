@@ -30,7 +30,7 @@ namespace BnE.EducationVest.Infra.Service.Common
 
             mail.To.Add(new MailAddress(toEmail));
 
-            mail.Subject = "B&E " + subject;
+            mail.Subject = "BNE_EDU " + subject;
             mail.Body = message;
             mail.IsBodyHtml = true;
             mail.Priority = MailPriority.High;

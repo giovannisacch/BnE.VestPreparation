@@ -14,6 +14,7 @@ using System;
 using BnE.EducationVest.Application.Exams.ViewModels.Request;
 using BnE.EducationVest.Domain.Users.Interfaces;
 using System.Collections.Generic;
+using BnE.EducationVest.Domain;
 
 namespace BnE.EducationVest.Application.Users.Services
 {
@@ -70,7 +71,10 @@ namespace BnE.EducationVest.Application.Users.Services
 
         public async Task<Either<ErrorResponseModel, object>> InitiateRecoverPassword(string username)
         {
-            return await _userAuthService.SendForgotPasswordCodeAsync(username);
+            var user = await _userRepository.GetUserByEmail(username);
+            if (user == null)
+                return new Either<ErrorResponseModel, object>(new ErrorResponseModel(ErrorConstants.USER_NOT_FOUND), HttpStatusCode.BadRequest);
+            return await _userAuthService.SendForgotPasswordCodeAsync(username, user.Name);
         }
 
         public async Task<Either<ErrorResponseModel, object>> LoginAsync(LoginRequestModel loginRequestModel)

@@ -101,6 +101,8 @@ namespace BnE.EducationVest
         {
             app.UseAuthentication();
 
+            Console.Write(env.EnvironmentName);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();  
