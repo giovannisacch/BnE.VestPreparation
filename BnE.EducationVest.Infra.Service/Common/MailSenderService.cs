@@ -25,7 +25,7 @@ namespace BnE.EducationVest.Infra.Service.Common
 
             MailMessage mail = new MailMessage()
             {
-                From = new MailAddress(_emailSettings.FromEmail, "B&E Assessoria")
+                From = new MailAddress(_emailSettings.FromEmail, "BNE Assessoria")
             };
 
             mail.To.Add(new MailAddress(toEmail));
