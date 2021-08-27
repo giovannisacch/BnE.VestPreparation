@@ -15,7 +15,7 @@ namespace BnE.EducationVest.Domain.Exam.Interfaces.Infra
         Task AddExamQuestionAnswer(QuestionAnswer questionAnswer);
         Task UpdateExamQuestionAnswer(QuestionAnswer questionAnswer);
         Task<QuestionAnswer> GetQuestionAnswerByIdAndUser(Guid questionAnswerId, Guid userId);
-        Task<List<Question>> GetExamQuestions(Guid examId, Guid userId, int from, int to);
+        Task<List<Question>> GetExamQuestions(Guid examId, Guid userId, int from, int amount);
         Task<Entities.Exam> GetExamWithQuestionsAndUserAnswers(Guid examId, Guid userId);
         Task<Entities.Exam> GetExamWithPeriodsById(Guid examId);
         Task FinalizeExam(FinalizedExam finalizedExam);

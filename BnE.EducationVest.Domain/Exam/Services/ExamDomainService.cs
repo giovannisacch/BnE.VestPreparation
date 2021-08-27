@@ -28,15 +28,15 @@ namespace BnE.EducationVest.Domain.Exam.Services
         public async Task<List<Question>> GetExamQuestionsWithAnswers(Guid examId, Guid userId, int pageNumber, bool userAlreadyStarted)
         {
             var from = (pageNumber - 1) * 10;
-            var to = (pageNumber) * 10;
+            var amount = 10;
             if (userAlreadyStarted)
-                return await _examRepository.GetExamQuestions(examId, userId, from, to);
+                return await _examRepository.GetExamQuestions(examId, userId, from, amount);
 
             var questionList = await _examCacheService.GetQuestionsByPageAsync(examId, pageNumber);
             if (questionList == null)
             {
                 var exam = await _examRepository.GetExamWithPeriodsById(examId);
-                questionList = await _examRepository.GetExamQuestions(examId, userId, from, to);
+                questionList = await _examRepository.GetExamQuestions(examId, userId, from, amount);
                 await _examCacheService.SaveQuestionListByPage(exam, questionList, pageNumber);
             }
 

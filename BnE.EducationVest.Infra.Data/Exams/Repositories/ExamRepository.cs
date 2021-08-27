@@ -82,14 +82,14 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
                         .ThenInclude(x => x.Finalizeds.Where(x => x.UserId == userId))
                         .FirstOrDefaultAsync(x => x.Id == questionAnswerId);
         }
-        public async Task<List<Question>> GetExamQuestions(Guid examId, Guid userId, int from, int to)
+        public async Task<List<Question>> GetExamQuestions(Guid examId, Guid userId, int from, int amount)
         {
             return await _context
                 .Questions
                 .Where(x => x.ExamId == examId)
                 .OrderBy(x => x.Index)
                 .Skip(from)
-                .Take(to)
+                .Take(amount)
                 .Include(x => x.QuestionAnswers.Where(qa => qa.UserId == userId))
                 .ThenInclude(x => x.ChosenAlternative)
                 .Include(x => x.Enunciated)

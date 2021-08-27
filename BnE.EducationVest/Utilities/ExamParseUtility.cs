@@ -54,6 +54,8 @@ namespace BnE.EducationVest.API.Utilities
                     {
                         var drawing = (Drawing)paragraph.First(child => child.LastChild.GetType() == typeof(DocumentFormat.OpenXml.Wordprocessing.Drawing)).LastChild;
                         var inline = drawing.Inline;
+                        if (inline == null)
+                            continue;
                         var pic = inline.Graphic.GraphicData.GetFirstChild<DocumentFormat.OpenXml.Drawing.Pictures.Picture>();
                         var embed = pic.BlipFill.Blip.Embed.Value;
 
