@@ -1,6 +1,7 @@
 ﻿using BnE.EducationVest.Application.Exams.ViewModels.Request;
 using BnE.EducationVest.Application.Users.ViewModels;
 using BnE.EducationVest.Domain.Common;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading.Tasks;
 
@@ -19,5 +20,7 @@ namespace BnE.EducationVest.Application.Users.Interface
         Task UpdateUserOptins(UpdateUserOptinRequestViewModel updateUserOptinRequestViewModel);
         Task<TermAndOptinResponseViewModel> GetUseTermAndOptins();
         Task DeleteUser();
+
+        Task<Either<ErrorResponseModel, object>> CreateUsersBuk(IFormFile file);
     }
 }

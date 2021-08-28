@@ -15,6 +15,11 @@ using BnE.EducationVest.Application.Exams.ViewModels.Request;
 using BnE.EducationVest.Domain.Users.Interfaces;
 using System.Collections.Generic;
 using BnE.EducationVest.Domain;
+using System.IO;
+using System.Threading;
+using System.ComponentModel;
+using OfficeOpenXml;
+using LicenseContext = OfficeOpenXml.LicenseContext;
 
 namespace BnE.EducationVest.Application.Users.Services
 {
@@ -156,6 +161,62 @@ Morbi quis augue eleifend, pulvinar nunc vitae, blandit metus. Praesent eu ante 
                         .Select(x => new OptinResponseViewModel() { Id = x.Id, Text = x.Text, Checked = x.UsersAccepted == null? false : x.UsersAccepted.Any() })
                         .ToList()
             };
+        }
+
+        public async Task<Either<ErrorResponseModel, object>> CreateUsersBuk(IFormFile file)
+        {
+            if (file == null)
+            {
+                return new Either<ErrorResponseModel, object>(
+                new ErrorResponseModel("Não contém arquivos para processamento, por favor verifique !!!"), HttpStatusCode.BadRequest);
+            }
+
+            if (!Path.GetExtension(file.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
+            {
+                return new Either<ErrorResponseModel, object>(
+                new ErrorResponseModel("O arquivo não contem o formato esperado, por favor verifique !!!"), HttpStatusCode.BadRequest);
+            }
+
+            using (var stream = new MemoryStream())
+            {
+                await file.CopyToAsync(stream, new CancellationToken());
+
+                await ReadRowsFromFileAsync(stream);
+            };
+
+
+            return new Either<ErrorResponseModel, object>(new ErrorResponseModel(""), HttpStatusCode.OK);
+
+        }
+        private async Task ReadRowsFromFileAsync(MemoryStream stream)
+        {
+            var addressVO = new AddressVO("13571-410", "R. Gomes de Carvalho, 1765",
+                       "Vila Olímpia - Itaim Bibi", "São Paulo",
+                       "SP");
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var package = new ExcelPackage(stream))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+
+                var worksheetFirst = package.Workbook.Worksheets.First();
+
+                for (int row = 2; row <= worksheet.Dimension.Rows; row++)
+                {
+                    var name = worksheet.Cells[row, 1].Value.ToString().Trim();
+                    var cpf = worksheet.Cells[row, 2].Value.ToString().Trim();
+                    var phoneNumber = worksheet.Cells[row, 3].Value.ToString().Trim();
+                    var gender = worksheet.Cells[row, 4].Value.ToString().Trim();
+                    var email = worksheet.Cells[row, 5].Value.ToString().Trim();
+                    var birhDate = worksheet.Cells[row, 6].Value.ToString().Trim();
+
+                    var user = new User(name, cpf, phoneNumber, gender, email, Convert.ToDateTime(birhDate), addressVO, Domain.Users.Enums.EUserType.InternalStudent);
+
+                    await _userAuthService.CreateUserAsync(user);
+                    await _userRepository.AddAsync(user);
+                }
+            }
         }
     }
 }
