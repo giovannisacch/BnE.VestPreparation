@@ -165,5 +165,16 @@ namespace BnE.EducationVest.API.Controllers
             await _userApplicationService.DeleteUser();
             return Ok();
         }
+
+        [HttpPost("signup-buk")]
+        public async Task<IActionResult> CreateUserBuk(IFormFile file)
+        {
+            var response = await _userApplicationService.CreateUsersBuk(file);
+
+            return StatusCode((int)response.StatusCode,
+                response.IsSuccess
+                ? new { UserId = response.SuccessResponseModel }
+                : response.ErrorResponseModel);
+        }
     }
 }

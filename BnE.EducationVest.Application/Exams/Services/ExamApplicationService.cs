@@ -6,6 +6,7 @@ using BnE.EducationVest.Application.Exams.ViewModels.Request;
 using BnE.EducationVest.Application.Exams.ViewModels.Response;
 using BnE.EducationVest.Domain;
 using BnE.EducationVest.Domain.Common;
+using BnE.EducationVest.Domain.Common.Helpers;
 using BnE.EducationVest.Domain.Exam.Entities;
 using BnE.EducationVest.Domain.Exam.Enums;
 using BnE.EducationVest.Domain.Exam.Extensions;
@@ -51,7 +52,7 @@ namespace BnE.EducationVest.Application.Exams.Services
                 return new Either<ErrorResponseModel, object>(new ErrorResponseModel(ErrorConstants.QUESTION_ANSWER_NOT_FOUND), HttpStatusCode.BadRequest);
             if (!actualQuestionAnswer.UserId.Equals(userId))
                 return new Either<ErrorResponseModel, object>(null, HttpStatusCode.Unauthorized);
-            if(actualQuestionAnswer.Question.Exam.UserHasFinalized(userId))
+            if (actualQuestionAnswer.Question.Exam.UserHasFinalized(userId))
                 return new Either<ErrorResponseModel, object>(new ErrorResponseModel(ErrorConstants.ALREADY_FINALIZED_EXAM), HttpStatusCode.BadRequest);
 
             actualQuestionAnswer.UpdateChosenAlternative(updateAnswerQuestionResponse.ChosenAlternativeId);
@@ -84,7 +85,7 @@ namespace BnE.EducationVest.Application.Exams.Services
             //Colocar na leitura de documento
             for (int i = 0; i < preExamVO.SubjectIdList.Count; i++)
                 examViewModel.QuestionList[i].SubjectId = preExamVO.SubjectIdList[i];
-            
+
             var exam = examViewModel.MapToDomain();
             await _examDomainService.CreateExam(exam);
             return new Either<ErrorResponseModel, Guid>(exam.Id, HttpStatusCode.OK);
@@ -92,11 +93,11 @@ namespace BnE.EducationVest.Application.Exams.Services
 
         public async Task<Either<ErrorResponseModel, AvailableExamsViewModel>> GetAvailableExamsByUser()
         {
-            var token =_httpContextAccessor.GetTokenData();
+            var token = _httpContextAccessor.GetTokenData();
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(token.CognitoId));
 
             var availableExams = await _examRepository.GetAvailableExamsByUser(userId);
-            var response = new AvailableExamsViewModel() 
+            var response = new AvailableExamsViewModel()
             {
                 AvailableExams = new List<AvailableExamViewModel>()
             };
@@ -109,8 +110,10 @@ namespace BnE.EducationVest.Application.Exams.Services
                     ExamName = GetFormatedExamName(exam),
                     ExpirationDate = exam.GetActualAvailablePeriod().CloseDate,
                     WasStarted = userStartedExam,
+
                     QuestionsCount = (exam.Id == Guid.Parse("1ace14ef-7f83-4ad0-a506-e0113cfd1632") || exam.Id == Guid.Parse("47415a56-b108-4001-87f5-bdb3d5095c1b"))  ? 15 : exam.Id == Guid.Parse("265d190a-8199-49c6-85e0-141448c7c47a") ? 30
                                       : exam.Id == Guid.Parse("4ecb55f7-0a91-4d92-92ad-f159cad9f729") ? 30 : exam.ExamModel.GetQuestionAmount(),
+
                     LastQuestionAnswered = (userStartedExam) ? _examRepository.GetLastExamQuestionAnsweredByUserAsync(exam.Id, userId).Result.Index : null,
                     WasFinalized = exam.Finalizeds.Count > 0
                 });
@@ -138,9 +141,9 @@ namespace BnE.EducationVest.Application.Exams.Services
         {
             var tokenData = _httpContextAccessor.GetTokenData();
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
-            var questions = await _examDomainService.GetExamQuestionsWithAnswers(getQuestionListPaginatedRequest.ExamId, userId, 
+            var questions = await _examDomainService.GetExamQuestionsWithAnswers(getQuestionListPaginatedRequest.ExamId, userId,
                                                                                  getQuestionListPaginatedRequest.Page, getQuestionListPaginatedRequest.WasStarted);
-            return new Either<ErrorResponseModel, GetExamQuestionListViewModel>(new GetExamQuestionListViewModel() 
+            return new Either<ErrorResponseModel, GetExamQuestionListViewModel>(new GetExamQuestionListViewModel()
             {
                 Questions = questions.Select(x => x.MapToViewModel())
             }, HttpStatusCode.OK);
@@ -149,11 +152,11 @@ namespace BnE.EducationVest.Application.Exams.Services
         public async Task UploadPreExam(UploadExamPeriodsRequestViewModel uploadExamPeriodsRequestViewModel)
         {
             await _examCacheService.SavePreExam(new PreExamVO(uploadExamPeriodsRequestViewModel.ExamModel,
-                                              uploadExamPeriodsRequestViewModel.ExamType, 
+                                              uploadExamPeriodsRequestViewModel.ExamType,
                                               uploadExamPeriodsRequestViewModel.ExamNumber,
                                               uploadExamPeriodsRequestViewModel.ExamPeriods.Select(x => x.MapToVO()).ToList(),
-                                              uploadExamPeriodsRequestViewModel.Subjects, 
-                                              uploadExamPeriodsRequestViewModel.ExamTopic, 
+                                              uploadExamPeriodsRequestViewModel.Subjects,
+                                              uploadExamPeriodsRequestViewModel.ExamTopic,
                                               uploadExamPeriodsRequestViewModel.ExamFatherId));
         }
         public async Task<PreExamVO> GetPreExamVO(EExamModel examModel, EExamType examType, int number, EExamTopic examTopic)
@@ -175,9 +178,9 @@ namespace BnE.EducationVest.Application.Exams.Services
             var subjects = await _examRepository.GetSubjects();
             return subjects.Select(x => new SubjectResponseViewModel() { Id = x.Id, Name = x.Name });
         }
-        
+
         public async Task<RealizedExamListViewModel> GetUserRealizedExamList()
-        {                
+        {
             var tokenData = _httpContextAccessor.GetTokenData();
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
             var exams = await _examRepository.GetUserFinalizedExams(userId);
@@ -190,7 +193,7 @@ namespace BnE.EducationVest.Application.Exams.Services
                                                         Name = GetFormatedExamName(x),
                                                         ImageUrl = "https://emc.acidadeon.com/dbimagens/pedreira__1024x576_11032021174053.jpg"
                                                     })
-            }; 
+            };
         }
         public async Task<ExamReportViewModel> GetUserExamReport(Guid examId)
         {
@@ -292,7 +295,7 @@ namespace BnE.EducationVest.Application.Exams.Services
             await _examRepository.DeleteAllUserAnswersInExam(userId, examId);
             await _examCacheService.DeleteUserStartedExam(userId, examId);
         }
-        public async Task<SubjectEvolutionsResponseViewModel> GetEvolutional() 
+        public async Task<SubjectEvolutionsResponseViewModel> GetEvolutional()
         {
             var tokenData = _httpContextAccessor.GetTokenData();
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
@@ -329,8 +332,8 @@ namespace BnE.EducationVest.Application.Exams.Services
 
 
                 mathPrincipalSubjectEvolution.Evolution.Add(
-                    new Evolution() 
-                    { 
+                    new Evolution()
+                    {
                         Value = finalizedExam.GetUserMathPerformance(userId),
                         Date = finalizedExam.CreatedDate
                     });
@@ -353,10 +356,10 @@ namespace BnE.EducationVest.Application.Exams.Services
             return new SubjectEvolutionsResponseViewModel()
             {
                 ChartExplanation = new ChartExplanation(),
-                SubjectsEvolution = new List<SubjectEvolution>() {mathPrincipalSubjectEvolution, portuguesePrincipalSubjectEvolution }
+                SubjectsEvolution = new List<SubjectEvolution>() { mathPrincipalSubjectEvolution, portuguesePrincipalSubjectEvolution }
             };
         }
-        private void AddOrUpdateSubtopicValue(SubjectEvolution principalSubjectEvolution, List<IGrouping<Subject, Question>> questionGroupBySubjectsList, DateTime examDate, Guid userId) 
+        private void AddOrUpdateSubtopicValue(SubjectEvolution principalSubjectEvolution, List<IGrouping<Subject, Question>> questionGroupBySubjectsList, DateTime examDate, Guid userId)
         {
             foreach (var questionGroupBySubjects in questionGroupBySubjectsList)
             {
@@ -386,11 +389,11 @@ namespace BnE.EducationVest.Application.Exams.Services
                         );
 
             }
-            
+
         }
         private ExamReportViewModel GetMockExamReport()
         {
-            var subjectsDifficulties = new List<ExamReportSubjectDifficultyViewModel>() 
+            var subjectsDifficulties = new List<ExamReportSubjectDifficultyViewModel>()
             {
                 new ExamReportSubjectDifficultyViewModel()
                 {
@@ -430,7 +433,7 @@ namespace BnE.EducationVest.Application.Exams.Services
                     QuestionNumbers = new List<int>(){41,42,43,44,45,46,47,48,49,50 }
                 },
             };
-            var acertsAndErrorsBySubject = new List<ExamReportAcertsAndErrorBySubject>() 
+            var acertsAndErrorsBySubject = new List<ExamReportAcertsAndErrorBySubject>()
             {
                 new ExamReportAcertsAndErrorBySubject()
                 {
@@ -459,7 +462,7 @@ namespace BnE.EducationVest.Application.Exams.Services
             };
             var acertsAndErrorsByQuestion = new List<ExamReportAcertsAndErrorByQuestion>()
             {
-                
+
                 new ExamReportAcertsAndErrorByQuestion()
                 {
                     QuestionNumber = 1,
@@ -615,14 +618,16 @@ namespace BnE.EducationVest.Application.Exams.Services
                 }
             };
             return new ExamReportViewModel()
-            {   
+            {
                 Performance = userPerformances,
                 SubjectsDifficulties = new ExamReportSubjectDifficultyViewModelCard() { SubjectDifficultyRanks = subjectsDifficulties },
-                SubjectsDistribution = new ExamReportSubjectDistributionViewModelCard() {subjectDistributionTopics = subjectsDistribution } ,
-                AcertsAndErrorsBySubject = new ExamReportAcertsAndErrorBySubjectCard() {ExamReportAcertsAndErrorBySubjectCardTopics = acertsAndErrorsBySubject } ,
-                AcertsAndErrorsByQuestion = new ExamReportAcertsAndErrorByQuestionCard() 
-                {ExamReportAcertsAndErrorByQuestionCardTopics = acertsAndErrorsByQuestion, ExplanationTable = 
-                new List<ExamReportAcertsAndErrorByQuestionExplanationTable>() 
+                SubjectsDistribution = new ExamReportSubjectDistributionViewModelCard() { subjectDistributionTopics = subjectsDistribution },
+                AcertsAndErrorsBySubject = new ExamReportAcertsAndErrorBySubjectCard() { ExamReportAcertsAndErrorBySubjectCardTopics = acertsAndErrorsBySubject },
+                AcertsAndErrorsByQuestion = new ExamReportAcertsAndErrorByQuestionCard()
+                {
+                    ExamReportAcertsAndErrorByQuestionCardTopics = acertsAndErrorsByQuestion,
+                    ExplanationTable =
+                new List<ExamReportAcertsAndErrorByQuestionExplanationTable>()
                 {
                     new ExamReportAcertsAndErrorByQuestionExplanationTable()
                     {
@@ -639,13 +644,13 @@ namespace BnE.EducationVest.Application.Exams.Services
                         Name = "Maior que 70 %",
                         Value = "Fácil"
                     },
-                } 
-                } 
+                }
+                }
             };
         }
         private string GetFormatedExamName(Exam exam)
         {
-            return $"Simulado {exam.ExamNumber} - {Enum.GetName(typeof(EExamModel), exam.ExamModel)}";
+            return $"Simulado {exam.ExamNumber} - {Enum.GetName(typeof(EExamModel), exam.ExamModel)} - {exam.ExamTopic.GetEnumDescription()}";
         }
     }
 }

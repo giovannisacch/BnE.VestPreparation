@@ -15,7 +15,7 @@ namespace BnE.EducationVest.Domain.Exam.Enums
         NatureSciences,
         [Description("Linguagens e Matemática")]
         LanguagesAndMath,
-        [Description(" ")]
+        [Description("Geral")]
         General
     }
 }
