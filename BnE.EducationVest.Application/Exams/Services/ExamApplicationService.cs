@@ -186,6 +186,10 @@ namespace BnE.EducationVest.Application.Exams.Services
             var exams = await _examRepository.GetUserFinalizedExams(userId);
             return new RealizedExamListViewModel()
             {
+                RealizedExams = new List<RealizedExamViewModel>()
+            };
+            return new RealizedExamListViewModel()
+            {
                 RealizedExams =
                                                     exams.Select(x => new RealizedExamViewModel()
                                                     {
