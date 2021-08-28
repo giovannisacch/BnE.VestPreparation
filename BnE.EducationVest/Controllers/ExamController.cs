@@ -93,6 +93,7 @@ namespace BnE.EducationVest.API.Controllers
         /// </summary>
         /// <param name="getQuestionListPaginatedRequest"></param>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("questions")]
         public async Task<IActionResult> GetExamQuestions([FromQuery]GetQuestionListPaginatedRequestViewModel getQuestionListPaginatedRequest)
         {
