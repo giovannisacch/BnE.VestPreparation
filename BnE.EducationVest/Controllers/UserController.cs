@@ -83,7 +83,7 @@ namespace BnE.EducationVest.API.Controllers
                 ? response.SuccessResponseModel
                 : response.ErrorResponseModel);
         }
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet("menus")]
         public async Task<IActionResult> GetUserMenuList()
         {

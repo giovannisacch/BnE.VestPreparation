@@ -62,6 +62,8 @@ namespace BnE.EducationVest.API.Controllers
         /// API que busca os exames que estão dísponiveis(estão com periodo vingente e não foram realizados) para o usuario que está logado
         /// </summary>
         /// <returns></returns>
+        /// 
+        [AllowAnonymous]
         [HttpGet("availables")]
         public async Task<IActionResult> GetAvailableExams()
         {
@@ -120,6 +122,8 @@ namespace BnE.EducationVest.API.Controllers
         /// </summary>
         /// <param name="answerQuestionResponse"></param>
         /// <returns></returns>
+        ///
+        [AllowAnonymous()]
         [HttpPost("answer")]
         public async Task<IActionResult> AnswerQuestion(AnswerQuestionRequestViewModel answerQuestionResponse)
         {
@@ -150,6 +154,7 @@ namespace BnE.EducationVest.API.Controllers
         /// Finaliza um exame
         /// </summary>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPost("finalize")]
         public async Task<IActionResult> FinalizeExam(Guid examId)
         {

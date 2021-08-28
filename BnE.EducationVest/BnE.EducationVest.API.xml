@@ -26,6 +26,7 @@
             API que busca os exames que estão dísponiveis(estão com periodo vingente e não foram realizados) para o usuario que está logado
             </summary>
             <returns></returns>
+            
         </member>
         <member name="M:BnE.EducationVest.API.Controllers.ExamController.GetAllExams">
             <summary>
@@ -50,11 +51,12 @@
             <returns></returns>
         </member>
         <member name="M:BnE.EducationVest.API.Controllers.ExamController.AnswerQuestion(BnE.EducationVest.Application.Exams.ViewModels.Response.AnswerQuestionRequestViewModel)">
-            <summary>
-            Adiciona resposta para uma questão
-            </summary>
-            <param name="answerQuestionResponse"></param>
-            <returns></returns>
+             <summary>
+             Adiciona resposta para uma questão
+             </summary>
+             <param name="answerQuestionResponse"></param>
+             <returns></returns>
+            
         </member>
         <member name="M:BnE.EducationVest.API.Controllers.ExamController.UpdateAnswerQuestion(BnE.EducationVest.Application.Exams.ViewModels.Response.UpdateAnswerQuestionRequestViewModel)">
             <summary>
