@@ -44,7 +44,7 @@ namespace BnE.EducationVest
                 .AddJwtBearer(options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters { ValidateAudience = false };
-                    options.Authority = "https://cognito-idp.sa-east-1.amazonaws.com/sa-east-1_DFZtMc2ZI";
+                    options.Authority = Configuration.GetSection("AWSAuth:CognitoAuthority").Value;
                     options.RequireHttpsMetadata = false;
                 });
             services.AddControllers()
