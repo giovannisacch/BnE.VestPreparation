@@ -229,6 +229,7 @@ namespace BnE.EducationVest.Infra.Service.User.Services
             if (user.CPF != null)
                 userAttributes.Add(new AttributeType()
                 {
+                    //TODO Rever Atribbute no Cognito
                     Name = "custom:custom:CPF",
                     Value = user.CPF
                 });

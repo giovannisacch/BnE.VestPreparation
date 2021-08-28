@@ -60,7 +60,6 @@ namespace BnE.EducationVest.DI
         }
         public static void InjectInfraServiceDependencies(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<AwsAuthSettings>(configuration.GetSection("AwsAuth"));
             var awsCognitoSection = configuration.GetSection("AwsAuth");
 
             var cognitoIdentityProvider = new AmazonCognitoIdentityProviderClient(awsCognitoSection["AcessKey"], awsCognitoSection["SecretKey"], RegionEndpoint.SAEast1);
