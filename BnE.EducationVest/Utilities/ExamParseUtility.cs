@@ -175,7 +175,7 @@ namespace BnE.EducationVest.API.Utilities
                                                 actualImageByteArray);
                     }
                 }
-                if(actualSupportingText != null)
+                if(actualSupportingText?.Text != null)
                     supportingTexts.Add(actualSupportingText);
 
                 foreach (var supportText in supportingTexts)
