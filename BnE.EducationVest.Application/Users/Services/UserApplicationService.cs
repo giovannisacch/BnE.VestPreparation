@@ -250,9 +250,7 @@ Qualquer novo recurso que aprimore o serviço atual, bem como a disponibilizaç�
         }
         private async Task ReadRowsFromFileAsync(MemoryStream stream)
         {
-            var addressVO = new AddressVO("13571-410", "R. Gomes de Carvalho, 1765",
-                       "Vila Olímpia - Itaim Bibi", "São Paulo",
-                       "SP");
+            
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -268,9 +266,10 @@ Qualquer novo recurso que aprimore o serviço atual, bem como a disponibilizaç�
                     var cpf = "99999999941";
                     var phoneNumber = "+5511999999999";
                     var gender = "N/A";
-                    var email = worksheet.Cells[row, 5].Value.ToString().Trim();
-                    var birhDate = worksheet.Cells[row, 6].Value.ToString().Trim();
-
+                    var email = worksheet.Cells[row, 2].Value.ToString().Trim();
+                    var addressVO = new AddressVO("13571-410", "R. Gomes de Carvalho, 1765",
+                       "Vila Olímpia - Itaim Bibi", "São Paulo",
+                       "SP");
                     var user = new User(name, cpf, phoneNumber, gender, email, DateTime.Parse("2000/01/01"), addressVO, Domain.Users.Enums.EUserType.InternalStudent);
 
                     await _userAuthService.CreateUserAsync(user);

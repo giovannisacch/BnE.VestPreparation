@@ -112,7 +112,7 @@ namespace BnE.EducationVest.Application.Exams.Services
                     WasStarted = userStartedExam,
 
                     QuestionsCount = (exam.Id == Guid.Parse("1ace14ef-7f83-4ad0-a506-e0113cfd1632") || exam.Id == Guid.Parse("47415a56-b108-4001-87f5-bdb3d5095c1b"))  ? 15 : exam.Id == Guid.Parse("265d190a-8199-49c6-85e0-141448c7c47a") ? 30
-                                      : exam.Id == Guid.Parse("4ecb55f7-0a91-4d92-92ad-f159cad9f729") ? 30 : exam.ExamModel.GetQuestionAmount(),
+                                      : (exam.Id == Guid.Parse("12454b29-f494-4802-8852-d04ede04a4db") || exam.Id == Guid.Parse("6f2f52e0-0f22-4226-81d0-f86ddb5096d0")) ? 30 : exam.ExamModel.GetQuestionAmount(),
 
                     LastQuestionAnswered = (userStartedExam) ? _examRepository.GetLastExamQuestionAnsweredByUserAsync(exam.Id, userId).Result.Index : null,
                     WasFinalized = exam.Finalizeds.Count > 0
