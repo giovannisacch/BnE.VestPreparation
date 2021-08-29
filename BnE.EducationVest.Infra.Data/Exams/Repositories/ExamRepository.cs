@@ -19,7 +19,7 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
 
         public async Task<List<Exam>> GetAvailableExamsByUser(Guid userId)
         {
-            var actualDate = DateTime.Now;
+            var actualDate = DateTime.Now.AddHours(-3);
             var exams = await _db
                 .Include(x => x.Periods)
                 .Include(x => x.Finalizeds.Where(x => x.UserId == userId))
