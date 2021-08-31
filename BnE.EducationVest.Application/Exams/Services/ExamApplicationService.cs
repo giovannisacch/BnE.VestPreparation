@@ -254,7 +254,7 @@ namespace BnE.EducationVest.Application.Exams.Services
 
         private EQuestionDifficulty CalculateQuestionDifficulty(Question question)
         {
-            var questionAcerts = question.QuestionAnswers.Count(x => x.IsCorrect());
+            double questionAcerts = question.QuestionAnswers.Count(x => x.IsCorrect());
             var acertsPercentage = (questionAcerts / question.QuestionAnswers.Count()) * 100;
             if (acertsPercentage <= 40)
                 return EQuestionDifficulty.Hard;
@@ -296,13 +296,13 @@ namespace BnE.EducationVest.Application.Exams.Services
             //VERIFICAR COMO DEFINIREMOS DIFICULDADEEEEEEE
             foreach (var questionGroup in questionsGroupsBySubject)
             {
-                var groupQuestionCount = questionGroup.Count();
+                double groupQuestionCount = questionGroup.Count();
                 subjectsDifficulties.Add(new ExamReportSubjectDifficultyViewModel()
                 {
                     Name = questionGroup.Key,
-                    Easy = $"{questionGroup.Count(x => x.QuestionDifficulty == EQuestionDifficulty.Easy) / groupQuestionCount * 100}%",
-                    Medium = $"{questionGroup.Count(x => x.QuestionDifficulty == EQuestionDifficulty.Medium) / groupQuestionCount * 100}%",
-                    Hard = $"{questionGroup.Count(x => x.QuestionDifficulty == EQuestionDifficulty.Hard) / groupQuestionCount * 100}%"
+                    Easy = $"{Math.Round((questionGroup.Count(x => x.QuestionDifficulty == EQuestionDifficulty.Easy) / groupQuestionCount * 100), 2)}%",
+                    Medium = $"{Math.Round((questionGroup.Count(x => x.QuestionDifficulty == EQuestionDifficulty.Medium) / groupQuestionCount * 100)),2}%",
+                    Hard = $"{Math.Round((questionGroup.Count(x => x.QuestionDifficulty == EQuestionDifficulty.Hard) / groupQuestionCount * 100),2)}%"
                 });
                 subjectsDistribution.Add(new ExamReportSubjectDistributionViewModel()
                 {
@@ -312,7 +312,7 @@ namespace BnE.EducationVest.Application.Exams.Services
                 acertsAndErrorsBySubject.Add(new ExamReportAcertsAndErrorBySubject()
                 {
                     Subject = questionGroup.Key,
-                    QuestionCount = groupQuestionCount,
+                    QuestionCount = (int)groupQuestionCount,
                     CorrectCount = questionGroup.Count(x => (x.GetUserAnswer(userId) == null) ? false : x.GetUserAnswer(userId).IsCorrect())
                 });
             }
