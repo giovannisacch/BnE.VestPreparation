@@ -215,7 +215,7 @@ namespace BnE.EducationVest.Application.Exams.Services
                 ? null
                 : await _examRepository.GetExamAllQuestionsWithAnswers(examWithQuestionAndAnswers.FatherExamModuleId.Value);
             //TEMP - Ajustar relacionamento de exam pai e filho
-            var allQuestions = examWithQuestionAndAnswers.Questions;
+            var allQuestions = examWithQuestionAndAnswers.Questions.ToList();
             allQuestions.AddRange(fatherExamWithQuestionAndAnswers.Questions);
             var answersGroupByUser = allQuestions.SelectMany(x => x.QuestionAnswers.GroupBy(x => x.User));
             allQuestions.ForEach(x => x.QuestionDifficulty = CalculateQuestionDifficulty(x));
@@ -277,9 +277,9 @@ namespace BnE.EducationVest.Application.Exams.Services
                 ? null 
                 : await _examRepository.GetExamWithQuestionsAndUserAnswers(examWithQuestionAndAnswers.FatherExamModuleId.Value, userId);
             //TEMP - Ajustar relacionamento de exam pai e filho
-            var fatherExamsWithAnswers = fatherExamWithQuestionAndAnswers.Questions?.Where(x => x.GetUserAnswer(userId) != null);
+            var fatherExamsWithAnswers = fatherExamWithQuestionAndAnswers.Questions;
             var examsQuestionsWithAnswers = fatherExamsWithAnswers.ToList();
-            foreach (var item in examWithQuestionAndAnswers.Questions.Where(x => x.GetUserAnswer(userId) != null))
+            foreach (var item in examWithQuestionAndAnswers.Questions)
             {
                 item.SetIndex(item.Index + fatherExamsWithAnswers.Count());
                 examsQuestionsWithAnswers.Add(item);
@@ -322,7 +322,7 @@ namespace BnE.EducationVest.Application.Exams.Services
                 new ExamReportPerformanceViewModel()
                 {
                     Name = "Pontuação",
-                    Value = Math.Round(fatherExamWithQuestionAndAnswers.GetUserTotalScore(userId, false, examWithQuestionAndAnswers.Questions), 2)
+                    Value = Math.Round(fatherExamWithQuestionAndAnswers.GetUserTotalScore(userId, examWithQuestionAndAnswers.ExamTopic == EExamTopic.NatureSciences, examWithQuestionAndAnswers.Questions), 2)
                 },
                 new ExamReportPerformanceViewModel()
                 {
