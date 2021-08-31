@@ -456,7 +456,7 @@ namespace BnE.EducationVest.Application.Exams.Services
             {
                 QuestionNumber = x.Index,
                 Subject = x.Subject.Name,
-                ChosenAlternative = x.GetUserAnswer(userId)?.ChosenAlternative.GetRespectiveIndexCharacter().ToString(),
+                ChosenAlternative = x.GetUserAnswer(userId) == null ? "N/A" : x.GetUserAnswer(userId).ChosenAlternative.GetRespectiveIndexCharacter().ToString(),
                 RightAlternative = x.GetRightAlternative().GetRespectiveIndexCharacter().ToString(),
                 Difficulty = x.QuestionDifficulty.GetEnumDescription(),
             }).ToList();
