@@ -171,6 +171,23 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
                     .OrderByDescending(x => x.Index)
                     .FirstAsync();
         }
+        public async Task<Exam> GetExamAllQuestionsWithAnswers(Guid examId)
+        {
+            return await
+                _db
+                .Include(x => x.Finalizeds)
+                .ThenInclude(x => x.User)
+                .Include(x => x.Questions)
+                .ThenInclude(x => x.Subject)
+                .ThenInclude(x => x.SubjectFather)
+                .Include(x => x.Questions)
+                .ThenInclude(x => x.QuestionAnswers)
+                .ThenInclude(x => x.ChosenAlternative)
+                .Include(x => x.Questions)
+                .ThenInclude(x => x.QuestionAnswers)
+                .ThenInclude(x => x.User)
+                .FirstAsync(x => x.Id == examId);
+        }
         //public async Task<List<Exam>> GetExamsFinalizedByUser(Guid userId)
         //{
         //    var answers = await _context

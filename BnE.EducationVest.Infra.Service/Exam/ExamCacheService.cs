@@ -19,6 +19,7 @@ namespace BnE.EducationVest.Infra.Service.Exam
         private readonly string _examQuestionsByPagePrefix = "exam:{0}:questionList:{1}";
         private readonly string _preExamPrefix = "preExam:{0}:{1}:{2}:{3}";
         private readonly string _examSubjectsPrefix = "subjects:{0}:{1}:{2}";
+        private readonly string _generalMetricpPrefix = "generalmetric:{0}";
         private readonly JsonSerializerSettings _jsonSerializerSettings;
         public ExamCacheService(IDistributedCache cache)
         {
@@ -29,6 +30,24 @@ namespace BnE.EducationVest.Infra.Service.Exam
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 ContractResolver = new PrivateResolver()
             };
+        }
+        public async Task SaveReportMetrics(ExamGeneralMetrics examGeneralMetrics, Guid examId)
+        {
+            var options = new DistributedCacheEntryOptions()
+            {
+                SlidingExpiration = TimeSpan.FromDays(7)
+            };
+            var cacheKey = string.Format(_generalMetricpPrefix, examId);
+            var examGeneralMetricsSerialized = JsonConvert.SerializeObject(examGeneralMetrics, _jsonSerializerSettings);
+            
+            await _cache.SetStringAsync(cacheKey, examGeneralMetricsSerialized, options);
+        }
+        public async Task<ExamGeneralMetrics> GetReportMetrics(Guid examId)
+        {
+            var examGeneralMetricsSerialized = await _cache.GetStringAsync(string.Format(_generalMetricpPrefix, examId));
+            if (string.IsNullOrEmpty(examGeneralMetricsSerialized))
+                return null;
+            return JsonConvert.DeserializeObject<ExamGeneralMetrics>(examGeneralMetricsSerialized, _jsonSerializerSettings);
         }
         public async Task SaveUserStartedExam(Guid userId, Domain.Exam.Entities.Exam exam)
         {

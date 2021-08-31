@@ -28,5 +28,6 @@ namespace BnE.EducationVest.Application.Exams.Interfaces
         Task DeleteUserAnswers(Guid examId);
         Task<SubjectEvolutionsResponseViewModel> GetEvolutional();
         Task<PreExamVO> GetPreExamVO(EExamModel examModel, EExamType examType, int number, EExamTopic examTopic);
+        Task SetExamComparation(Guid examId);
     }
 }

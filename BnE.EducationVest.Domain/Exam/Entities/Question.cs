@@ -14,7 +14,7 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         public Guid EnunciatedId { get; set; }
         public Guid SubjectId { get; set; }
         public Guid? SupportingTextId { get; set; }
-        public EQuestionDifficulty QuestionDifficulty { get; set; } = EQuestionDifficulty.Easy;
+        public EQuestionDifficulty QuestionDifficulty { get; set; }
         public int Index { get; private set; }
         public IncrementedTextVO Enunciated { get; private set; }
         public List<Alternative> Alternatives { get; private set; }
@@ -33,9 +33,16 @@ namespace BnE.EducationVest.Domain.Exam.Entities
             SetAlternatives(alternatives);
             SubjectId = subjectId;
         }
+        public void SetIndex(int index)
+        {
+            Index = index;
+        }
         public QuestionAnswer GetUserAnswer(Guid userId)
         {
-            return QuestionAnswers.FirstOrDefault(x => x.UserId == userId);
+            var userAnswers = QuestionAnswers.Where(x => x.UserId == userId);
+            if (userAnswers == null || userAnswers.Count() == 0)
+                return null;
+            return userAnswers.OrderByDescending(x => x.CreatedDate).First();
         }
         public bool HasImageInEnunciated()
         {

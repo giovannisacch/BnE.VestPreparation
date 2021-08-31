@@ -18,5 +18,7 @@ namespace BnE.EducationVest.Domain.Exam.Interfaces.InfraService
         Task SaveQuestionListByPage(Entities.Exam exam, List<Question> questionList, int page);
         Task SavePreExam(PreExamVO preExamVO);
         Task<PreExamVO> GetPreExam(EExamModel examModel, EExamType examType, int number, EExamTopic examTopic);
+        Task<ExamGeneralMetrics> GetReportMetrics(Guid examId);
+        Task SaveReportMetrics(ExamGeneralMetrics examGeneralMetrics, Guid examId);
     }
 }

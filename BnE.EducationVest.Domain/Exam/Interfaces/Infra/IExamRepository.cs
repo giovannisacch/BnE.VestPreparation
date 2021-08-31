@@ -24,5 +24,6 @@ namespace BnE.EducationVest.Domain.Exam.Interfaces.Infra
         Task<List<Entities.Exam>> GetUserFinalizedExamsWithAnswers(Guid userId);
         Task<Question> GetLastExamQuestionAnsweredByUserAsync(Guid examId, Guid userId);
         Task DeleteAllUserAnswersInExam(Guid userId, Guid examId);
+        Task<Entities.Exam> GetExamAllQuestionsWithAnswers(Guid examId);
     }
 }

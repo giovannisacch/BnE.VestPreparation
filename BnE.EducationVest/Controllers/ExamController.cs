@@ -186,6 +186,13 @@ namespace BnE.EducationVest.API.Controllers
 
             return Ok(response);
         }
+
+        [HttpPost("generalScore")]
+        public async Task<IActionResult> SetGeneralScore(Guid examId)
+        {
+            await _examApplicationService.SetExamComparation(examId);
+            return Ok();
+        }
         /// <summary>
         /// Busca todos os dados para a tela de relatorio de um exame especifico
         /// </summary>

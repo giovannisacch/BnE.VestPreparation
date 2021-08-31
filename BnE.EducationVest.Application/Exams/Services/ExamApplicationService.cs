@@ -107,7 +107,7 @@ namespace BnE.EducationVest.Application.Exams.Services
                 response.AvailableExams.Add(new AvailableExamViewModel()
                 {
                     ExamId = exam.Id,
-                    ExamName = GetFormatedExamName(exam),
+                    ExamName = GetFormatedExamName(exam, false),
                     ExpirationDate = exam.GetActualAvailablePeriod().CloseDate,
                     WasStarted = userStartedExam,
 
@@ -184,27 +184,110 @@ namespace BnE.EducationVest.Application.Exams.Services
             var tokenData = _httpContextAccessor.GetTokenData();
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
             var exams = await _examRepository.GetUserFinalizedExams(userId);
-            return new RealizedExamListViewModel()
-            {
-                RealizedExams = new List<RealizedExamViewModel>()
-            };
+            //TEMP - Ajustar relacionamento de exam pai e filho
+            if (exams.Count == 1 && exams.First().Id == Guid.Parse("83c6d582-98fb-4058-bca8-7fbed3c8372f"))
+                return new RealizedExamListViewModel() { RealizedExams = new List<RealizedExamViewModel>() };
+            exams.FirstOrDefault(x => x.Id == Guid.Parse("f9f6e67c-2ce4-4af7-a0d7-7f5f19c6630c"))?
+                .SetFatherExamModule(Guid.Parse("83c6d582-98fb-4058-bca8-7fbed3c8372f"));
+            exams.RemoveAll(x => exams.Exists(exm => exm.FatherExamModuleId == x.Id));
+            //TEMP - Ajustar relacionamento de exam pai e filho
+
             return new RealizedExamListViewModel()
             {
                 RealizedExams =
                                                     exams.Select(x => new RealizedExamViewModel()
                                                     {
                                                         ExamId = x.Id,
-                                                        Name = GetFormatedExamName(x),
-                                                        ImageUrl = "https://emc.acidadeon.com/dbimagens/pedreira__1024x576_11032021174053.jpg"
+                                                        Name = GetFormatedExamName(x, true),
+                                                        ImageUrl = "https://dev-reports-images.s3.sa-east-1.amazonaws.com/logo-insper.png"
                                                     })
             };
+        }
+        public async Task SetExamComparation(Guid examId)
+        {
+            var examWithQuestionAndAnswers = await _examRepository.GetExamAllQuestionsWithAnswers(examId);
+            //TEMP - Ajustar relacionamento de exam pai e filho
+            if (examWithQuestionAndAnswers.Id == Guid.Parse("f9f6e67c-2ce4-4af7-a0d7-7f5f19c6630c"))
+                examWithQuestionAndAnswers.SetFatherExamModule(Guid.Parse("83c6d582-98fb-4058-bca8-7fbed3c8372f"));
+
+            //Matematica
+            var fatherExamWithQuestionAndAnswers = examWithQuestionAndAnswers.FatherExamModuleId == null
+                ? null
+                : await _examRepository.GetExamAllQuestionsWithAnswers(examWithQuestionAndAnswers.FatherExamModuleId.Value);
+            //TEMP - Ajustar relacionamento de exam pai e filho
+            var allQuestions = examWithQuestionAndAnswers.Questions;
+            allQuestions.AddRange(fatherExamWithQuestionAndAnswers.Questions);
+            var answersGroupByUser = allQuestions.SelectMany(x => x.QuestionAnswers.GroupBy(x => x.User));
+            allQuestions.ForEach(x => x.QuestionDifficulty = CalculateQuestionDifficulty(x));
+            var userIdWithTotalScore = new Dictionary<Guid, double>();
+
+            var totalScoreSum = 0.0;
+            var portugueseSum = 0.0;
+            var mathSum = 0.0;
+            var users = examWithQuestionAndAnswers.Finalizeds.Select(x => x.User);
+            foreach (var user in users)
+            {
+                var userTotalScore = fatherExamWithQuestionAndAnswers.GetUserTotalScore(user.Id, examWithQuestionAndAnswers.ExamTopic == EExamTopic.NatureSciences, examWithQuestionAndAnswers.Questions);
+                var userPortugueseScore = fatherExamWithQuestionAndAnswers.GetUserPortuguesePerformance(user.Id);
+                var userMathScore = fatherExamWithQuestionAndAnswers.GetUserMathPerformance(user.Id);
+
+                totalScoreSum += userTotalScore;
+                mathSum += userMathScore;
+                portugueseSum += userPortugueseScore;
+                userIdWithTotalScore.Add(user.Id, userTotalScore);
+            }
+
+            var totalAverage = totalScoreSum / users.Count();
+            var mathAverage = mathSum / users.Count();
+            var portugueseAverage = portugueseSum / users.Count();
+            userIdWithTotalScore.OrderByDescending(x => x.Value);
+            
+            await _examCacheService.SaveReportMetrics( new ExamGeneralMetrics
+            {
+                MathAverage = Math.Round(mathAverage, 2),
+                PortugueseAverage = Math.Round(portugueseAverage, 2),
+                TotalScoreAverage = Math.Round(totalAverage,2),
+                UserIdListOrdered = userIdWithTotalScore.Select(x => x.Key).ToList(),
+                QuestionDifficulties = allQuestions.Select(x => new QuestionDifficulty {QuestionId = x.Id, Difficulty = (int)x.QuestionDifficulty}).ToList()
+            }, examId);
+        }
+
+        private EQuestionDifficulty CalculateQuestionDifficulty(Question question)
+        {
+            var questionAcerts = question.QuestionAnswers.Count(x => x.IsCorrect());
+            var acertsPercentage = (questionAcerts / question.QuestionAnswers.Count()) * 100;
+            if (acertsPercentage <= 40)
+                return EQuestionDifficulty.Hard;
+            if (acertsPercentage <= 70)
+                return EQuestionDifficulty.Medium;
+            if (acertsPercentage > 70)
+                return EQuestionDifficulty.Easy;
+            return EQuestionDifficulty.Calculating;
         }
         public async Task<ExamReportViewModel> GetUserExamReport(Guid examId)
         {
             var tokenData = _httpContextAccessor.GetTokenData();
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
             var examWithQuestionAndAnswers = await _examRepository.GetExamWithQuestionsAndUserAnswers(examId, userId);
-            var questionsWithAnswers = examWithQuestionAndAnswers.Questions.OrderBy(x => x.Index);
+            //TEMP - Ajustar relacionamento de exam pai e filho
+            if (examWithQuestionAndAnswers.Id == Guid.Parse("f9f6e67c-2ce4-4af7-a0d7-7f5f19c6630c"))
+                examWithQuestionAndAnswers.SetFatherExamModule(Guid.Parse("83c6d582-98fb-4058-bca8-7fbed3c8372f"));
+
+            var fatherExamWithQuestionAndAnswers = examWithQuestionAndAnswers.FatherExamModuleId == null 
+                ? null 
+                : await _examRepository.GetExamWithQuestionsAndUserAnswers(examWithQuestionAndAnswers.FatherExamModuleId.Value, userId);
+            //TEMP - Ajustar relacionamento de exam pai e filho
+            var fatherExamsWithAnswers = fatherExamWithQuestionAndAnswers.Questions.Where(x => x.GetUserAnswer(userId) != null);
+            var examsQuestionsWithAnswers = fatherExamsWithAnswers.ToList();
+            foreach (var item in examWithQuestionAndAnswers.Questions.Where(x => x.GetUserAnswer(userId) != null))
+            {
+                item.SetIndex(item.Index + fatherExamsWithAnswers.Count());
+                examsQuestionsWithAnswers.Add(item);
+            }
+            var generalMetrics = await _examCacheService.GetReportMetrics(examId);
+            examsQuestionsWithAnswers.ForEach(x => x.QuestionDifficulty = (EQuestionDifficulty)generalMetrics.QuestionDifficulties.First(general => general.QuestionId == x.Id).Difficulty);
+
+            var questionsWithAnswers = examsQuestionsWithAnswers.OrderBy(x => x.Index);
             var questionsGroupsBySubject = questionsWithAnswers.GroupBy(x => x.Subject.Name);
             //TODO: Separa mappings em outros metodos
             var subjectsDifficulties = new List<ExamReportSubjectDifficultyViewModel>();
@@ -233,35 +316,55 @@ namespace BnE.EducationVest.Application.Exams.Services
                     CorrectCount = questionGroup.Count(x => (x.GetUserAnswer(userId) == null) ? false : x.GetUserAnswer(userId).IsCorrect())
                 });
             }
-            var acertsAndErrorsByQuestion = questionsWithAnswers.Select(x => new ExamReportAcertsAndErrorByQuestion()
-            {
-                QuestionNumber = x.Index,
-                Subject = x.Subject.Name,
-                ChosenAlternative = x.GetUserAnswer(userId)?.ChosenAlternative.GetRespectiveIndexCharacter().ToString(),
-                RightAlternative = x.GetRightAlternative().GetRespectiveIndexCharacter().ToString(),
-                Difficulty = x.QuestionDifficulty.ToString()
-            });
+            var acertsAndErrorsByQuestion = GetAcertsAndErrorsByQuestion(questionsWithAnswers, userId);
             var userPerformances = new List<ExamReportPerformanceViewModel>()
             {
                 new ExamReportPerformanceViewModel()
                 {
                     Name = "Pontuação",
-                    Value = Math.Round(examWithQuestionAndAnswers.GetUserTotalScore(userId), 2)
+                    Value = Math.Round(fatherExamWithQuestionAndAnswers.GetUserTotalScore(userId, false, examWithQuestionAndAnswers.Questions), 2)
                 },
                 new ExamReportPerformanceViewModel()
                 {
                     Name = "Matemática",
-                    Value = Math.Round(examWithQuestionAndAnswers.GetUserMathPerformance(userId), 2)
+                    Value = Math.Round(fatherExamWithQuestionAndAnswers.GetUserMathPerformance(userId), 2)
                 },
                 new ExamReportPerformanceViewModel()
                 {
                     Name = "Português",
-                    Value = Math.Round(examWithQuestionAndAnswers.GetUserPortuguesePerformance(userId), 2)
+                    Value = Math.Round(fatherExamWithQuestionAndAnswers.GetUserPortuguesePerformance(userId), 2)
                 }
             };
+            if (examWithQuestionAndAnswers.ExamTopic == EExamTopic.HumanSciences)
+                userPerformances.AddRange(GetUserPerformancePlus(examWithQuestionAndAnswers.Questions, userId));
+            else
+                userPerformances.AddRange(GetUserPerformanceForEngineering(examWithQuestionAndAnswers.Questions, userId));
 
+            var classPerformance = new List<ExamReportPerformanceViewModel>()
+            {
+                 new ExamReportPerformanceViewModel()
+                {
+                    Name = "Pontuação",
+                    Value = generalMetrics.TotalScoreAverage
+                },
+                new ExamReportPerformanceViewModel()
+                {
+                    Name = "Matemática",
+                    Value = generalMetrics.MathAverage
+                },
+                new ExamReportPerformanceViewModel()
+                {
+                    Name = "Português",
+                    Value = generalMetrics.PortugueseAverage
+                }
+            };
             return new ExamReportViewModel()
             {
+                ClassPerformance = classPerformance,
+                TotalStudents = generalMetrics.UserIdListOrdered.Count(),
+                Rank = generalMetrics.UserIdListOrdered.IndexOf(userId),
+                ExamName = GetFormatedExamName(examWithQuestionAndAnswers, true),
+                ExamDate = examWithQuestionAndAnswers.CreatedDate,
                 Performance = userPerformances,
                 SubjectsDifficulties = new ExamReportSubjectDifficultyViewModelCard() { SubjectDifficultyRanks = subjectsDifficulties },
                 SubjectsDistribution = new ExamReportSubjectDistributionViewModelCard() { subjectDistributionTopics = subjectsDistribution },
@@ -290,8 +393,75 @@ namespace BnE.EducationVest.Application.Exams.Services
                 }
                 }
             };
-
         }
+
+        #region ExamReportPrivateMethods
+        private List<ExamReportPerformanceViewModel> GetUserPerformancePlus(List<Question> questions, Guid userId)
+        {
+            return new List<ExamReportPerformanceViewModel>()
+            {
+                new ExamReportPerformanceViewModel()
+                {
+                    Name = "Geografia",
+                    Value = Math.Round((double)questions.Where(x => x.Subject.IsGeography()).ToList()
+                                        .Count(x => x.GetUserAnswer(userId) == null ? false : x.GetUserAnswer(userId).IsCorrect()), 2)
+                },
+                new ExamReportPerformanceViewModel()
+                {
+                    Name = "Sociologia",
+                    Value = Math.Round((double)questions.Where(x => x.Subject.IsSociology()).ToList()
+                                        .Count(x => x.GetUserAnswer(userId) == null ? false : x.GetUserAnswer(userId).IsCorrect()), 2)
+                },
+                new ExamReportPerformanceViewModel()
+                {
+                    Name = "Filosofia",
+                    Value = Math.Round((double)questions.Where(x => x.Subject.IsPhilosophy()).ToList()
+                                        .Count(x => x.GetUserAnswer(userId) == null ? false : x.GetUserAnswer(userId).IsCorrect()), 2)
+                },
+                new ExamReportPerformanceViewModel()
+                {
+                    Name = "História",
+                    Value = Math.Round((double)questions.Where(x => x.Subject.IsHistory()).ToList()
+                                        .Count(x => x.GetUserAnswer(userId) == null ? false : x.GetUserAnswer(userId).IsCorrect()), 2)
+                }
+            };
+        }
+        private List<ExamReportPerformanceViewModel> GetUserPerformanceForEngineering(List<Question> questions, Guid userId)
+        {
+            return new List<ExamReportPerformanceViewModel>()
+            {
+                new ExamReportPerformanceViewModel()
+                {
+                    Name = "Fisíca",
+                    Value = Math.Round((double)questions.Where(x => x.Subject.IsPhysical()).ToList()
+                                        .Count(x => x.GetUserAnswer(userId) == null ? false : x.GetUserAnswer(userId).IsCorrect()), 2)
+                },
+                new ExamReportPerformanceViewModel()
+                {
+                    Name = "Quimica",
+                    Value = Math.Round((double)questions.Where(x => x.Subject.IsChemistry()).ToList()
+                                        .Count(x => x.GetUserAnswer(userId) == null ? false : x.GetUserAnswer(userId).IsCorrect()), 2)
+                },
+                new ExamReportPerformanceViewModel()
+                {
+                    Name = "Biologia",
+                    Value = Math.Round((double)questions.Where(x => x.Subject.IsBiology()).ToList()
+                                        .Count(x => x.GetUserAnswer(userId) == null ? false : x.GetUserAnswer(userId).IsCorrect()), 2)
+                }
+            }; 
+        }
+        private List<ExamReportAcertsAndErrorByQuestion> GetAcertsAndErrorsByQuestion(IOrderedEnumerable<Question> questionsWithAnswers, Guid userId)
+        {
+            return questionsWithAnswers.Select(x => new ExamReportAcertsAndErrorByQuestion()
+            {
+                QuestionNumber = x.Index,
+                Subject = x.Subject.Name,
+                ChosenAlternative = x.GetUserAnswer(userId)?.ChosenAlternative.GetRespectiveIndexCharacter().ToString(),
+                RightAlternative = x.GetRightAlternative().GetRespectiveIndexCharacter().ToString(),
+                Difficulty = x.QuestionDifficulty.GetEnumDescription(),
+            }).ToList();
+        }
+        #endregion
         public async Task DeleteUserAnswers(Guid examId)
         {
             var tokenData = _httpContextAccessor.GetTokenData();
@@ -350,7 +520,7 @@ namespace BnE.EducationVest.Application.Exams.Services
                 totalScorePrincipalSubjectEvolution.Evolution.Add(
                     new Evolution()
                     {
-                        Value = finalizedExam.GetUserTotalScore(userId),
+                        Value = finalizedExam.GetUserTotalScore(userId, false, null),
                         Date = finalizedExam.CreatedDate
                     });
                 AddOrUpdateSubtopicValue(mathPrincipalSubjectEvolution, mathSubTopicsQuestions, finalizedExam.CreatedDate, userId);
@@ -652,9 +822,12 @@ namespace BnE.EducationVest.Application.Exams.Services
                 }
             };
         }
-        private string GetFormatedExamName(Exam exam)
+        private string GetFormatedExamName(Exam exam, bool isReport)
         {
-            return $"Simulado {exam.ExamNumber} - {Enum.GetName(typeof(EExamModel), exam.ExamModel)} - {exam.ExamTopic.GetEnumDescription()}";
+            var baseName = $"Simulado { exam.ExamNumber} - { Enum.GetName(typeof(EExamModel), exam.ExamModel)}";
+            if (isReport)
+                return baseName;
+            return $"{baseName} - {exam.ExamTopic.GetEnumDescription()}";
         }
     }
 }

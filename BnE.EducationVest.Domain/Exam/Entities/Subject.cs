@@ -34,5 +34,47 @@ namespace BnE.EducationVest.Domain.Exam.Entities
                 return Name == "Português";
             return SubjectFather.IsPortugueseTopic();
         }
+        public bool IsGeography()
+        {
+            if (SubjectFather == null)
+                return Name == "Geografia";
+            return SubjectFather.IsGeography();
+        }
+        public bool IsSociology()
+        {
+            if (SubjectFather == null)
+                return Name == "Sociologia";
+            return SubjectFather.IsSociology();
+        }
+        public bool IsPhilosophy()
+        {
+            if (SubjectFather == null)
+                return Name == "Filosofia";
+            return SubjectFather.IsPhilosophy();
+        }
+        public bool IsHistory()
+        {
+            if (SubjectFather == null)
+                return Name == "História";
+            return SubjectFather.IsHistory();
+        }
+        public bool IsPhysical()
+        {
+            if (SubjectFather == null)
+                return Name == "Fisíca";
+            return SubjectFather.IsPhysical();
+        }
+        public bool IsChemistry()
+        {
+            if (SubjectFather == null)
+                return Name == "Quimica";
+            return SubjectFather.IsChemistry();
+        }
+        public bool IsBiology()
+        {
+            if (SubjectFather == null)
+                return Name == "Biologia";
+            return SubjectFather.IsBiology();
+        }
     }
 }

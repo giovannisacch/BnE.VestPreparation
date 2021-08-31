@@ -8,9 +8,12 @@ namespace BnE.EducationVest.Application.Exams.ViewModels
 {
     public class ExamReportViewModel
     {
-        public string ExamName { get; set; } = "Simulado Insper 2";
-        public DateTime ExamDate { get; set; } = DateTime.Now;
+        public string ExamName { get; set; }
+        public DateTime ExamDate { get; set; }
+        public int Rank { get; set; }
+        public int TotalStudents { get; set; }
         public IEnumerable<ExamReportPerformanceViewModel> Performance { get; set; }
+        public IEnumerable<ExamReportPerformanceViewModel> ClassPerformance { get; set; }
         public ExamReportSubjectDifficultyViewModelCard SubjectsDifficulties { get; set; }
         public ExamReportSubjectDistributionViewModelCard SubjectsDistribution { get; set; }
         public ExamReportAcertsAndErrorBySubjectCard AcertsAndErrorsBySubject { get; set; }

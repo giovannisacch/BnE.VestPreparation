@@ -30,7 +30,7 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         }
         public bool IsCorrect()
         {
-            return ChosenAlternative.IsCorrect;
+            return ChosenAlternative == null ? false :  ChosenAlternative.IsCorrect;
         }
     }
 }
