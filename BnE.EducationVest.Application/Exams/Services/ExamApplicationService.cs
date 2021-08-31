@@ -240,14 +240,14 @@ namespace BnE.EducationVest.Application.Exams.Services
             var totalAverage = totalScoreSum / users.Count();
             var mathAverage = mathSum / users.Count();
             var portugueseAverage = portugueseSum / users.Count();
-            userIdWithTotalScore.OrderByDescending(x => x.Value);
+            var userIdWithTotalScoreOrdered = userIdWithTotalScore.OrderByDescending(x => x.Value);
             
             await _examCacheService.SaveReportMetrics( new ExamGeneralMetrics
             {
                 MathAverage = Math.Round(mathAverage, 2),
                 PortugueseAverage = Math.Round(portugueseAverage, 2),
                 TotalScoreAverage = Math.Round(totalAverage,2),
-                UserIdListOrdered = userIdWithTotalScore.Select(x => x.Key).ToList(),
+                UserIdListOrdered = userIdWithTotalScoreOrdered.Select(x => x.Key).ToList(),
                 QuestionDifficulties = allQuestions.Select(x => new QuestionDifficulty {QuestionId = x.Id, Difficulty = (int)x.QuestionDifficulty}).ToList()
             }, examId);
         }
@@ -277,7 +277,7 @@ namespace BnE.EducationVest.Application.Exams.Services
                 ? null 
                 : await _examRepository.GetExamWithQuestionsAndUserAnswers(examWithQuestionAndAnswers.FatherExamModuleId.Value, userId);
             //TEMP - Ajustar relacionamento de exam pai e filho
-            var fatherExamsWithAnswers = fatherExamWithQuestionAndAnswers.Questions.Where(x => x.GetUserAnswer(userId) != null);
+            var fatherExamsWithAnswers = fatherExamWithQuestionAndAnswers.Questions?.Where(x => x.GetUserAnswer(userId) != null);
             var examsQuestionsWithAnswers = fatherExamsWithAnswers.ToList();
             foreach (var item in examWithQuestionAndAnswers.Questions.Where(x => x.GetUserAnswer(userId) != null))
             {
@@ -362,7 +362,7 @@ namespace BnE.EducationVest.Application.Exams.Services
             {
                 ClassPerformance = classPerformance,
                 TotalStudents = generalMetrics.UserIdListOrdered.Count(),
-                Rank = generalMetrics.UserIdListOrdered.IndexOf(userId),
+                Rank = generalMetrics.UserIdListOrdered.IndexOf(userId) + 1,
                 ExamName = GetFormatedExamName(examWithQuestionAndAnswers, true),
                 ExamDate = examWithQuestionAndAnswers.CreatedDate,
                 Performance = userPerformances,
