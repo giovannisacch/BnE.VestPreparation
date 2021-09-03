@@ -184,13 +184,7 @@ namespace BnE.EducationVest.Application.Exams.Services
             var tokenData = _httpContextAccessor.GetTokenData();
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
             var exams = await _examRepository.GetUserFinalizedExams(userId);
-            //TEMP - Ajustar relacionamento de exam pai e filho
-            if (exams.Count == 1 && exams.First().Id == Guid.Parse("83c6d582-98fb-4058-bca8-7fbed3c8372f"))
-                return new RealizedExamListViewModel() { RealizedExams = new List<RealizedExamViewModel>() };
-            exams.FirstOrDefault(x => x.Id == Guid.Parse("f9f6e67c-2ce4-4af7-a0d7-7f5f19c6630c"))?
-                .SetFatherExamModule(Guid.Parse("83c6d582-98fb-4058-bca8-7fbed3c8372f"));
-            exams.RemoveAll(x => exams.Exists(exm => exm.FatherExamModuleId == x.Id));
-            //TEMP - Ajustar relacionamento de exam pai e filho
+            exams.RemoveAll(x => exams.Exists(exm => exm.FatherExamModuleId == x.Id) || x.FatherExamModuleId == null);
 
             return new RealizedExamListViewModel()
             {
@@ -206,9 +200,6 @@ namespace BnE.EducationVest.Application.Exams.Services
         public async Task SetExamComparation(Guid examId)
         {
             var examWithQuestionAndAnswers = await _examRepository.GetExamAllQuestionsWithAnswers(examId);
-            //TEMP - Ajustar relacionamento de exam pai e filho
-            if (examWithQuestionAndAnswers.Id == Guid.Parse("f9f6e67c-2ce4-4af7-a0d7-7f5f19c6630c"))
-                examWithQuestionAndAnswers.SetFatherExamModule(Guid.Parse("83c6d582-98fb-4058-bca8-7fbed3c8372f"));
 
             //Matematica
             var fatherExamWithQuestionAndAnswers = examWithQuestionAndAnswers.FatherExamModuleId == null
@@ -269,15 +260,12 @@ namespace BnE.EducationVest.Application.Exams.Services
             var tokenData = _httpContextAccessor.GetTokenData();
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
             var examWithQuestionAndAnswers = await _examRepository.GetExamWithQuestionsAndUserAnswers(examId, userId);
-            //TEMP - Ajustar relacionamento de exam pai e filho
-            if (examWithQuestionAndAnswers.Id == Guid.Parse("f9f6e67c-2ce4-4af7-a0d7-7f5f19c6630c"))
-                examWithQuestionAndAnswers.SetFatherExamModule(Guid.Parse("83c6d582-98fb-4058-bca8-7fbed3c8372f"));
 
             var fatherExamWithQuestionAndAnswers = examWithQuestionAndAnswers.FatherExamModuleId == null 
                 ? null 
                 : await _examRepository.GetExamWithQuestionsAndUserAnswers(examWithQuestionAndAnswers.FatherExamModuleId.Value, userId);
             //TEMP - Ajustar relacionamento de exam pai e filho
-            var fatherExamsWithAnswers = fatherExamWithQuestionAndAnswers.Questions;
+            var fatherExamsWithAnswers = examWithQuestionAndAnswers.Questions;
             var examsQuestionsWithAnswers = fatherExamsWithAnswers.ToList();
             foreach (var item in examWithQuestionAndAnswers.Questions)
             {
@@ -828,6 +816,16 @@ namespace BnE.EducationVest.Application.Exams.Services
             if (isReport)
                 return baseName;
             return $"{baseName} - {exam.ExamTopic.GetEnumDescription()}";
+        }
+
+        public async Task AddSecondsSpent(Guid questionId, long secondsSpent)
+        {
+            var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(_httpContextAccessor.GetTokenData().CognitoId));
+
+            var questionAnswer = await _examRepository.GetLastQuestionAnswerByUserAsync(questionId, userId);
+            questionAnswer.SetSecondsSpent(secondsSpent);
+
+            await _examRepository.UpdateExamQuestionAnswer(questionAnswer);
         }
     }
 }

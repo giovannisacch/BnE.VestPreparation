@@ -1,0 +1,6 @@
+{
+  "region": "sa-east-1",
+  "application": "bne-app",
+  "environment": "bne-prd",
+  "configuration": "Release"
+}
