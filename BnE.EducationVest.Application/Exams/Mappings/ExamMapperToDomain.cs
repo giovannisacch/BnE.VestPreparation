@@ -61,9 +61,9 @@ namespace BnE.EducationVest.Application.Exams.Mappings
         {
             return new CompleteTextIncrementVO(incrementViewModel.Index,
                                             (
-                                                (incrementViewModel.Type == ECompleteTextIncrementType.Equation) ?
-                                                                                        incrementViewModel.Value :
-                                                                                        (incrementViewModel.ImageStream)
+                                                (incrementViewModel.Type == ECompleteTextIncrementType.Image) ?
+                                                                                        (incrementViewModel.ImageStream) :
+                                                                                        incrementViewModel.Value
                                              ),
                                             incrementViewModel.Type);
         }

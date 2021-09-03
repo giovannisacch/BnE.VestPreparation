@@ -9,6 +9,10 @@ namespace BnE.EducationVest.Domain.Exam.Enums
     public enum ECompleteTextIncrementType
     {
         Equation,
-        Image
+        Image,
+        Bold,
+        Italic,
+        Underline,
+        Reference
     }
 }

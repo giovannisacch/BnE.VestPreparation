@@ -46,7 +46,7 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         public ExamPeriodVO GetActualAvailablePeriod()
         {
             return Periods
-                .FirstOrDefault(x => x.OpenDate <= DateTime.Now && x.CloseDate > DateTime.Now.AddMinutes(10));
+                .FirstOrDefault(x => x.OpenDate <= DateTime.Now && x.CloseDate > DateTime.Now);
         }
         public IEnumerable<Question> GetQuestionsWithImageInEnunciated()
         {

@@ -23,7 +23,7 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
             var exams = await _db
                 .Include(x => x.Periods)
                 .Include(x => x.Finalizeds.Where(x => x.UserId == userId))
-                .Where(exam => exam.Periods.Any(x => x.OpenDate <= actualDate && x.CloseDate > actualDate.AddMinutes(10)))
+                .Where(exam => exam.Periods.Any(x => x.OpenDate <= actualDate && x.CloseDate > actualDate))
                 .ToListAsync();
             return exams;
         }
@@ -175,15 +175,16 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
         {
             return await
                 _db
+                .AsNoTracking()
                 .Include(x => x.Finalizeds)
                 .ThenInclude(x => x.User)
-                .Include(x => x.Questions)
+                .Include(x => x.Questions.Where(x => x.ExamId == examId))
                 .ThenInclude(x => x.Subject)
                 .ThenInclude(x => x.SubjectFather)
-                .Include(x => x.Questions)
+                .Include(x => x.Questions.Where(x => x.ExamId == examId))
                 .ThenInclude(x => x.QuestionAnswers)
                 .ThenInclude(x => x.ChosenAlternative)
-                .Include(x => x.Questions)
+                .Include(x => x.Questions.Where(x => x.ExamId == examId))
                 .ThenInclude(x => x.QuestionAnswers)
                 .ThenInclude(x => x.User)
                 .FirstAsync(x => x.Id == examId);

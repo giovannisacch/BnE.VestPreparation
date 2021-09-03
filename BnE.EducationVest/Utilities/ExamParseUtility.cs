@@ -49,6 +49,7 @@ namespace BnE.EducationVest.API.Utilities
                                                             child.LastChild?.GetType() ==
                                                             typeof(DocumentFormat.OpenXml.Wordprocessing.Drawing)
                                                             );
+
                     byte[] actualImageByteArray = null;
                     if (isImageParagraph)
                     {
@@ -267,9 +268,39 @@ namespace BnE.EducationVest.API.Utilities
                     incrementIndex++;
 
                 }
-                else
+                else if (isTextContent)
                 {
-                    content.Append(item.InnerText);
+                    var itemAsRun = item as Run;
+                    if (itemAsRun.RunProperties == null)
+                        continue;
+                    var runProperties = itemAsRun.RunProperties;
+                    var isBold = runProperties.Bold != null;
+                    var isItalic = runProperties.Italic != null;
+                    var isUnderline = runProperties.Underline != null;
+                    var isReference = runProperties.FontSize == null ? false : int.Parse(runProperties.FontSize.Val.Value) <= 16 && isItalic;
+                    if (!isReference && !isBold && !isItalic && !isUnderline)
+                        content.Append(item.InnerText);
+                    else
+                    {
+                        if (paragraphContent.Increments == null)
+                            paragraphContent.Increments = new List<IncrementViewModel>();
+                        content.Append("{" + incrementIndex + "}");
+                        paragraphContent.Increments.
+                        Add(
+                                new IncrementViewModel()
+                                {
+                                    Index = incrementIndex,
+                                    Value = item.InnerText,
+                                    ImageStream = null,
+                                    Type = (isReference) ? ECompleteTextIncrementType.Reference 
+                                                         : (isBold) ? ECompleteTextIncrementType.Bold 
+                                                                    : (isItalic) ? ECompleteTextIncrementType.Italic 
+                                                                                 : ECompleteTextIncrementType.Underline
+                                }
+                           );
+                        incrementIndex++;
+                    }
+
                 }
                     
             }
