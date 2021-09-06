@@ -20,6 +20,7 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         public List<FinalizedExam> Finalizeds { get; private set; }
         public Exam ChildExamModule { get; private set; }
         public Exam FatherExamModule { get; private set; }
+        public List<GeneralMetric> GeneralMetrics { get; private set; }
 
         internal Exam() { }
         public Exam(int examNumber, EExamModel examModel, List<ExamPeriodVO> periods, List<Question> questions, EExamType examType, EExamTopic examTopic)

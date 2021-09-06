@@ -30,6 +30,7 @@ namespace BnE.EducationVest.Infra.Data.Common
         public DbSet<FinalizedExam> FinalizedExams { get; set; }
         public DbSet<Optin> Optins { get; set; }
         public DbSet<UserOptin> UserOptins { get; set; }
+        public DbSet<GeneralMetric> GeneralMetrics { get; set; }
 
         public EducationVestContext(DbContextOptions<EducationVestContext> options) :
             base(options)
@@ -53,6 +54,7 @@ namespace BnE.EducationVest.Infra.Data.Common
             modelBuilder.ApplyConfiguration(new FinalizedExamMapping());
             modelBuilder.ApplyConfiguration(new UserOptinMapping());
             modelBuilder.ApplyConfiguration(new OptinMapping());
+            modelBuilder.ApplyConfiguration(new GeneralMetricMapping());
             modelBuilder.Seed();
         }
 

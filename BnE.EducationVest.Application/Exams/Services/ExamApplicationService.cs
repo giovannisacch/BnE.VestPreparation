@@ -184,13 +184,7 @@ namespace BnE.EducationVest.Application.Exams.Services
             var tokenData = _httpContextAccessor.GetTokenData();
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
             var exams = await _examRepository.GetUserFinalizedExams(userId);
-            //TEMP - Ajustar relacionamento de exam pai e filho
-            if (exams.Count == 1 && exams.First().Id == Guid.Parse("83c6d582-98fb-4058-bca8-7fbed3c8372f"))
-                return new RealizedExamListViewModel() { RealizedExams = new List<RealizedExamViewModel>() };
-            exams.FirstOrDefault(x => x.Id == Guid.Parse("f9f6e67c-2ce4-4af7-a0d7-7f5f19c6630c"))?
-                .SetFatherExamModule(Guid.Parse("83c6d582-98fb-4058-bca8-7fbed3c8372f"));
-            exams.RemoveAll(x => exams.Exists(exm => exm.FatherExamModuleId == x.Id));
-            //TEMP - Ajustar relacionamento de exam pai e filho
+            exams.RemoveAll(x => exams.Exists(exm => exm.FatherExamModuleId == x.Id) || x.FatherExamModuleId == null);
 
             return new RealizedExamListViewModel()
             {
@@ -241,15 +235,20 @@ namespace BnE.EducationVest.Application.Exams.Services
             var mathAverage = mathSum / users.Count();
             var portugueseAverage = portugueseSum / users.Count();
             var userIdWithTotalScoreOrdered = userIdWithTotalScore.OrderByDescending(x => x.Value);
-            
-            await _examCacheService.SaveReportMetrics( new ExamGeneralMetrics
+
+
+            ExamGeneralMetrics examGeneralMetric = new ExamGeneralMetrics
             {
                 MathAverage = Math.Round(mathAverage, 2),
                 PortugueseAverage = Math.Round(portugueseAverage, 2),
-                TotalScoreAverage = Math.Round(totalAverage,2),
+                TotalScoreAverage = Math.Round(totalAverage, 2),
                 UserIdListOrdered = userIdWithTotalScoreOrdered.Select(x => x.Key).ToList(),
-                QuestionDifficulties = allQuestions.Select(x => new QuestionDifficulty {QuestionId = x.Id, Difficulty = (int)x.QuestionDifficulty}).ToList()
-            }, examId);
+                QuestionDifficulties = allQuestions.Select(x => new QuestionDifficulty { QuestionId = x.Id, Difficulty = (int)x.QuestionDifficulty }).ToList()
+            };
+
+            await _examCacheService.SaveReportMetrics(examGeneralMetric, examId);
+
+            await _examRepository.AddGeneralMetricAsync(new GeneralMetric(examId, examGeneralMetric));
         }
 
         private EQuestionDifficulty CalculateQuestionDifficulty(Question question)
