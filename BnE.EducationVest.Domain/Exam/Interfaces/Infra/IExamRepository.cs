@@ -26,5 +26,6 @@ namespace BnE.EducationVest.Domain.Exam.Interfaces.Infra
         Task DeleteAllUserAnswersInExam(Guid userId, Guid examId);
         Task<Entities.Exam> GetExamAllQuestionsWithAnswers(Guid examId);
         Task<QuestionAnswer> GetLastQuestionAnswerByUserAsync(Guid questionId, Guid userId);
+        Task AddGeneralMetricAsync(GeneralMetric generalMetric);
     }
 }

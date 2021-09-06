@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BnE.EducationVest.Domain.Users.Entities;
 using BnE.EducationVest.Domain.Exam.RelationEntities;
 
 namespace BnE.EducationVest.Infra.Data.Exams.Repositories
@@ -35,15 +34,15 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
         }
         public async Task<Exam> GetByIdWithAllIncludes(Guid id)
         {
-           return await _db
-                .Include(x => x.Periods)
-                .Include(x => x.Questions)
-                .ThenInclude(x => x.Alternatives)
-                .ThenInclude(x => x.TextContent)
-                .Include(x => x.Questions)
-                .ThenInclude(x => x.Enunciated)
-                .AsNoTracking()
-                .FirstAsync(x => x.Id == id);
+            return await _db
+                 .Include(x => x.Periods)
+                 .Include(x => x.Questions)
+                 .ThenInclude(x => x.Alternatives)
+                 .ThenInclude(x => x.TextContent)
+                 .Include(x => x.Questions)
+                 .ThenInclude(x => x.Enunciated)
+                 .AsNoTracking()
+                 .FirstAsync(x => x.Id == id);
         }
 
         public async Task AddExamPeriodsAsync(Exam exam)
@@ -52,7 +51,7 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
             foreach (var period in exam.Periods)
             {
                 var teste = _context.Entry(period).State;
-                if(teste == EntityState.Modified)
+                if (teste == EntityState.Modified)
                     _context.Entry(period).State = EntityState.Added;
             }
             await _context.Commit();
@@ -133,7 +132,7 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
 
         public async Task<List<Subject>> GetSubjects()
         {
-            return await 
+            return await
                 _context
                 .Subjects
                 .AsNoTracking()
@@ -145,7 +144,7 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
             return await
                     _db
                     .Include(x => x.Finalizeds)
-                    .Where(x => x.Finalizeds.Any(x => x.UserId == userId))
+                    .Where(exam => exam.Finalizeds.Any(x => x.UserId == userId && exam.GeneralMetrics.Any(a => a.CreatedDate > x.FinalizedDate)))
                     .ToListAsync();
         }
         public async Task<List<Exam>> GetUserFinalizedExamsWithAnswers(Guid userId)
@@ -210,5 +209,14 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
                     .OrderByDescending(x => x.CreatedDate)
                     .FirstOrDefaultAsync();
         }
+
+        public async Task AddGeneralMetricAsync(GeneralMetric generalMetric)
+        {
+            await _context
+                    .GeneralMetrics
+                    .AddAsync(generalMetric);
+            await _context.Commit();
+        }
+
     }
 }

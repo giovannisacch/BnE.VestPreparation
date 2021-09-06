@@ -232,15 +232,20 @@ namespace BnE.EducationVest.Application.Exams.Services
             var mathAverage = mathSum / users.Count();
             var portugueseAverage = portugueseSum / users.Count();
             var userIdWithTotalScoreOrdered = userIdWithTotalScore.OrderByDescending(x => x.Value);
-            
-            await _examCacheService.SaveReportMetrics( new ExamGeneralMetrics
+
+
+            ExamGeneralMetrics examGeneralMetric = new ExamGeneralMetrics
             {
                 MathAverage = Math.Round(mathAverage, 2),
                 PortugueseAverage = Math.Round(portugueseAverage, 2),
-                TotalScoreAverage = Math.Round(totalAverage,2),
+                TotalScoreAverage = Math.Round(totalAverage, 2),
                 UserIdListOrdered = userIdWithTotalScoreOrdered.Select(x => x.Key).ToList(),
-                QuestionDifficulties = allQuestions.Select(x => new QuestionDifficulty {QuestionId = x.Id, Difficulty = (int)x.QuestionDifficulty}).ToList()
-            }, examId);
+                QuestionDifficulties = allQuestions.Select(x => new QuestionDifficulty { QuestionId = x.Id, Difficulty = (int)x.QuestionDifficulty }).ToList()
+            };
+
+            await _examCacheService.SaveReportMetrics(examGeneralMetric, examId);
+
+            await _examRepository.AddGeneralMetricAsync(new GeneralMetric(examId, examGeneralMetric));
         }
 
         private EQuestionDifficulty CalculateQuestionDifficulty(Question question)
