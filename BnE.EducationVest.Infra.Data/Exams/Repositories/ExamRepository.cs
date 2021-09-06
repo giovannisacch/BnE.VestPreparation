@@ -186,6 +186,7 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
                 .Include(x => x.Questions)
                 .ThenInclude(x => x.QuestionAnswers)
                 .ThenInclude(x => x.User)
+                .AsNoTracking()
                 .FirstAsync(x => x.Id == examId);
         }
         //public async Task<List<Exam>> GetExamsFinalizedByUser(Guid userId)
@@ -201,5 +202,13 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
         //    return answersFromFinalizedExams;
 
         //}
+        public async Task<QuestionAnswer> GetLastQuestionAnswerByUserAsync(Guid questionId, Guid userId)
+        {
+            return await
+                    _context.QuestionsAnswers
+                    .Where(x => x.QuestionId == questionId && x.UserId == userId)
+                    .OrderByDescending(x => x.CreatedDate)
+                    .FirstOrDefaultAsync();
+        }
     }
 }

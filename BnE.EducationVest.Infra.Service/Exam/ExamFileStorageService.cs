@@ -1,8 +1,9 @@
 ﻿using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
-using Amazon.S3.Transfer;
 using BnE.EducationVest.Domain.Exam.Interfaces.InfraService;
+using BnE.EducationVest.Infra.Service.Common.Models;
+using Microsoft.Extensions.Options;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -12,9 +13,11 @@ namespace BnE.EducationVest.Infra.Service.Exam
     {
         private readonly RegionEndpoint _bucketRegion = RegionEndpoint.SAEast1;
         private IAmazonS3 _s3Client;
-        public ExamFileStorageService()
+        private readonly IOptions<AWSAuth> _awsAuth;
+        public ExamFileStorageService(IOptions<AWSAuth> awsAuth)
         {
-            _s3Client = new AmazonS3Client("AKIAWOALMJU6CKZG6LU3", "N0YPZzRATQ3TS5xSDTkc2dBOwoJ858kp5xtjU9Od", _bucketRegion);
+            _awsAuth = awsAuth;
+            _s3Client = new AmazonS3Client(_awsAuth.Value.AcessKey, _awsAuth.Value.SecretKey, _bucketRegion);
         }
 
         public async Task<string> UploadExamImage(byte[] fileContent, string keyName)
@@ -23,7 +26,7 @@ namespace BnE.EducationVest.Infra.Service.Exam
             {
                 var request = new PutObjectRequest
                 {
-                    BucketName = "dev-reports-images",
+                    BucketName = _awsAuth.Value.BucketName,
                     InputStream = stream,
                     ContentType = "image/jpg",
                     Key = keyName
@@ -31,7 +34,7 @@ namespace BnE.EducationVest.Infra.Service.Exam
 
                 var response = await _s3Client.PutObjectAsync(request);
                 if(response.HttpStatusCode == System.Net.HttpStatusCode.OK)
-                    return $"https://dev-reports-images.s3-sa-east-1.amazonaws.com/{keyName}";
+                    return $"https://{_awsAuth.Value.BucketName}.s3-sa-east-1.amazonaws.com/{keyName}";
                 return null;
             }
         }

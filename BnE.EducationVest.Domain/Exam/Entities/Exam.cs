@@ -18,7 +18,7 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         public List<ExamPeriodVO> Periods { get; private set; }
         public List<Question> Questions { get; private set; }
         public List<FinalizedExam> Finalizeds { get; private set; }
-        public Exam ChildExamModule { get; private set; }
+        public List<Exam> ChildExamModule { get; private set; }
         public Exam FatherExamModule { get; private set; }
 
         internal Exam() { }

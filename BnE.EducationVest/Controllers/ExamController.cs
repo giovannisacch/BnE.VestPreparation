@@ -242,5 +242,17 @@ namespace BnE.EducationVest.API.Controllers
         {
             return Ok(await _examApplicationService.GetEvolutional());
         }
+
+        /// <summary>
+        /// Informa o tempo gasto na questão
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("SecondsSpent-question")]
+        public async Task<IActionResult> AddSecondsSpent(Guid questionId, long secondsSpent)
+        {
+            await _examApplicationService.AddSecondsSpent(questionId, secondsSpent);
+            return Ok();
+        }
+
     }
 }
