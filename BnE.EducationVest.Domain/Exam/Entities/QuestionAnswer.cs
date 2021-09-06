@@ -14,6 +14,8 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         public User User { get; private set; }
         public Alternative ChosenAlternative { get; private set; }
 
+        public long ?SecondsSpent { get; set; }
+
         internal QuestionAnswer()
         {
 
@@ -31,6 +33,10 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         public bool IsCorrect()
         {
             return ChosenAlternative == null ? false :  ChosenAlternative.IsCorrect;
+        }
+        public void SetSecondsSpent(long seconds)
+        {
+            SecondsSpent = seconds;
         }
     }
 }

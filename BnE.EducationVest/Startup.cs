@@ -11,6 +11,7 @@ using BnE.EducationVest.Domain.Common.SettingsModels;
 using System.IO;
 using System;
 using Newtonsoft.Json.Converters;
+using BnE.EducationVest.Infra.Service.Common.Models;
 
 namespace BnE.EducationVest
 {
@@ -27,6 +28,7 @@ namespace BnE.EducationVest
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+            services.Configure<AWSAuth>(Configuration.GetSection("AWSAuth"));
             services.InjectApplicationServiceDependencies();
             services.InjectInfraServiceDependencies(Configuration);
             services.InjectInfraDataDependencies(Configuration);

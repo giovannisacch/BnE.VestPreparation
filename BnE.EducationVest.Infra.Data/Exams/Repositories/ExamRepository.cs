@@ -185,6 +185,7 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
                 .Include(x => x.Questions)
                 .ThenInclude(x => x.QuestionAnswers)
                 .ThenInclude(x => x.User)
+                .AsNoTracking()
                 .FirstAsync(x => x.Id == examId);
         }
         //public async Task<List<Exam>> GetExamsFinalizedByUser(Guid userId)
@@ -216,5 +217,6 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
                     .AddAsync(generalMetric);
             await _context.Commit();
         }
+
     }
 }

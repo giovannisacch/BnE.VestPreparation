@@ -29,5 +29,6 @@ namespace BnE.EducationVest.Application.Exams.Interfaces
         Task<SubjectEvolutionsResponseViewModel> GetEvolutional();
         Task<PreExamVO> GetPreExamVO(EExamModel examModel, EExamType examType, int number, EExamTopic examTopic);
         Task SetExamComparation(Guid examId);
+        Task AddSecondsSpent(Guid questionId, long secondsSpent);
     }
 }

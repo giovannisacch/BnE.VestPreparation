@@ -1,14 +1,7 @@
 ﻿using BnE.EducationVest.Domain.Exam.Entities;
 using BnE.EducationVest.Domain.Exam.Enums;
-using BnE.EducationVest.Domain.Exam.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BnE.EducationVest.Infra.Data.Exams.Mappings
 {
@@ -43,8 +36,8 @@ namespace BnE.EducationVest.Infra.Data.Exams.Mappings
                               fromDB => (EExamTopic)fromDB);
 
             builder.HasOne(x => x.FatherExamModule)
-                .WithOne()
-                .HasForeignKey<Exam>(x => x.FatherExamModuleId)
+                .WithMany(a => a.ChildExamModule)
+                .HasForeignKey(x => x.FatherExamModuleId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder

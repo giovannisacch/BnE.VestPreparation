@@ -230,7 +230,7 @@ namespace BnE.EducationVest.Infra.Service.User.Services
                 userAttributes.Add(new AttributeType()
                 {
                     //TODO Rever Atribbute no Cognito
-                    Name = "custom:custom:CPF",
+                    Name = "custom:CPF",
                     Value = user.CPF
                 });
             return userAttributes;

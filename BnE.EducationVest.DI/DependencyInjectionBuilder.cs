@@ -25,6 +25,7 @@ using BnE.EducationVest.Domain.Exam.Services;
 using BnE.EducationVest.Domain.Users.Interfaces;
 using BnE.EducationVest.Domain.Users.Services;
 using Amazon.CloudWatchEvents;
+using BnE.EducationVest.Infra.Service.Common.Models;
 
 namespace BnE.EducationVest.DI
 {
@@ -84,6 +85,8 @@ namespace BnE.EducationVest.DI
             services.AddScoped<IExamCacheService, ExamCacheService>();
             services.AddScoped<IExamFileStorageService, ExamFileStorageService>();
             services.AddScoped<IExamReportService, ExamReportService>();
+
+            services.Configure<AWSAuth>(configuration.GetSection("AWSAuth"));
         }
     }
 }
