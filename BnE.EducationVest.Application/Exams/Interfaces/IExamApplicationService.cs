@@ -4,6 +4,7 @@ using BnE.EducationVest.Application.Exams.ViewModels.Response;
 using BnE.EducationVest.Domain.Common;
 using BnE.EducationVest.Domain.Exam.Enums;
 using BnE.EducationVest.Domain.Exam.ValueObjects;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -24,11 +25,14 @@ namespace BnE.EducationVest.Application.Exams.Interfaces
         Task FinalizeExam(Guid ExamId);
         Task<IEnumerable<SubjectResponseViewModel>> GetSubjects();
         Task<RealizedExamListViewModel> GetUserRealizedExamList();
-        Task<ExamReportViewModel> GetUserExamReport(Guid examId);
+        Task<ExamReportViewModel> GetUserExamReport(Guid examId, Guid? studentId = null);
         Task DeleteUserAnswers(Guid examId);
         Task<SubjectEvolutionsResponseViewModel> GetEvolutional();
         Task<PreExamVO> GetPreExamVO(EExamModel examModel, EExamType examType, int number, EExamTopic examTopic);
         Task SetExamComparation(Guid examId);
         Task AddSecondsSpent(Guid questionId, long secondsSpent);
+        Task<Either<ErrorResponseModel, object>> SaveExcelResultsToUserAnswers(Guid examId, IFormFile file);
+        Task<object> GetReportFilters();
+        Task<object> GetRealizedExamsByFilters(Guid? userId, int? examTopic, int? examModel, int? examNumber);
     }
 }

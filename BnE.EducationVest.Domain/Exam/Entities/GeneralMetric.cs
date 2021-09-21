@@ -15,5 +15,10 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         public Guid ExamId { get; set; }
         public Exam Exam { get; private set; }
         public ExamGeneralMetrics MetricValue { get; private set; }
+
+        public int GetUserRank(Guid userId) 
+        {
+            return MetricValue.UserIdListOrdered.IndexOf(userId) + 1;
+        }
     }
 }

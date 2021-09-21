@@ -19,5 +19,6 @@ namespace BnE.EducationVest.Application.Exams.ViewModels
         public int QuestionsCount { get; set; }
         public int? LastQuestionAnswered { get; set; }
         public bool WasFinalized { get; set; }
+        public string Link { get; set; }
     }
 }

@@ -16,5 +16,6 @@ namespace BnE.EducationVest.Domain.Users.Interfaces.InfraData
         Task<User> GetUserWithOptinsByIdAsync(Guid userId);
         Task<List<Optin>> GetOptinsAndUserAccepts(Guid userId);
         Task<User> GetUserByEmail(string email);
+        Task<List<User>> GetUsersByEmailList(List<string> emailList);
     }
 }

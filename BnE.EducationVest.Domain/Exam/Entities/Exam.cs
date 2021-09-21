@@ -21,6 +21,7 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         public List<Exam> ChildExamModule { get; private set; }
         public Exam FatherExamModule { get; private set; }
         public List<GeneralMetric> GeneralMetrics { get; private set; }
+        public string Url { get; private set; }
 
         internal Exam() { }
         public Exam(int examNumber, EExamModel examModel, List<ExamPeriodVO> periods, List<Question> questions, EExamType examType, EExamTopic examTopic)
@@ -31,6 +32,14 @@ namespace BnE.EducationVest.Domain.Exam.Entities
             SetQuestionsList(questions);
             ExamType = examType;
             ExamTopic = examTopic;
+        }
+        public GeneralMetric GetActualGeneralMetric()
+        {
+            return GeneralMetrics.OrderByDescending(x => x.CreatedDate).First();
+        }
+        public void SetExamUrl(string url)
+        {
+            Url = url;
         }
         public void SetFatherExamModule(Guid fatherExamModuleId)
         {

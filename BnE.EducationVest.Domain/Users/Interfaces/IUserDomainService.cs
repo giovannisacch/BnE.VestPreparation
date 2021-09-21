@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BnE.EducationVest.Domain.Users.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,8 @@ namespace BnE.EducationVest.Domain.Users.Interfaces
 {
     public interface IUserDomainService
     {
-        public Task<Guid> GetUserIdByCognitoId(Guid cognitoId);
+        Task<Guid> GetUserIdByCognitoId(Guid cognitoId);
+        Task<List<User>> GetAllUsersInEmailList(List<string> userList);
+        Task<List<User>> GetUsersAsync();
     }
 }

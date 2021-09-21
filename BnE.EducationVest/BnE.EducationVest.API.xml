@@ -83,9 +83,10 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:BnE.EducationVest.API.Controllers.ExamController.GetUserReports(System.Guid)">
+        <member name="M:BnE.EducationVest.API.Controllers.ExamController.GetUserReports(System.Guid,System.Nullable{System.Guid})">
             <summary>
             Busca todos os dados para a tela de relatorio de um exame especifico
+            Caso seja chamado por um perfil de professor, necessita passar o student id como query parameter
             </summary>
             <returns></returns>
         </member>
@@ -107,6 +108,12 @@
         <member name="M:BnE.EducationVest.API.Controllers.ExamController.GetEvolutional">
             <summary>
             Busca o evolucional de todos exames realizados pelo usuario logado
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BnE.EducationVest.API.Controllers.ExamController.AddSecondsSpent(System.Guid,System.Int64)">
+            <summary>
+            Informa o tempo gasto na questão
             </summary>
             <returns></returns>
         </member>

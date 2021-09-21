@@ -17,10 +17,14 @@ using BnE.EducationVest.Domain.Exam.RelationEntities;
 using BnE.EducationVest.Domain.Exam.ValueObjects;
 using BnE.EducationVest.Domain.Users.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BnE.EducationVest.Application.Exams.Services
@@ -101,6 +105,45 @@ namespace BnE.EducationVest.Application.Exams.Services
             {
                 AvailableExams = new List<AvailableExamViewModel>()
             };
+            return new Either<ErrorResponseModel, AvailableExamsViewModel>(new AvailableExamsViewModel()
+            {
+                AvailableExams = new List<AvailableExamViewModel>() {
+                    //new AvailableExamViewModel()
+                    //{
+                    //    ExamId = Guid.NewGuid(),
+                    //    ExamName = "Simulado 4 Insper - Linguagens e códigos",
+                    //    ExpirationDate = DateTime.Now,
+                    //    WasStarted = false,
+                    //    WasFinalized = false,
+                    //    QuestionsCount = 60,
+                    //    LastQuestionAnswered = 0,
+                    //    Link = "https://forms.gle/eDpe4CBwpAuefzqc6"
+                    //},
+                    //new AvailableExamViewModel()
+                    //{
+                    //    ExamId = Guid.NewGuid(),
+                    //    ExamName = "Simulado 4 Insper - Ciências da natureza",
+                    //    ExpirationDate = DateTime.Now,
+                    //    WasStarted = false,
+                    //    WasFinalized = false,
+                    //    QuestionsCount = 60,
+                    //    LastQuestionAnswered = 0,
+                    //    Link = "https://forms.gle/KdKtSiuscGReLyEw9"
+                    //},
+                    //new AvailableExamViewModel()
+                    //{
+                    //    ExamId = Guid.NewGuid(),
+                    //    ExamName = "Simulado 4 Insper - Ciências humanas",
+                    //    ExpirationDate = DateTime.Now,
+                    //    WasStarted = false,
+                    //    WasFinalized = false,
+                    //    QuestionsCount = 60,
+                    //    LastQuestionAnswered = 0,
+                    //    Link = "https://forms.gle/odgdEro6sjk8LCxh9"
+                    //}
+
+                }
+            }, HttpStatusCode.OK); 
             foreach (var exam in availableExams)
             {
                 var userStartedExam = await _examCacheService.VerifyIfUserStartedExam(userId, exam.Id);
@@ -150,13 +193,39 @@ namespace BnE.EducationVest.Application.Exams.Services
 
         public async Task UploadPreExam(UploadExamPeriodsRequestViewModel uploadExamPeriodsRequestViewModel)
         {
-            await _examCacheService.SavePreExam(new PreExamVO(uploadExamPeriodsRequestViewModel.ExamModel,
+            var preExamVO = new PreExamVO(uploadExamPeriodsRequestViewModel.ExamModel,
                                               uploadExamPeriodsRequestViewModel.ExamType,
                                               uploadExamPeriodsRequestViewModel.ExamNumber,
                                               uploadExamPeriodsRequestViewModel.ExamPeriods.Select(x => x.MapToVO()).ToList(),
-                                              uploadExamPeriodsRequestViewModel.Subjects,
+                                              uploadExamPeriodsRequestViewModel.QuestionDetails.Select(x => x.Subject).ToList(),
                                               uploadExamPeriodsRequestViewModel.ExamTopic,
-                                              uploadExamPeriodsRequestViewModel.ExamFatherId));
+                                              uploadExamPeriodsRequestViewModel.ExamFatherId,
+                                              uploadExamPeriodsRequestViewModel.QuestionDetails.Select(x => x.RightAnswerIndex).ToList(),
+                                              uploadExamPeriodsRequestViewModel.Link);
+            await _examCacheService.SavePreExam(preExamVO);
+            if (!string.IsNullOrEmpty(uploadExamPeriodsRequestViewModel.Link))
+            {
+                var questions = new List<Question>();
+                foreach (var item in uploadExamPeriodsRequestViewModel.QuestionDetails)
+                {
+                    questions.Add( 
+                            new Question(uploadExamPeriodsRequestViewModel.QuestionDetails.IndexOf(item) + 1, new IncrementedTextVO(" ", null),
+                                        CreateQuestionAlternatives(item.RightAnswerIndex), item.Subject)
+                        );
+                }
+                var exam = new Exam(preExamVO.Number, preExamVO.ExamModel, preExamVO.Periods, questions, preExamVO.ExamType, preExamVO.ExamTopic);
+                exam.SetExamUrl(preExamVO.Link);
+                await _examRepository.AddAsync(exam);
+            }
+         }
+        private List<Alternative> CreateQuestionAlternatives(int rightAnswerIndex)
+        {
+            var alternatives = new List<Alternative>();
+            for (int i = 0; i < 5; i++)
+            {
+                alternatives.Add(new Alternative(new IncrementedTextVO(" ", null), i == rightAnswerIndex, i));
+            }
+            return alternatives;
         }
         public async Task<PreExamVO> GetPreExamVO(EExamModel examModel, EExamType examType, int number, EExamTopic examTopic)
         {
@@ -177,14 +246,28 @@ namespace BnE.EducationVest.Application.Exams.Services
             var subjects = await _examRepository.GetSubjects();
             return subjects.Select(x => new SubjectResponseViewModel() { Id = x.Id, Name = x.Name });
         }
+        public async Task<object> GetReportFilters()
+        {
+            var allExams = await _examRepository.FindAllAsync(true);
+            var users = await _userDomainService.GetUsersAsync();
+            allExams.RemoveAll(x => x.FatherExamModuleId == null);
+            var topics = allExams.Select(x => x.ExamTopic).Distinct();
+            var models = allExams.Select(x => x.ExamModel).Distinct();
+            var numbers = allExams.Select(x => x.ExamNumber).Distinct();
 
+            return new {
+                    user = users.OrderBy(x => x.Name).Select(x => new { id = x.Id, name = x.Name }),
+                    examTopic = topics.Select(x => new {id = (int)x, name = x.GetEnumDescription() }),
+                    examModel = models.Select(x => new { id = (int)x, name = x.GetEnumDescription() }),
+                    examNumber = numbers
+            };
+        }
         public async Task<RealizedExamListViewModel> GetUserRealizedExamList()
         {
             var tokenData = _httpContextAccessor.GetTokenData();
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
             var exams = await _examRepository.GetUserFinalizedExams(userId);
             exams.RemoveAll(x => exams.Exists(exm => exm.FatherExamModuleId == x.Id) || x.FatherExamModuleId == null);
-
             return new RealizedExamListViewModel()
             {
                 RealizedExams =
@@ -242,7 +325,6 @@ namespace BnE.EducationVest.Application.Exams.Services
                 QuestionDifficulties = allQuestions.Select(x => new QuestionDifficulty { QuestionId = x.Id, Difficulty = (int)x.QuestionDifficulty }).ToList()
             };
 
-            await _examCacheService.SaveReportMetrics(examGeneralMetric, examId);
 
             await _examRepository.AddGeneralMetricAsync(new GeneralMetric(examId, examGeneralMetric));
         }
@@ -259,24 +341,27 @@ namespace BnE.EducationVest.Application.Exams.Services
                 return EQuestionDifficulty.Easy;
             return EQuestionDifficulty.Calculating;
         }
-        public async Task<ExamReportViewModel> GetUserExamReport(Guid examId)
+        public async Task<ExamReportViewModel> GetUserExamReport(Guid examId, Guid? studentId = null)
         {
             var tokenData = _httpContextAccessor.GetTokenData();
             var userId = await _userDomainService.GetUserIdByCognitoId(Guid.Parse(tokenData.CognitoId));
-            var examWithQuestionAndAnswers = await _examRepository.GetExamWithQuestionsAndUserAnswers(examId, userId);
+            if (tokenData.CognitoGroups.Contains("Teachers"))
+                userId = studentId.Value;
 
+            var examWithQuestionAndAnswers = await _examRepository.GetExamWithQuestionsAndUserAnswers(examId, userId);
             var fatherExamWithQuestionAndAnswers = examWithQuestionAndAnswers.FatherExamModuleId == null 
                 ? null 
                 : await _examRepository.GetExamWithQuestionsAndUserAnswers(examWithQuestionAndAnswers.FatherExamModuleId.Value, userId);
             //TEMP - Ajustar relacionamento de exam pai e filho
-            var fatherExamsWithAnswers = examWithQuestionAndAnswers.Questions;
+            var fatherExamsWithAnswers = fatherExamWithQuestionAndAnswers.Questions;
             var examsQuestionsWithAnswers = fatherExamsWithAnswers.ToList();
             foreach (var item in examWithQuestionAndAnswers.Questions)
             {
                 item.SetIndex(item.Index + fatherExamsWithAnswers.Count());
                 examsQuestionsWithAnswers.Add(item);
             }
-            var generalMetrics = await _examCacheService.GetReportMetrics(examId);
+            var generalMetricByExam = await _examRepository.GetGeneralMetricsByExamId(examId);
+            var generalMetrics = generalMetricByExam.MetricValue;
             examsQuestionsWithAnswers.ForEach(x => x.QuestionDifficulty = (EQuestionDifficulty)generalMetrics.QuestionDifficulties.First(general => general.QuestionId == x.Id).Difficulty);
 
             var questionsWithAnswers = examsQuestionsWithAnswers.OrderBy(x => x.Index);
@@ -449,7 +534,7 @@ namespace BnE.EducationVest.Application.Exams.Services
                 QuestionNumber = x.Index,
                 Subject = x.Subject.Name,
                 ChosenAlternative = x.GetUserAnswer(userId) == null ? "N/A" : x.GetUserAnswer(userId).ChosenAlternative.GetRespectiveIndexCharacter().ToString(),
-                RightAlternative = x.GetRightAlternative().GetRespectiveIndexCharacter().ToString(),
+                RightAlternative = x.WasNullified() ? "ANULADA" : x.GetRightAlternative().GetRespectiveIndexCharacter().ToString(),
                 Difficulty = x.QuestionDifficulty.GetEnumDescription(),
             }).ToList();
         }
@@ -557,262 +642,102 @@ namespace BnE.EducationVest.Application.Exams.Services
             }
 
         }
-        private ExamReportViewModel GetMockExamReport()
+        public async Task<Either<ErrorResponseModel, object>> SaveExcelResultsToUserAnswers(Guid examId, IFormFile file)
         {
-            var subjectsDifficulties = new List<ExamReportSubjectDifficultyViewModel>()
+            if (file == null)
             {
-                new ExamReportSubjectDifficultyViewModel()
-                {
-                    Name = "Matemática",
-                    Easy = "70%",
-                    Medium = "80%",
-                    Hard = "50%"
-                },
-                 new ExamReportSubjectDifficultyViewModel()
-                {
-                    Name = "Português",
-                    Easy = "70%",
-                    Medium = "30%",
-                    Hard = "50%"
-                }
-            };
-            var subjectsDistribution = new List<ExamReportSubjectDistributionViewModel>()
-            {
-             new ExamReportSubjectDistributionViewModel()
-                {
-                    Name = "Português",
-                    QuestionNumbers = new List<int>(){0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 }
-                },
-                        new ExamReportSubjectDistributionViewModel()
-                {
-                    Name = "Polinomios",
-                    QuestionNumbers = new List<int>(){16, 17,17,19,20,21,22,23,24,25,26,27,28,29,30}
-                },
-                                     new ExamReportSubjectDistributionViewModel()
-                {
-                    Name = "Matematica financeira",
-                    QuestionNumbers = new List<int>(){31,32,33,34,35,36,37,38,39,40}
-                },
-                                                  new ExamReportSubjectDistributionViewModel()
-                {
-                    Name = "Geometria analitica",
-                    QuestionNumbers = new List<int>(){41,42,43,44,45,46,47,48,49,50 }
-                },
-            };
-            var acertsAndErrorsBySubject = new List<ExamReportAcertsAndErrorBySubject>()
-            {
-                new ExamReportAcertsAndErrorBySubject()
-                {
-                    Subject = "Português",
-                    QuestionCount = 15,
-                    CorrectCount = 12
-                },
-                 new ExamReportAcertsAndErrorBySubject()
-                {
-                    Subject = "Polinomios",
-                    QuestionCount = 10,
-                    CorrectCount = 6
-                },
-                  new ExamReportAcertsAndErrorBySubject()
-                {
-                    Subject = "Matematica financeira",
-                    QuestionCount = 10,
-                    CorrectCount = 8
-                },
-                   new ExamReportAcertsAndErrorBySubject()
-                {
-                    Subject = "Geometria Analitica",
-                    QuestionCount = 10,
-                    CorrectCount = 4
-                },
-            };
-            var acertsAndErrorsByQuestion = new List<ExamReportAcertsAndErrorByQuestion>()
-            {
+                return new Either<ErrorResponseModel, object>(
+                new ErrorResponseModel("Não contém arquivos para processamento, por favor verifique !!!"), HttpStatusCode.BadRequest);
+            }
 
-                new ExamReportAcertsAndErrorByQuestion()
-                {
-                    QuestionNumber = 1,
-                    Subject = "Português",
-                    //Pegar alternativa pelo index (ex: index 0 = A)
-                    ChosenAlternative = "A",
-                    RightAlternative = "B",
-                    Difficulty = "Fácil"
-                },
-                  new ExamReportAcertsAndErrorByQuestion()
-                {
-                    QuestionNumber = 2,
-                    Subject = "Português",
-                    //Pegar alternativa pelo index (ex: index 0 = A)
-                    ChosenAlternative = "A",
-                    RightAlternative = "B",
-                    Difficulty = "Fácil"
-                },
-                    new ExamReportAcertsAndErrorByQuestion()
-                {
-                    QuestionNumber = 3,
-                    Subject = "Português",
-                    //Pegar alternativa pelo index (ex: index 0 = A)
-                    ChosenAlternative = "A",
-                    RightAlternative = "B",
-                    Difficulty = "Fácil"
-                },
-                      new ExamReportAcertsAndErrorByQuestion()
-                {
-                    QuestionNumber = 4,
-                    Subject = "Português",
-                    //Pegar alternativa pelo index (ex: index 0 = A)
-                    ChosenAlternative = "A",
-                    RightAlternative = "B",
-                    Difficulty = "Difícil"
-                },
-                        new ExamReportAcertsAndErrorByQuestion()
-                {
-                    QuestionNumber = 5,
-                    Subject = "Português",
-                    //Pegar alternativa pelo index (ex: index 0 = A)
-                    ChosenAlternative = "A",
-                    RightAlternative = "A",
-                    Difficulty = "Médio"
-                },
-                new ExamReportAcertsAndErrorByQuestion(){
-                    QuestionNumber = 6,
-                    Subject = "Português",
-                    //Pegar alternativa pelo index (ex: index 0 = A)
-                    ChosenAlternative = "A",
-                    RightAlternative = "B",
-                    Difficulty = "Fácil"
-                },
-                  new ExamReportAcertsAndErrorByQuestion()
-                {
-                    QuestionNumber = 7,
-                    Subject = "Português",
-                    //Pegar alternativa pelo index (ex: index 0 = A)
-                    ChosenAlternative = "A",
-                    RightAlternative = "B",
-                    Difficulty = "Fácil"
-                },
-                    new ExamReportAcertsAndErrorByQuestion()
-                {
-                    QuestionNumber = 8,
-                    Subject = "Português",
-                    //Pegar alternativa pelo index (ex: index 0 = A)
-                    ChosenAlternative = "A",
-                    RightAlternative = "B",
-                    Difficulty = "Fácil"
-                },
-                      new ExamReportAcertsAndErrorByQuestion()
-                {
-                    QuestionNumber = 9,
-                    Subject = "Português",
-                    //Pegar alternativa pelo index (ex: index 0 = A)
-                    ChosenAlternative = "A",
-                    RightAlternative = "B",
-                    Difficulty = "Difícil"
-                },
-                        new ExamReportAcertsAndErrorByQuestion()
-                {
-                    QuestionNumber = 10,
-                    Subject = "Português",
-                    //Pegar alternativa pelo index (ex: index 0 = A)
-                    ChosenAlternative = "A",
-                    RightAlternative = "A",
-                    Difficulty = "Médio"
-                },
-                new ExamReportAcertsAndErrorByQuestion()
-                {
-                    QuestionNumber = 11,
-                    Subject = "Português",
-                    //Pegar alternativa pelo index (ex: index 0 = A)
-                    ChosenAlternative = "A",
-                    RightAlternative = "B",
-                    Difficulty = "Fácil"
-                },
-                  new ExamReportAcertsAndErrorByQuestion()
-                {
-                    QuestionNumber = 12,
-                    Subject = "Português",
-                    //Pegar alternativa pelo index (ex: index 0 = A)
-                    ChosenAlternative = "A",
-                    RightAlternative = "B",
-                    Difficulty = "Fácil"
-                },
-                    new ExamReportAcertsAndErrorByQuestion()
-                {
-                    QuestionNumber = 13,
-                    Subject = "Português",
-                    //Pegar alternativa pelo index (ex: index 0 = A)
-                    ChosenAlternative = "A",
-                    RightAlternative = "B",
-                    Difficulty = "Fácil"
-                },
-                      new ExamReportAcertsAndErrorByQuestion()
-                {
-                    QuestionNumber = 14,
-                    Subject = "Português",
-                    //Pegar alternativa pelo index (ex: index 0 = A)
-                    ChosenAlternative = "A",
-                    RightAlternative = "B",
-                    Difficulty = "Difícil"
-                },
-                        new ExamReportAcertsAndErrorByQuestion()
-                {
-                    QuestionNumber = 15,
-                    Subject = "Português",
-                    //Pegar alternativa pelo index (ex: index 0 = A)
-                    ChosenAlternative = "A",
-                    RightAlternative = "A",
-                    Difficulty = "Médio"
-                }
-            };
+            if (!Path.GetExtension(file.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
+            {
+                return new Either<ErrorResponseModel, object>(
+                new ErrorResponseModel("O arquivo não contem o formato esperado, por favor verifique !!!"), HttpStatusCode.BadRequest);
+            }
 
-            var userPerformances = new List<ExamReportPerformanceViewModel>()
+            var exam = await _examRepository.GetByIdWithAllIncludes(examId);
+            Dictionary<string, List<int>> answersByUserDictionary;
+            using (var stream = new MemoryStream())
             {
-                new ExamReportPerformanceViewModel()
-                {
-                    Name = "Pontuação",
-                    Value = 500.00
-                },
-                new ExamReportPerformanceViewModel()
-                {
-                    Name = "Matemática",
-                    Value = 16
-                },
-                new ExamReportPerformanceViewModel()
-                {
-                    Name = "Português",
-                    Value = 430
-                }
+                await file.CopyToAsync(stream, new CancellationToken());
+
+                answersByUserDictionary = ReadResultsByUserFromSheetsStream(stream, exam.ExamTopic);
             };
-            return new ExamReportViewModel()
+            var users = await _userDomainService.GetAllUsersInEmailList(answersByUserDictionary.Select(x => x.Key).ToList());
+            var questionAnswers = new List<QuestionAnswer>();
+            var usersDontExists = answersByUserDictionary.Where(x => !users.Exists(usr => usr.Email == x.Key));
+            //if(usersDontExists.Count() >= 1)
+            //    return new Either<ErrorResponseModel, object>
+            //            (new ErrorResponseModel("Usuários: " + string.Join(',', usersDontExists.Select(x => x.Key) ) + " não cadastrado na plataforma"), HttpStatusCode.BadRequest);
+            foreach (var answersByUser in answersByUserDictionary)
             {
-                Performance = userPerformances,
-                SubjectsDifficulties = new ExamReportSubjectDifficultyViewModelCard() { SubjectDifficultyRanks = subjectsDifficulties },
-                SubjectsDistribution = new ExamReportSubjectDistributionViewModelCard() { subjectDistributionTopics = subjectsDistribution },
-                AcertsAndErrorsBySubject = new ExamReportAcertsAndErrorBySubjectCard() { ExamReportAcertsAndErrorBySubjectCardTopics = acertsAndErrorsBySubject },
-                AcertsAndErrorsByQuestion = new ExamReportAcertsAndErrorByQuestionCard()
+                var user = users.FirstOrDefault(x => x.Email == answersByUser.Key);
+                if (user == null)
+                    continue;
+                    //return new Either<ErrorResponseModel, object>
+                    //    (new ErrorResponseModel("Usuário: " + answersByUser.Key + " não cadastrado na plataforma"), HttpStatusCode.BadRequest);
+                foreach (var question in exam.Questions)
                 {
-                    ExamReportAcertsAndErrorByQuestionCardTopics = acertsAndErrorsByQuestion,
-                    ExplanationTable =
-                new List<ExamReportAcertsAndErrorByQuestionExplanationTable>()
+                    try
+                    {
+                        var alternativeIndexChosenByUser = answersByUser.Value[question.Index - 1];
+                        var alternativeChosenByUser = question.Alternatives.First(x => x.Index == alternativeIndexChosenByUser);
+                        questionAnswers.Add(new QuestionAnswer(question.Id, user.Id, alternativeChosenByUser.Id));
+                    }
+                    catch (Exception ex)
+                    {
+
+                        continue;
+                    }
+                    
+                }
+            }
+            await _examRepository.AddQuestionsAnswersRange(questionAnswers);
+            return new Either<ErrorResponseModel, object>(new object(), HttpStatusCode.OK);
+        }
+        private Dictionary<string, List<int>> ReadResultsByUserFromSheetsStream(MemoryStream stream, EExamTopic topic)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var package = new ExcelPackage(stream))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+
+                var worksheetFirst = package.Workbook.Worksheets.First();
+                var sheetColumnsBeforeQuestionsCount = 6;
+                var userNameColumn = 2;
+                var userAndAlternativesChosenInOrder = new Dictionary<string, List<int>>();
+                for (int row = 2; row <= worksheet.Dimension.Rows; row++)
                 {
-                    new ExamReportAcertsAndErrorByQuestionExplanationTable()
+                    var userName = string.Empty;
+                    var answers = new List<int>();
+                    var alternatives = new List<string>() { "a)", "b)", "c)", "d)", "e)" };
+                    for (int column = 1; column <= worksheet.Dimension.Columns; column++)
                     {
-                        Name = "Menor ou igual a 40%",
-                        Value = "Difícil"
-                    },
-                    new ExamReportAcertsAndErrorByQuestionExplanationTable()
-                    {
-                        Name = "Entre 40 % e 70%",
-                        Value = "Moderada"
-                    },
-                    new ExamReportAcertsAndErrorByQuestionExplanationTable()
-                    {
-                        Name = "Maior que 70 %",
-                        Value = "Fácil"
-                    },
+                        try
+                        {
+                            var columnValue = worksheet.Cells[row, column].Value?.ToString().Trim();
+                            if (columnValue == null)
+                                continue;
+                            if (column == userNameColumn)
+                                userName = columnValue;
+                            if (column <= sheetColumnsBeforeQuestionsCount)
+                                continue;
+                            if (alternatives.Contains(columnValue.Substring(0, 2).ToLower()))
+                                answers.Add(alternatives.IndexOf(columnValue.Substring(0, 2).ToLower()));
+                        }
+                        catch (Exception ex)
+                        {
+
+                            throw;
+                        }
+                        
+                    }
+                    userAndAlternativesChosenInOrder.Add(userName, answers);
                 }
-                }
-            };
+                return userAndAlternativesChosenInOrder;
+            }
         }
         private string GetFormatedExamName(Exam exam, bool isReport)
         {
@@ -830,6 +755,20 @@ namespace BnE.EducationVest.Application.Exams.Services
             questionAnswer.SetSecondsSpent(secondsSpent);
 
             await _examRepository.UpdateExamQuestionAnswer(questionAnswer);
+        }
+
+        public async Task<object> GetRealizedExamsByFilters(Guid? userId, int? examTopic, int? examModel, int? examNumber)
+        {
+            var exams = await _examRepository.GetExamsByFilter(userId, examTopic, examModel, examNumber);
+            var response = exams.SelectMany(x => x.Finalizeds.OrderBy(x => x.User.Name).Select(fnlz => new
+            {
+                studentName = fnlz.User.Name,
+                examName = GetFormatedExamName(x, false),
+                rank = fnlz.Exam.GetActualGeneralMetric().GetUserRank(fnlz.UserId),
+                examId = fnlz.ExamId,
+                userId = fnlz.UserId
+            }));
+            return response;
         }
     }
 }

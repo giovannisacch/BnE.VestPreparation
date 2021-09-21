@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BnE.EducationVest.Domain.Exam.RelationEntities;
+using BnE.EducationVest.Domain.Exam.Enums;
 
 namespace BnE.EducationVest.Infra.Data.Exams.Repositories
 {
@@ -16,6 +17,26 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
         {
         }
 
+        public async Task<List<Exam>> GetExamsByFilter(Guid? userId, int? examTopic, int? examModel, int? examNumber)
+        {
+            IQueryable<Exam> query = _context.Exams.Where(x => x.FatherExamModuleId != null).Include(x => x.GeneralMetrics);
+            if (examTopic != null)
+                query = query.Where(x => x.ExamTopic == (EExamTopic)examTopic);
+            if (examModel != null)
+                query = query.Where(x => x.ExamModel == (EExamModel)examModel);
+            if (examNumber != null)
+                query = query.Where(x => x.ExamNumber == examNumber);
+            if (userId != null && Guid.Empty != userId)
+            {
+                query = query.Include(x => x.Finalizeds.Where(x => x.UserId == userId))
+                              .ThenInclude(x => x.User);
+                query = query.Where(x => x.Finalizeds.Any(x => x.UserId == userId));
+            }
+            else
+                query = query.Include(x => x.Finalizeds).ThenInclude(x => x.User);
+
+            return await query.OrderBy(x => x.ExamNumber).ToListAsync();
+        }
         public async Task<List<Exam>> GetAvailableExamsByUser(Guid userId)
         {
             var actualDate = DateTime.Now;
@@ -144,6 +165,7 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
             return await
                     _db
                     .Include(x => x.Finalizeds)
+                    .Include(x => x.GeneralMetrics)
                     .Where(exam => exam.Finalizeds.Any(x => x.UserId == userId && exam.GeneralMetrics.Any(a => a.CreatedDate > x.FinalizedDate)))
                     .ToListAsync();
         }
@@ -218,5 +240,18 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
             await _context.Commit();
         }
 
+        public async Task<GeneralMetric> GetGeneralMetricsByExamId(Guid examId)
+        {
+            return await 
+                _context
+                .GeneralMetrics
+                .FirstAsync(x => x.ExamId == examId);
+        }
+
+        public async Task AddQuestionsAnswersRange(List<QuestionAnswer> questionAnswers)
+        {
+            await _context.QuestionsAnswers.AddRangeAsync(questionAnswers);
+            await _context.SaveChangesAsync();
+        }
     }
 }

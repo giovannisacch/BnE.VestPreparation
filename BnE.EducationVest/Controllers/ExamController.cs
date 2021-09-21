@@ -39,6 +39,12 @@ namespace BnE.EducationVest.API.Controllers
             await _examApplicationService.UploadPreExam(uploadExamPeriodsRequestViewModel);
             return Ok();
         }
+        //[HttpPost("")]
+        //public async Task<IActionResult> CreateExam([FromQuery] EExamModel examModel, EExamType examType, int number, EExamTopic examTopic)
+        //{
+        //    var preExam = await _examApplicationService.GetPreExamVO(examModel, examType, number, examTopic);
+            
+        //}
         /// <summary>
         /// API Utilizada para subir o arquivo da prova
         /// </summary>
@@ -186,7 +192,11 @@ namespace BnE.EducationVest.API.Controllers
 
             return Ok(response);
         }
-
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetExamFilters()
+        {
+            return Ok(await _examApplicationService.GetReportFilters());
+        }
         [HttpPost("generalScore")]
         public async Task<IActionResult> SetGeneralScore(Guid examId)
         {
@@ -195,12 +205,13 @@ namespace BnE.EducationVest.API.Controllers
         }
         /// <summary>
         /// Busca todos os dados para a tela de relatorio de um exame especifico
+        /// Caso seja chamado por um perfil de professor, necessita passar o student id como query parameter
         /// </summary>
         /// <returns></returns>
         [HttpGet("report/{id}")]
-        public async Task<IActionResult> GetUserReports(Guid id)
+        public async Task<IActionResult> GetUserReports(Guid id, [FromQuery] Guid? studentId)
         {
-            var response = await _examApplicationService.GetUserExamReport(id);
+            var response = await _examApplicationService.GetUserExamReport(id, studentId);
 
             return Ok(response);
         }
@@ -247,12 +258,26 @@ namespace BnE.EducationVest.API.Controllers
         /// Informa o tempo gasto na questão
         /// </summary>
         /// <returns></returns>
-        [HttpPost("SecondsSpent-question")]
+        [HttpPost("secondsSpent-question")]
         public async Task<IActionResult> AddSecondsSpent(Guid questionId, long secondsSpent)
         {
             await _examApplicationService.AddSecondsSpent(questionId, secondsSpent);
             return Ok();
         }
 
+        [HttpPost("resultByExcel")]
+        public async Task<IActionResult> UploadResultsByExcel(Guid examId, IFormFile resultsSheet)
+        {
+            var response = await _examApplicationService.SaveExcelResultsToUserAnswers(examId, resultsSheet);
+            return StatusCode((int)response.StatusCode,
+                                  response.IsSuccess
+                                  ? response.SuccessResponseModel
+                                  : response.ErrorResponseModel);
+        }
+        [HttpGet("realizeds/filter")]
+        public async Task<IActionResult> GetRealizedExamsByFilters([FromQuery]Guid? userId, int? examTopic, int? examModel, int? examNumber)
+        {
+            return Ok(await _examApplicationService.GetRealizedExamsByFilters(userId,examTopic,examModel,examNumber));
+        }
     }
 }

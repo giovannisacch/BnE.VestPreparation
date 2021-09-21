@@ -1,7 +1,9 @@
-﻿using BnE.EducationVest.Domain.Users.Interfaces;
+﻿using BnE.EducationVest.Domain.Users.Entities;
+using BnE.EducationVest.Domain.Users.Interfaces;
 using BnE.EducationVest.Domain.Users.Interfaces.InfraData;
 using BnE.EducationVest.Domain.Users.Interfaces.InfraService;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BnE.EducationVest.Domain.Users.Services
@@ -26,6 +28,14 @@ namespace BnE.EducationVest.Domain.Users.Services
                 await _userCacheService.SaveUserIdByCognitoId(userId, cognitoId);
             }
             return userId;
+        }
+        public async Task<List<User>> GetAllUsersInEmailList(List<string> userList)
+        {
+            return await _userRepository.GetUsersByEmailList(userList);
+        }
+        public async Task<List<User>> GetUsersAsync()
+        {
+            return await _userRepository.FindAllAsync(true);
         }
     }
 }

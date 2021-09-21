@@ -62,6 +62,10 @@ namespace BnE.EducationVest.Domain.Exam.Entities
         {
             QuestionDifficulty = questionDifficulty;
         }
+        public bool WasNullified()
+        {
+            return Alternatives.All(x => x.IsCorrect);
+        }
         public Alternative GetRightAlternative()
         {
             try

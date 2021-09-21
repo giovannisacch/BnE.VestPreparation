@@ -27,5 +27,8 @@ namespace BnE.EducationVest.Domain.Exam.Interfaces.Infra
         Task<Entities.Exam> GetExamAllQuestionsWithAnswers(Guid examId);
         Task<QuestionAnswer> GetLastQuestionAnswerByUserAsync(Guid questionId, Guid userId);
         Task AddGeneralMetricAsync(GeneralMetric generalMetric);
+        Task<GeneralMetric> GetGeneralMetricsByExamId(Guid examId);
+        Task AddQuestionsAnswersRange(List<QuestionAnswer> questionAnswers);
+        Task<List<Entities.Exam>> GetExamsByFilter(Guid? userId, int? examTopic, int? examModel, int? examNumber);
     }
 }

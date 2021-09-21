@@ -14,10 +14,13 @@ namespace BnE.EducationVest.Domain.Exam.ValueObjects
         public int Number { get; private set; }
         public List<ExamPeriodVO> Periods { get; private set; }
         public List<Guid> SubjectIdList { get; private set; }
+        public List<int> OrderedRightAnswerIndexList { get; private set; }
         public EExamTopic ExamTopic { get; private set; }
         public Guid? FatherExamModuleId { get; private set; }
+        public string Link { get; private set; }
 
-        public PreExamVO(EExamModel examModel, EExamType examType, int number, List<ExamPeriodVO> periods, List<Guid> subjectIdList, EExamTopic examTopic, Guid? fatherExamModuleId)
+        public PreExamVO(EExamModel examModel, EExamType examType, int number, List<ExamPeriodVO> periods, List<Guid> subjectIdList, EExamTopic examTopic, Guid? fatherExamModuleId, 
+            List<int> orderedRightAnswerIndexList, string link)
         {
             ExamModel = examModel;
             ExamType = examType;
@@ -26,6 +29,8 @@ namespace BnE.EducationVest.Domain.Exam.ValueObjects
             SubjectIdList = subjectIdList;
             ExamTopic = examTopic;
             FatherExamModuleId = fatherExamModuleId;
+            OrderedRightAnswerIndexList = orderedRightAnswerIndexList;
+            Link = link;
         }
     }
 }

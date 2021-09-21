@@ -244,14 +244,11 @@ Qualquer novo recurso que aprimore o serviço atual, bem como a disponibilizaç�
                 await ReadRowsFromFileAsync(stream);
             };
 
-
             return new Either<ErrorResponseModel, object>(new ErrorResponseModel(""), HttpStatusCode.OK);
 
         }
         private async Task ReadRowsFromFileAsync(MemoryStream stream)
         {
-            
-
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             using (var package = new ExcelPackage(stream))

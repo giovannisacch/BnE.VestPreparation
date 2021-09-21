@@ -51,5 +51,9 @@ namespace BnE.EducationVest.Infra.Data.Users.Repositories
         {
             return await _db.FirstOrDefaultAsync(x => x.Email == email);
         }
+        public async Task<List<User>> GetUsersByEmailList(List<string> emailList)
+        {
+            return await _db.Where(x => emailList.Contains(x.Email)).ToListAsync();
+        }
     }
 }
