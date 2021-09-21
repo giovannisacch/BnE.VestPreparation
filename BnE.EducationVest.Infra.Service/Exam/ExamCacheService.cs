@@ -51,7 +51,7 @@ namespace BnE.EducationVest.Infra.Service.Exam
         }
         public async Task SaveUserStartedExam(Guid userId, Domain.Exam.Entities.Exam exam)
         {
-            DateTimeOffset examAbosluteDatetime = DateTime.SpecifyKind(exam.GetActualAvailablePeriod().CloseDate, DateTimeKind.Utc);
+            DateTimeOffset examAbosluteDatetime = DateTime.SpecifyKind(exam.GetActualAvailablePeriod().CloseDate.AddMinutes(180), DateTimeKind.Utc);
             var options = new DistributedCacheEntryOptions()
             {
                 AbsoluteExpiration = examAbosluteDatetime
@@ -77,7 +77,7 @@ namespace BnE.EducationVest.Infra.Service.Exam
         }
         public async Task SaveQuestionListByPage(Domain.Exam.Entities.Exam exam, List<Question> questionList, int page)
         {
-            DateTimeOffset examAbosluteDatetime = DateTime.SpecifyKind(exam.GetActualAvailablePeriod().CloseDate, DateTimeKind.Local);
+            DateTimeOffset examAbosluteDatetime = DateTime.SpecifyKind(exam.GetActualAvailablePeriod().CloseDate.AddMinutes(180), DateTimeKind.Local);
             var options = new DistributedCacheEntryOptions()
             {
                 AbsoluteExpiration = examAbosluteDatetime
