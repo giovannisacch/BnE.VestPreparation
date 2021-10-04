@@ -156,6 +156,7 @@ namespace BnE.EducationVest.Infra.Data.Exams.Repositories
             return await
                 _context
                 .Subjects
+                .Include(x => x.SubjectChilds)
                 .AsNoTracking()
                 .ToListAsync();
         }

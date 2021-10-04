@@ -111,35 +111,35 @@ namespace BnE.EducationVest.Application.Exams.Services
                     //new AvailableExamViewModel()
                     //{
                     //    ExamId = Guid.NewGuid(),
-                    //    ExamName = "Simulado 4 Insper - Linguagens e códigos",
+                    //    ExamName = "Simulado 5 Insper - Linguagens e códigos",
                     //    ExpirationDate = DateTime.Now,
                     //    WasStarted = false,
                     //    WasFinalized = false,
                     //    QuestionsCount = 60,
                     //    LastQuestionAnswered = 0,
-                    //    Link = "https://forms.gle/eDpe4CBwpAuefzqc6"
+                    //    Link = "https://forms.gle/7hZ7kPf3xojdQoun6"
                     //},
                     //new AvailableExamViewModel()
                     //{
                     //    ExamId = Guid.NewGuid(),
-                    //    ExamName = "Simulado 4 Insper - Ciências da natureza",
+                    //    ExamName = "Simulado 5 Insper - Ciências da natureza",
                     //    ExpirationDate = DateTime.Now,
                     //    WasStarted = false,
                     //    WasFinalized = false,
                     //    QuestionsCount = 60,
                     //    LastQuestionAnswered = 0,
-                    //    Link = "https://forms.gle/KdKtSiuscGReLyEw9"
+                    //    Link = "https://forms.gle/qeTi1g5RJMx92AL68"
                     //},
                     //new AvailableExamViewModel()
                     //{
                     //    ExamId = Guid.NewGuid(),
-                    //    ExamName = "Simulado 4 Insper - Ciências humanas",
+                    //    ExamName = "Simulado 5 Insper - Ciências humanas",
                     //    ExpirationDate = DateTime.Now,
                     //    WasStarted = false,
                     //    WasFinalized = false,
                     //    QuestionsCount = 60,
                     //    LastQuestionAnswered = 0,
-                    //    Link = "https://forms.gle/odgdEro6sjk8LCxh9"
+                    //    Link = "https://forms.gle/rgwEJmtoisiz7RH2A"
                     //}
 
                 }
@@ -260,6 +260,21 @@ namespace BnE.EducationVest.Application.Exams.Services
                     examTopic = topics.Select(x => new {id = (int)x, name = x.GetEnumDescription() }),
                     examModel = models.Select(x => new { id = (int)x, name = x.GetEnumDescription() }),
                     examNumber = numbers
+            };
+        }
+        public async Task<object> GetCreateExamFilters()
+        {
+            var subjects = await _examRepository.GetSubjects();
+            subjects.RemoveAll(x => x.SubjectChilds == null || x.SubjectChilds.Count == 0);
+            var examTopics = (EExamTopic[])Enum.GetValues(typeof(EExamTopic));
+            var examTypes = (EExamType[])Enum.GetValues(typeof(EExamType));
+            var institutions = (EExamModel[])Enum.GetValues(typeof(EExamModel));
+            return new
+            {
+                prefixes = examTopics.Select(x => new { id = x, name = x.GetEnumDescription() }),
+                institutions = institutions.Select(x => new { id = x, name = x.GetEnumDescription() }),
+                types = examTypes.Select(x => new { id = x, name = x.GetEnumDescription() }),
+                topics = subjects.Select(x => new { x.Id, topic = x.Name, subjects = x.SubjectChilds.Select(sub => new { sub.Id, sub.Name }) })
             };
         }
         public async Task<RealizedExamListViewModel> GetUserRealizedExamList()

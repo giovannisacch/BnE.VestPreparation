@@ -279,5 +279,10 @@ namespace BnE.EducationVest.API.Controllers
         {
             return Ok(await _examApplicationService.GetRealizedExamsByFilters(userId,examTopic,examModel,examNumber));
         }
+        [HttpGet("create/filter")]
+        public async Task<IActionResult> GetCreateExamFilters()
+        {
+            return Ok(await _examApplicationService.GetCreateExamFilters());
+        }
     }
 }

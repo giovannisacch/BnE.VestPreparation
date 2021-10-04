@@ -34,5 +34,6 @@ namespace BnE.EducationVest.Application.Exams.Interfaces
         Task<Either<ErrorResponseModel, object>> SaveExcelResultsToUserAnswers(Guid examId, IFormFile file);
         Task<object> GetReportFilters();
         Task<object> GetRealizedExamsByFilters(Guid? userId, int? examTopic, int? examModel, int? examNumber);
+        Task<object> GetCreateExamFilters();
     }
 }

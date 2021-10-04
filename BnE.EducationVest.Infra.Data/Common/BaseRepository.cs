@@ -22,8 +22,17 @@ namespace BnE.EducationVest.Infra.Data.Common
 
         public virtual async Task AddAsync(T entity)
         {
-            _db.Add(entity);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _db.Add(entity);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+            
         }
 
         public virtual async Task DeleteAsync(T entity)
