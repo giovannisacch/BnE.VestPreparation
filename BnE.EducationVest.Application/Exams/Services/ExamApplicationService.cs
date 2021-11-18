@@ -720,7 +720,7 @@ namespace BnE.EducationVest.Application.Exams.Services
                 ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
 
                 var worksheetFirst = package.Workbook.Worksheets.First();
-                var sheetColumnsBeforeQuestionsCount = 6;
+                var sheetColumnsBeforeQuestionsCount = 4;
                 var userNameColumn = 2;
                 var userAndAlternativesChosenInOrder = new Dictionary<string, List<int>>();
                 for (int row = 2; row <= worksheet.Dimension.Rows; row++)

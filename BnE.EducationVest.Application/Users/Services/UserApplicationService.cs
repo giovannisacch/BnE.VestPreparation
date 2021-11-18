@@ -259,18 +259,27 @@ Qualquer novo recurso que aprimore o serviço atual, bem como a disponibilizaç�
 
                 for (int row = 2; row <= worksheet.Dimension.Rows; row++)
                 {
-                    var name = worksheet.Cells[row, 1].Value.ToString().Trim();
-                    var cpf = "99999999941";
-                    var phoneNumber = "+5511999999999";
-                    var gender = "N/A";
-                    var email = worksheet.Cells[row, 2].Value.ToString().Trim();
-                    var addressVO = new AddressVO("13571-410", "R. Gomes de Carvalho, 1765",
-                       "Vila Olímpia - Itaim Bibi", "São Paulo",
-                       "SP");
-                    var user = new User(name, cpf, phoneNumber, gender, email, DateTime.Parse("2000/01/01"), addressVO, Domain.Users.Enums.EUserType.InternalStudent);
+                    try
+                    {
+                        var name = worksheet.Cells[row, 2].Value.ToString().Trim();
+                        var cpf = "99999999941";
+                        var phoneNumber = "+5511999999999";
+                        var gender = "N/A";
+                        var email = worksheet.Cells[row, 3].Value.ToString().Trim();
+                        var addressVO = new AddressVO("13571-410", "R. Gomes de Carvalho, 1765",
+                           "Vila Olímpia - Itaim Bibi", "São Paulo",
+                           "SP");
+                        var user = new User(name, cpf, phoneNumber, gender, email, DateTime.Parse("2000/01/01"), addressVO, Domain.Users.Enums.EUserType.InternalStudent);
 
-                    await _userAuthService.CreateUserAsync(user);
-                    await _userRepository.AddAsync(user);
+                        await _userAuthService.CreateUserAsync(user);
+                        await _userRepository.AddAsync(user);
+                    }
+                    catch (Exception e)
+                    {
+
+                        continue;
+                    }
+                 
                 }
             }
         }
